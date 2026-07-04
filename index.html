@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -107,7 +108,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
   transition: transform 0.15s ease, color 0.15s ease !important;
 }
 .card button:hover {
-  transform: scale(1.25) !important;
+  transform: scale(1.10) !important;
 }
 
 /* PRINT */
@@ -354,7 +355,7 @@ function render() {
     const favBtn = `<button onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" style="position:absolute;top:6px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:20px;color:${isFav?'#E53935':'#888'};display:flex;align-items:center;justify-content:center;">${isFav?'♥':'♡'}</button>`;
 
     const ytUrl = e.yt.startsWith('http') ? e.yt : '';
-    const ytBtn = ytUrl ? `<button onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" style="position:absolute;top:48px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;color:#888;display:flex;align-items:center;justify-content:center;">▶</button>` : '';
+    const ytBtn = ytUrl ? `<button onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" style="position:absolute;top:48px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:20px;color:#aaa;display:flex;align-items:center;justify-content:center;"><i class="ti ti-brand-youtube"></i></button>` : '';
 
     const tytul = e.wykonawca ? `${e.nazwa} - ${e.wykonawca}` : e.nazwa;
     const desc  = e.opis ? `<div class="card-desc">${e.opis}</div>` : '';
