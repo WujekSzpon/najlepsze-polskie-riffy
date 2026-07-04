@@ -102,6 +102,14 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .tip-progress{position:absolute;bottom:0;left:0;height:3px;width:100%;background:var(--accent);border-radius:0 0 var(--radius) var(--radius);transform-origin:left;}
 .tip-progress.running{transition:transform linear;transform:scaleX(0);}
 
+/* HOVER ANIMATIONS */
+.card button {
+  transition: transform 0.15s ease, color 0.15s ease !important;
+}
+.card button:hover {
+  transform: scale(1.25) !important;
+}
+
 /* PRINT */
 @media print{
   #login-screen,header,#toolbar-wrap,#tags-dropdown,#tip-popup,#scroll-top-btn{display:none !important;}
@@ -410,33 +418,56 @@ function resetFilters() {
   render();
 }
 
+function fixPL(str) {
+  if (!str) return '';
+  return str
+    .replace(/ą/g,'a').replace(/Ą/g,'A')
+    .replace(/ć/g,'c').replace(/Ć/g,'C')
+    .replace(/ę/g,'e').replace(/Ę/g,'E')
+    .replace(/ł/g,'l').replace(/Ł/g,'L')
+    .replace(/ń/g,'n').replace(/Ń/g,'N')
+    .replace(/ó/g,'o').replace(/Ó/g,'O')
+    .replace(/ś/g,'s').replace(/Ś/g,'S')
+    .replace(/ź/g,'z').replace(/Ź/g,'Z')
+    .replace(/ż/g,'z').replace(/Ż/g,'Z');
+}
+
 function exportPDF() {
   const {jsPDF} = window.jspdf;
   const label = document.getElementById('section-label').textContent;
-  const filtered = [...document.querySelectorAll('#grid .card')];
+  const cards = document.querySelectorAll('#grid .card');
   const doc = new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
   const margin=15, pageW=210, pageH=297, maxY=pageH-margin;
   let y=margin;
   const addBg = () => { doc.setFillColor(15,15,15); doc.rect(0,0,pageW,pageH,'F'); };
   addBg();
-  doc.setFontSize(18); doc.setTextColor(255,204,0);
-  doc.text('Najlepsze Polskie Riffy - W Szponach Gitary', margin, y); y+=7;
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(16); doc.setTextColor(255,204,0);
+  doc.text(fixPL('Najlepsze Polskie Riffy - W Szponach Gitary'), margin, y); y+=7;
+  doc.setFont('helvetica','normal');
   doc.setFontSize(10); doc.setTextColor(136,136,136);
-  doc.text(label+' - '+filtered.length+' riffow', margin, y); y+=5;
+  doc.text(fixPL(label)+' - '+cards.length+' riffow', margin, y); y+=5;
   doc.setDrawColor(46,46,46); doc.line(margin,y,pageW-margin,y); y+=8;
-  document.querySelectorAll('#grid .card').forEach((card, i) => {
+  cards.forEach((card, i) => {
     if (y > maxY-8) { doc.addPage(); addBg(); y=margin; }
     const title = card.querySelector('.card-title')?.textContent || '';
     const href = card.getAttribute('href') || '#';
-    doc.setFontSize(12); doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(136,136,136);
     doc.text(`${i+1}.`, margin, y);
     if (href !== '#') {
       doc.setTextColor(255,204,0);
-      doc.textWithLink(title.substring(0,70), margin+8, y, {url: href});
+      doc.textWithLink(fixPL(title).substring(0,80), margin+8, y, {url: href});
+      const tw = doc.getTextWidth(fixPL(title).substring(0,80));
+      doc.setDrawColor(255,204,0);
+      doc.setLineWidth(0.2);
+      doc.line(margin+8, y+0.5, margin+8+tw, y+0.5);
     } else {
-      doc.text(title.substring(0,70), margin+8, y);
+      doc.setTextColor(255,255,255);
+      doc.text(fixPL(title).substring(0,80), margin+8, y);
     }
-    y+=8;
+    y+=7;
   });
   doc.save('najlepsze-polskie-riffy.pdf');
 }
