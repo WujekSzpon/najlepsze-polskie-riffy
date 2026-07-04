@@ -411,17 +411,21 @@ function loadExcel() {
       kats.forEach(k => { const o = document.createElement('option'); o.value = o.textContent = k; sel.appendChild(o); });
 
       // Populate tagi panel
-      const allTags = [...new Set(exercises.flatMap(e => e.tagi))].sort();
+      const allTags = [...new Set(exercises.flatMap(e => e.tagi).filter(Boolean))].sort();
       const chipsContainer = document.getElementById('tags-chips');
       chipsContainer.innerHTML = '';
-      allTags.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.className = 'tag-chip';
-        btn.textContent = tag;
-        btn.dataset.tag = tag;
-        btn.onclick = () => toggleTag(tag, btn);
-        chipsContainer.appendChild(btn);
-      });
+      if (allTags.length === 0) {
+        chipsContainer.innerHTML = '<span style="color:var(--muted);font-size:12px;">Brak tagów w danych.</span>';
+      } else {
+        allTags.forEach(tag => {
+          const btn = document.createElement('button');
+          btn.className = 'tag-chip';
+          btn.textContent = tag;
+          btn.dataset.tag = tag;
+          btn.onclick = () => toggleTag(tag, btn);
+          chipsContainer.appendChild(btn);
+        });
+      }
 
       document.getElementById('state-msg').style.display = 'none';
       render();
@@ -523,7 +527,8 @@ function render() {
     const katBadge = e.kat ? `<span class="badge" style="background:${katColor};color:${getKatTextColor(e.kat)};font-weight:700;text-transform:uppercase;">${e.kat}</span>` : '';
     const lvBadge  = e.poziom ? `<span class="badge ${levelClass(e.poziom)}" style="text-transform:uppercase;font-weight:700;">${e.poziom.toUpperCase() === 'ZAAWANSOWANY' ? 'TRUDNY' : e.poziom}</span>` : '';
     const isFav = favorites.has(e.id);
-    const ytIcon = (e.yt && e.yt.toUpperCase() === 'TAK') ? `<button onclick="event.preventDefault();event.stopPropagation();window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(e.nazwa),'_blank')" style="position:absolute;top:48px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;color:#888;display:flex;align-items:center;justify-content:center;line-height:1;">▶</button>` : '';
+    const ytUrl = (e.yt && e.yt.startsWith('http')) ? e.yt : '';
+    const ytIcon = ytUrl ? `<button onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank')" style="position:absolute;top:48px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;color:#888;display:flex;align-items:center;justify-content:center;line-height:1;">▶</button>` : '';
     return `
       <a class="card" href="${e.link}" target="_blank" rel="noopener" style="--kat-color:#ffcc00;position:relative;">
         <button onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id}, this);" style="position:absolute;top:6px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:20px;color:${isFav?'#E53935':'#888'};display:flex;align-items:center;justify-content:center;line-height:1;">${isFav?'♥':'♡'}</button>
@@ -532,7 +537,7 @@ function render() {
         <div class="card-body">
           <div class="card-title">${e.nazwa}</div>
           ${desc}
-          ${lvBadge ? `<div class="badges" style="padding-top:7px;border-top:1px solid #2e2e2e;">${lvBadge}</div>` : ''}
+          <div class="badges" style="padding-top:7px;border-top:1px solid #2e2e2e;">${lvBadge}</div>
           ${tagsHtml}
         </div>
       </a>`;
