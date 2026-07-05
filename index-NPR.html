@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2e2e2e;--accent:#ffcc00;--accent2:#5adefa;--accent3:#003980;--text:#ffffff;--muted:#888;--radius:10px;}
+body{background:var(--bg);color:var(--text);font-family:'Open Sans',sans-serif;min-height:100vh;}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:14px;}
+#login-screen .lock-logo{font-family:'Oswald',sans-serif;font-size:22px;color:var(--accent);letter-spacing:0.04em;margin-bottom:8px;text-align:center;line-height:1.3;}
+#login-screen input{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 16px;font-size:15px;font-family:'Open Sans',sans-serif;outline:none;width:240px;text-align:center;letter-spacing:0.1em;transition:border-color 0.15s;}
+#login-screen input:focus{border-color:var(--accent);}
+#login-screen input.error{border-color:#e87070;animation:shake 0.3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#login-btn{background:var(--accent);color:#0f0f0f;border:none;border-radius:8px;padding:10px 28px;font-size:14px;font-family:'Oswald',sans-serif;letter-spacing:0.06em;cursor:pointer;font-weight:600;transition:opacity 0.15s;}
+#login-btn:hover{opacity:0.85;}
+#login-error{font-size:12px;color:#e87070;display:none;}
+#login-hint{font-size:12px;color:var(--muted);text-align:center;max-width:260px;line-height:1.6;}
+
+/* HEADER */
+header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;height:58px;background:var(--bg);position:sticky;top:0;z-index:10;}
+#header-logo{display:flex;align-items:center;gap:10px;overflow:hidden;cursor:pointer;text-decoration:none;}
+#header-logo img{height:38px;object-fit:contain;flex-shrink:0;}
+#header-logo span{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;color:#fff;line-height:1.2;white-space:nowrap;}
+
+/* TOOLBAR */
+#toolbar-wrap{position:sticky;top:58px;z-index:9;background:var(--bg);border-bottom:1px solid var(--border);}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px;}
+.toolbar.hidden{display:none;}
+.toolbar input,.toolbar select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 12px;font-size:13px;font-family:'Open Sans',sans-serif;outline:none;transition:border-color 0.15s;width:100%;box-sizing:border-box;}
+.toolbar input::placeholder{color:var(--muted);}
+.toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
+.toolbar select option{background:#1a1a1a;}
+#search{width:100% !important;}
+#sort,#kat,#lvl{width:100% !important;}
+.count{font-size:12px;color:var(--muted);text-align:right;grid-column:1/-1;padding:2px 0;}
+.btn-toolbar{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 11px;font-size:12px;cursor:pointer;font-family:'Open Sans',sans-serif;transition:border-color 0.15s,color 0.15s;width:100%;}
+.btn-toolbar:hover{border-color:var(--accent);color:var(--accent);}
+.toolbar-btns{grid-column:1/-1;display:flex;gap:6px;}
+.toolbar-btns .btn-toolbar{flex:1;}
+
+/* TAGS DROPDOWN */
+#tags-dropdown{position:fixed;inset:0;z-index:200;display:none;}
+#tags-dropdown.open{display:block;}
+#tags-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.6);}
+#tags-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:70vh;overflow-y:auto;}
+@media(min-width:641px){#tags-panel{bottom:auto;left:50%;top:50%;right:auto;transform:translate(-50%,-50%);width:480px;max-height:80vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.7);}}
+#tags-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+#tags-panel-title{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;color:var(--text);}
+#tags-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-chip{font-size:12px;padding:5px 12px;border-radius:99px;border:1px solid var(--border);color:var(--muted);cursor:pointer;background:transparent;font-family:'Open Sans',sans-serif;transition:all 0.15s;}
+.tag-chip:hover,.tag-chip.active{border-color:var(--accent);color:var(--accent);background:#1a1500;}
+#tags-apply{background:#ffcc00;color:#000;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:16px;font-family:'Oswald',sans-serif;letter-spacing:0.04em;}
+#tags-clear{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;}
+
+/* GRID */
+.grid-wrap{padding:1.5rem 1.5rem 3rem;}
+.section-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+
+/* CARD */
+.card{background:var(--surface);border:3px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;text-decoration:none;display:block;}
+.card:hover{border-color:var(--accent);border-width:4px;transform:translateY(-2px);}
+.thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:42px;position:relative;overflow:hidden;}
+.thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:block;}
+.thumb-icon{position:relative;z-index:1;}
+.card-body{padding:10px 12px 13px;}
+.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.35;text-align:center;}
+.card-desc{font-size:11.5px;color:#b3b3b3;margin-bottom:8px;line-height:1.4;text-align:center;}
+.card-badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding-top:7px;border-top:1px solid var(--border);margin-bottom:0;}
+.card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border);justify-content:center;}
+.card-tag{font-size:9px;padding:1px 6px;border-radius:99px;background:#222;color:#aaa;border:1px solid #333;}
+.badge{font-size:12px;padding:3px 9px;border-radius:99px;font-weight:700;}
+.b-poc2{background:#81C784;color:#000;border:none;}
+.b-poc{background:#4CAF50;color:#fff;border:none;}
+.b-sr{background:#FFC107;color:#000;border:none;}
+.b-zaa{background:#F44336;color:#fff;border:none;}
+.b-expert{background:#9C27B0;color:#fff;border:none;}
+.b-lvl{background:#333;color:#fff;border:none;}
+
+/* SCROLL TO TOP */
+#scroll-top-btn{position:fixed;bottom:24px;right:20px;z-index:150;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#000;border:none;font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+
+/* POPUP */
+#tip-popup{position:fixed;overflow:hidden;top:-200px;left:50%;transform:translateX(-50%);width:min(500px,90vw);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px 14px 18px;display:flex;align-items:flex-start;gap:12px;z-index:100;transition:top 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 24px rgba(0,0,0,0.5);}
+#tip-popup.show{top:70px;}
+#tip-popup.ad{border-color:var(--accent);}
+.tip-content{flex:1;}
+.tip-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
+.tip-label.ad-label{color:var(--accent);}
+.tip-text{font-size:13px;color:var(--text);line-height:1.45;}
+.tip-link{font-size:12px;color:var(--accent);text-decoration:underline;display:inline-block;margin-top:5px;font-weight:600;}
+.tip-close{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0;flex-shrink:0;line-height:1;}
+.tip-progress{position:absolute;bottom:0;left:0;height:3px;width:100%;background:var(--accent);border-radius:0 0 var(--radius) var(--radius);transform-origin:left;}
+.tip-progress.running{transition:transform linear;transform:scaleX(0);}
+
+/* HOVER ANIMATIONS */
+.card button {
+  transition: transform 0.15s ease, color 0.15s ease !important;
+}
+.card button:hover {
+  transform: scale(1.10) !important;
+}
+
+/* PRINT */
+@media print{
+  #login-screen,header,#toolbar-wrap,#tags-dropdown,#tip-popup,#scroll-top-btn{display:none !important;}
+  body{background:white !important;color:black !important;}
+  .card{border:1px solid #ccc !important;break-inside:avoid;background:#f9f9f9 !important;}
+  .card-title{color:black !important;}
+  .card-desc{color:#555 !important;}
+  .grid-wrap{padding:0 !important;}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary" style="height:100px;object-fit:contain;margin-bottom:8px;">
+  <div class="lock-logo">Najlepsze Polskie Riffy<br>od Wujka Szpona</div>
+  <input type="password" id="pwd-input" placeholder="Wpisz hasło…" onkeydown="if(event.key==='Enter')checkPwd()">
+  <button id="login-btn" onclick="checkPwd()">WEJDŹ</button>
+  <div id="login-error">Złe hasło — spróbuj jeszcze raz.</div>
+  <div id="login-hint">
+    Nie masz hasła? Dostęp możesz nabyć tutaj:<br>
+    <a href="https://najlepszepolskieriffy.short.gy/NPR" target="_blank" style="color:#ffcc00;text-decoration:underline;font-weight:600;">wszponachgitary.pl/najlepszepolskieriffy</a>
+  </div>
+</div>
+
+<header id="main-header">
+  <div id="header-logo" onclick="window.open('https://wszponachgitary.short.gy/sklep','_blank')">
+    <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary">
+    <span>NAJLEPSZE POLSKIE RIFFY <span style="color:#ffcc00;">od Wujka Szpona</span></span>
+  </div>
+</header>
+
+<div id="toolbar-wrap">
+  <div class="toolbar" id="toolbar">
+    <input type="text" id="search" placeholder="🔍 Szukaj utworu lub wykonawcy…" oninput="render()">
+    <select id="sort" onchange="render()">
+      <option value="">Sortuj…</option>
+      <option value="az">A → Z</option>
+      <option value="za">Z → A</option>
+      <option value="lvl_asc">Łatwe → Trudne</option>
+      <option value="lvl_desc">Trudne → Łatwe</option>
+      <option value="fav">♥ Ulubione</option>
+    </select>
+    <select id="kat" onchange="render()"><option value="">Wszyscy wykonawcy</option></select>
+    <select id="lvl" onchange="render()">
+      <option value="">Wszystkie poziomy</option>
+      <option>POCZĄTKUJĄCY</option>
+      <option>PROSTY</option>
+      <option>ŚREDNI</option>
+      <option>TRUDNY</option>
+      <option>EXPERT</option>
+    </select>
+    <div class="toolbar-btns">
+      <button class="btn-toolbar" onclick="changeSize(-40)">−</button>
+      <button class="btn-toolbar" onclick="changeSize(40)">+</button>
+      <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()">TAGI<span id="tags-count-badge" style="display:none;background:#ffcc00;color:#000;border-radius:99px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:3px;"></span></button>
+      <button class="btn-toolbar" onclick="exportPDF()">PDF</button>
+      <button class="btn-toolbar" onclick="resetFilters()">RESET</button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+
+<div class="grid-wrap">
+  <div class="section-label" id="section-label">Wszystkie riffy</div>
+  <div class="grid" id="grid"></div>
+  <div style="text-align:center;padding:4rem 2rem;color:var(--muted);font-size:14px;" id="state-msg">Ładowanie…</div>
+</div>
+
+<div id="tags-dropdown">
+  <div id="tags-backdrop" onclick="closeTagsPanel()"></div>
+  <div id="tags-panel">
+    <div id="tags-panel-header">
+      <span id="tags-panel-title">Wybierz tagi</span>
+      <button id="tags-clear" onclick="clearTags()">Wyczyść</button>
+    </div>
+    <div id="tags-chips"></div>
+    <button id="tags-apply" onclick="closeTagsPanel()">Zastosuj filtry</button>
+  </div>
+</div>
+
+<button id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<div id="tip-popup">
+  <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20WUJEK%20SZPON%20ROUND.png" alt="Wujek Szpon" style="width:55px;height:55px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ffcc00;">
+  <div class="tip-content">
+    <div class="tip-label" id="tip-label">PORADA</div>
+    <div class="tip-text" id="tip-text"></div>
+    <a class="tip-link" id="tip-link" href="#" target="_blank" style="display:none"></a>
+  </div>
+  <button class="tip-close" onclick="closePopup()">✕</button>
+  <div class="tip-progress" id="tip-progress"></div>
+</div>
+
+<script>
+// ==============================
+// ZMIEŃ HASŁO: wygeneruj hash na https://emn178.github.io/online-tools/sha256.html
+const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51353a';
+// ==============================
+
+const PLIK = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx";
+const REPO_BASE = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main";
+
+async function sha256(text) {
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPwd() {
+  const val = document.getElementById('pwd-input').value;
+  const inp = document.getElementById('pwd-input');
+  const err = document.getElementById('login-error');
+  const hash = await sha256(val);
+  if (hash === HASLO_HASH) {
+    localStorage.setItem('npr_auth', HASLO_HASH);
+    document.getElementById('login-screen').style.display = 'none';
+    loadExcel();
+  } else {
+    inp.classList.add('error');
+    err.style.display = 'block';
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('error'), 600);
+  }
+}
+
+(function() {
+  if (localStorage.getItem('npr_auth') === HASLO_HASH) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.addEventListener('DOMContentLoaded', loadExcel);
+  }
+})();
+
+function levelClass(l) {
+  if (!l) return 'b-lvl';
+  const lo = l.toUpperCase().trim();
+  if (lo === 'POCZĄTKUJĄCY') return 'b-poc2';
+  if (lo === 'PROSTY') return 'b-poc';
+  if (lo === 'ŚREDNI') return 'b-sr';
+  if (lo.includes('TRUDNY') || lo.includes('ZAAWAN')) return 'b-zaa';
+  if (lo === 'EXPERT') return 'b-expert';
+  return 'b-lvl';
+}
+
+let exercises = [];
+let activeTags = new Set();
+const savedSize = localStorage.getItem('npr_cardsize');
+let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280 : 440);
+let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
+
+function loadExcel() {
+  fetch(PLIK)
+    .then(r => { if (!r.ok) throw new Error('Nie znaleziono pliku Excel'); return r.arrayBuffer(); })
+    .then(buf => {
+      const wb = XLSX.read(buf, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+
+      exercises = rows.map((r, i) => ({
+        id: i,
+        nazwa:  (r['UTWÓR'] || '').trim(),
+        wykonawca: (r['WYKONAWCA'] || '').trim(),
+        yt:     (r['YT'] || '').trim(),
+        link:   (r['Link do dysku'] || r['LINK'] || '#').trim(),
+        poziom: (r['Poziom'] || r['POZIOM'] || '').trim(),
+        opis:   (r['Opis'] || r['OPIS'] || '').trim(),
+        tagi:   (r['Tagi'] || r['TAGI'] || '').split(',').map(t => t.trim()).filter(Boolean),
+        okladka:(r['OKŁADKA (NAZWA PLIKU)'] || '').trim(),
+      })).filter(e => e.nazwa);
+
+      // Populate wykonawcy
+      const wyk = [...new Set(exercises.map(e => e.wykonawca).filter(Boolean))].sort();
+      const sel = document.getElementById('kat');
+      wyk.forEach(w => { const o = document.createElement('option'); o.value = o.textContent = w; sel.appendChild(o); });
+
+      // Populate tagi
+      const allTags = [...new Set(exercises.flatMap(e => e.tagi))].sort();
+      const chips = document.getElementById('tags-chips');
+      chips.innerHTML = '';
+      allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'tag-chip';
+        btn.textContent = tag;
+        btn.onclick = () => toggleTag(tag, btn);
+        chips.appendChild(btn);
+      });
+
+      document.getElementById('state-msg').style.display = 'none';
+      render();
+      changeSize(0);
+    })
+    .catch(e => {
+      document.getElementById('state-msg').textContent = '⚠️ ' + e.message;
+    });
+}
+
+function render() {
+  const q  = document.getElementById('search').value.toLowerCase();
+  const kt = document.getElementById('kat').value;
+  const lv = document.getElementById('lvl').value;
+  const sv = document.getElementById('sort').value;
+
+  let filtered = exercises.filter(e =>
+    (!q  || e.nazwa.toLowerCase().includes(q) || e.wykonawca.toLowerCase().includes(q) || e.opis.toLowerCase().includes(q)) &&
+    (!kt || e.wykonawca === kt) &&
+    (!lv || e.poziom === lv) &&
+    (activeTags.size === 0 || [...activeTags].every(t => e.tagi.includes(t))) &&
+    (sv !== 'fav' || favorites.has(e.id))
+  );
+
+  const lvlOrder = {'POCZĄTKUJĄCY':0,'PROSTY':1,'ŚREDNI':2,'TRUDNY':3,'EXPERT':4};
+  if (sv === 'az') filtered.sort((a,b) => a.nazwa.localeCompare(b.nazwa,'pl'));
+  else if (sv === 'za') filtered.sort((a,b) => b.nazwa.localeCompare(a.nazwa,'pl'));
+  else if (sv === 'lvl_asc') filtered.sort((a,b) => (lvlOrder[a.poziom]??99)-(lvlOrder[b.poziom]??99));
+  else if (sv === 'lvl_desc') filtered.sort((a,b) => (lvlOrder[b.poziom]??99)-(lvlOrder[a.poziom]??99));
+
+  document.getElementById('count').textContent = filtered.length + ' riffów';
+
+  const parts = [];
+  if (kt) parts.push(kt);
+  if (lv) parts.push(lv);
+  activeTags.forEach(t => parts.push('#'+t));
+  document.getElementById('section-label').textContent = parts.length ? parts.join(' · ') : 'Wszystkie riffy';
+
+  const grid = document.getElementById('grid');
+  const msg  = document.getElementById('state-msg');
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    msg.style.display = 'block';
+    msg.textContent = 'Brak riffów dla tych filtrów.';
+    return;
+  }
+  msg.style.display = 'none';
+
+  grid.innerHTML = filtered.map(e => {
+    const plikOkladki = e.okladka || e.nazwa + ' - ' + e.wykonawca;
+    const baseUrl = `${REPO_BASE}/okladki/${encodeURIComponent(plikOkladki)}`;
+    const thumb = `<img src="${baseUrl}.png" alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="if(this.src.endsWith('.png')){this.src=this.src.replace('.png','.jpg')}else{this.style.display='none';this.nextElementSibling.style.display='block';}"><span class="thumb-icon" style="display:none">🎸</span>`;
+
+    const isFav = favorites.has(e.id);
+    const favBtn = `<button onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" style="position:absolute;top:6px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:20px;color:${isFav?'#E53935':'#888'};display:flex;align-items:center;justify-content:center;">${isFav?'♥':'♡'}</button>`;
+
+    const ytUrl = e.yt.startsWith('http') ? e.yt : '';
+    const ytBtn = ytUrl ? `<button onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" style="position:absolute;top:48px;left:8px;z-index:2;background:rgba(0,0,0,0.6);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:20px;color:#aaa;display:flex;align-items:center;justify-content:center;"><i class="ti ti-brand-youtube"></i></button>` : '';
+
+    const tytul = e.wykonawca ? `${e.nazwa} - ${e.wykonawca}` : e.nazwa;
+    const desc  = e.opis ? `<div class="card-desc">${e.opis}</div>` : '';
+    const lvBadge = e.poziom ? `<span class="badge ${levelClass(e.poziom)}" style="text-transform:uppercase;">${e.poziom}</span>` : '';
+    const badgesDiv = lvBadge ? `<div class="card-badges">${lvBadge}</div>` : '';
+    const tagsDiv = e.tagi.length ? `<div class="card-tags">${e.tagi.map(t=>`<span class="card-tag">${t}</span>`).join('')}</div>` : '';
+
+    return `
+      <a class="card" href="${e.link}" target="_blank" rel="noopener" style="position:relative;">
+        ${favBtn}${ytBtn}
+        <div class="thumb" style="background:#1a1a2e;">${thumb}</div>
+        <div class="card-body">
+          <div class="card-title">${tytul}</div>
+          ${desc}
+          ${badgesDiv}
+          ${tagsDiv}
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function toggleFav(id, btn) {
+  if (favorites.has(id)) { favorites.delete(id); btn.textContent='♡'; btn.style.color='#888'; }
+  else { favorites.add(id); btn.textContent='♥'; btn.style.color='#E53935'; }
+  localStorage.setItem('npr_favorites', JSON.stringify([...favorites]));
+}
+
+function toggleTag(tag, btn) {
+  if (activeTags.has(tag)) { activeTags.delete(tag); btn.classList.remove('active'); }
+  else { activeTags.add(tag); btn.classList.add('active'); }
+  updateTagsBadge();
+}
+
+function openTagsPanel() { document.getElementById('tags-dropdown').classList.add('open'); }
+function closeTagsPanel() { document.getElementById('tags-dropdown').classList.remove('open'); updateTagsBadge(); render(); }
+function clearTags() { activeTags.clear(); document.querySelectorAll('.tag-chip').forEach(b=>b.classList.remove('active')); updateTagsBadge(); render(); }
+
+function updateTagsBadge() {
+  const badge = document.getElementById('tags-count-badge');
+  const btn = document.getElementById('tags-btn');
+  if (activeTags.size > 0) { badge.textContent=activeTags.size; badge.style.display='inline-block'; btn.style.borderColor='#ffcc00'; btn.style.color='#ffcc00'; }
+  else { badge.style.display='none'; btn.style.borderColor=''; btn.style.color=''; }
+}
+
+function changeSize(delta) {
+  cardSize = Math.min(550, Math.max(140, cardSize + delta));
+  document.getElementById('grid').style.gridTemplateColumns = `repeat(auto-fill,minmax(${cardSize}px,1fr))`;
+  const thumbH = Math.round(cardSize * 0.57);
+  document.querySelectorAll('.thumb').forEach(t => t.style.height = thumbH+'px');
+  if (delta !== 0) localStorage.setItem('npr_cardsize', cardSize);
+}
+
+function resetFilters() {
+  document.getElementById('search').value = '';
+  document.getElementById('kat').value = '';
+  document.getElementById('lvl').value = '';
+  document.getElementById('sort').value = '';
+  activeTags.clear();
+  document.querySelectorAll('.tag-chip').forEach(b=>b.classList.remove('active'));
+  updateTagsBadge();
+  render();
+}
+
+function fixPL(str) {
+  if (!str) return '';
+  return str
+    .replace(/ą/g,'a').replace(/Ą/g,'A')
+    .replace(/ć/g,'c').replace(/Ć/g,'C')
+    .replace(/ę/g,'e').replace(/Ę/g,'E')
+    .replace(/ł/g,'l').replace(/Ł/g,'L')
+    .replace(/ń/g,'n').replace(/Ń/g,'N')
+    .replace(/ó/g,'o').replace(/Ó/g,'O')
+    .replace(/ś/g,'s').replace(/Ś/g,'S')
+    .replace(/ź/g,'z').replace(/Ź/g,'Z')
+    .replace(/ż/g,'z').replace(/Ż/g,'Z');
+}
+
+function exportPDF() {
+  const {jsPDF} = window.jspdf;
+  const label = document.getElementById('section-label').textContent;
+  const cards = document.querySelectorAll('#grid .card');
+  const doc = new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
+  const margin=15, pageW=210, pageH=297, maxY=pageH-margin;
+  let y=margin;
+  const addBg = () => { doc.setFillColor(15,15,15); doc.rect(0,0,pageW,pageH,'F'); };
+  addBg();
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(16); doc.setTextColor(255,204,0);
+  doc.text(fixPL('Najlepsze Polskie Riffy - W Szponach Gitary'), margin, y); y+=7;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10); doc.setTextColor(136,136,136);
+  doc.text(fixPL(label)+' - '+cards.length+' riffow', margin, y); y+=5;
+  doc.setDrawColor(46,46,46); doc.line(margin,y,pageW-margin,y); y+=8;
+  cards.forEach((card, i) => {
+    if (y > maxY-8) { doc.addPage(); addBg(); y=margin; }
+    const title = card.querySelector('.card-title')?.textContent || '';
+    const href = card.getAttribute('href') || '#';
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11);
+    doc.setTextColor(136,136,136);
+    doc.text(`${i+1}.`, margin, y);
+    if (href !== '#') {
+      doc.setTextColor(255,204,0);
+      doc.textWithLink(fixPL(title).substring(0,80), margin+8, y, {url: href});
+      const tw = doc.getTextWidth(fixPL(title).substring(0,80));
+      doc.setDrawColor(255,204,0);
+      doc.setLineWidth(0.2);
+      doc.line(margin+8, y+0.5, margin+8+tw, y+0.5);
+    } else {
+      doc.setTextColor(255,255,255);
+      doc.text(fixPL(title).substring(0,80), margin+8, y);
+    }
+    y+=7;
+  });
+  doc.save('najlepsze-polskie-riffy.pdf');
+}
+
+// POPUP
+let PORADY = [], REKLAMY = [], isAd = false, poradyIdx = 0, reklamyIdx = 0, popupTimeout;
+fetch(`${REPO_BASE}/data/tresci.txt`)
+  .then(r=>r.text()).then(text=>{
+    const ps = text.split('REKLAMY:')[0].replace('PORADY:','').trim();
+    const rs = text.split('REKLAMY:')[1]?.trim()||'';
+    PORADY = ps.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+    REKLAMY = rs.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean).map(b=>{
+      const p=b.split('|').map(x=>x.trim());
+      return {text:p[0]||'',link:p[1]||'#',linkText:p[2]||'Sprawdź →'};
+    });
+  }).catch(()=>{});
+
+function showPopup() {
+  if (!PORADY.length && !REKLAMY.length) return;
+  const popup=document.getElementById('tip-popup');
+  const label=document.getElementById('tip-label');
+  const text=document.getElementById('tip-text');
+  const link=document.getElementById('tip-link');
+  if (!isAd && PORADY.length) {
+    label.textContent='PORADA GITAROWA'; label.className='tip-label';
+    text.textContent=PORADY[poradyIdx%PORADY.length]; link.style.display='none';
+    popup.classList.remove('ad'); poradyIdx++;
+  } else if (REKLAMY.length) {
+    const ad=REKLAMY[reklamyIdx%REKLAMY.length];
+    label.textContent='OD WUJKA SZPONA'; label.className='tip-label ad-label';
+    text.textContent=ad.text; link.href=ad.link; link.textContent=ad.linkText;
+    link.style.display='inline-block'; popup.classList.add('ad'); reklamyIdx++;
+  }
+  isAd=!isAd;
+  const popupH = popup.offsetHeight || 150;
+  popup.style.top = '-' + (popupH + 20) + 'px';
+  popup.classList.add('show');
+  const bar=document.getElementById('tip-progress');
+  bar.style.transition='none'; bar.style.transform='scaleX(1)';
+  setTimeout(()=>{ bar.style.transition='transform 12s linear'; bar.style.transform='scaleX(0)'; },50);
+  clearTimeout(popupTimeout);
+  popupTimeout=setTimeout(closePopup,12000);
+}
+function closePopup() { document.getElementById('tip-popup').classList.remove('show'); }
+setTimeout(()=>{ showPopup(); setInterval(showPopup,60000); },15000);
+
+// SCROLL TO TOP
+window.addEventListener('scroll',()=>{
+  document.getElementById('scroll-top-btn').style.display = window.scrollY>300?'flex':'none';
+});
+</script>
+</body>
+</html>
