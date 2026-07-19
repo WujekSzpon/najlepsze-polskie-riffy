@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
@@ -70,7 +71,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .card{background:var(--surface);border:3px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;text-decoration:none;display:block;}
 .card:hover{border-color:var(--accent);border-width:4px;transform:translateY(-2px);}
 .thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:42px;position:relative;overflow:hidden;}
-.thumb.has-stars::after{content:'';position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(to top,rgba(0,0,0,1) 0%,rgba(0,0,0,1) 30%,rgba(0,0,0,0) 100%);z-index:1;pointer-events:none;}
+.thumb.has-stars::after{content:'';position:absolute;left:0;right:0;bottom:0;height:48px;background:linear-gradient(to top,rgba(0,0,0,0.82),rgba(0,0,0,0.42),rgba(0,0,0,0));z-index:1;pointer-events:none;}
 .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:block;z-index:0;}
 .thumb-icon{position:relative;z-index:1;}
 .card-body{padding:10px 12px 13px;}
@@ -79,7 +80,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .card-badges{display:block;text-align:center;padding-top:10px;border-top:1px solid var(--border);margin-top:4px;margin-bottom:0;}
 .card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border);justify-content:center;}
 .card-tag{font-size:9px;padding:1px 6px;border-radius:99px;background:#222;color:#aaa;border:1px solid #333;}
-.difficulty-stars{position:absolute;z-index:2;left:0;right:0;bottom:9px;text-align:center;font-size:23.232px;line-height:1;letter-spacing:3px;display:block;text-shadow:0 0 3px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.9), 1px 1px 0 rgba(0,0,0,0.8);-webkit-text-stroke:0.33px currentColor;pointer-events:none;}
+.difficulty-stars{position:absolute;z-index:2;left:0;right:0;bottom:9px;text-align:center;font-size:23.232px;line-height:1;letter-spacing:2px;display:block;text-shadow:0 2px 6px rgba(0,0,0,0.8);pointer-events:none;}
 .d-stars-1{color:#d6d6d6;}
 .d-stars-2{color:#8BC34A;}
 .d-stars-3{color:#FFC107;}
@@ -212,9 +213,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51353a';
 // ==============================
 
-const SHEET_ID = "1q8eKnP0Lsul4uiWSdT9tU9_Bhkrr9aNXKGjvN9kjD9k";
-const API_KEY = "AIzaSyASFzrvjpbRuGZixR6B2cQn2g-6BFZtovo";
-const SHEET_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Arkusz1?key=${API_KEY}`;
+const PLIK = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx";
 const REPO_BASE = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main";
 
 async function sha256(text) {
@@ -269,24 +268,23 @@ let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
 function loadExcel() {
-  fetch(SHEET_URL)
-    .then(r => { if (!r.ok) throw new Error('Błąd pobierania danych z Google Sheets'); return r.json(); })
-    .then(data => {
-      const rows = data.values;
-      if (!rows || rows.length < 2) throw new Error('Brak danych w arkuszu');
-      const headers = rows[0];
-      const idx = h => headers.indexOf(h);
+  fetch(PLIK)
+    .then(r => { if (!r.ok) throw new Error('Nie znaleziono pliku Excel'); return r.arrayBuffer(); })
+    .then(buf => {
+      const wb = XLSX.read(buf, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
 
-      exercises = rows.slice(1).map((row, i) => ({
+      exercises = rows.map((r, i) => ({
         id: i,
-        nazwa:     (row[idx('UTWÓR')]         || '').trim(),
-        wykonawca: (row[idx('WYKONAWCA')]      || '').trim(),
-        yt:        (row[idx('YT')]             || '').trim(),
-        link:      (row[idx('Link do dysku')]  || row[idx('LINK')] || '#').trim(),
-        poziom:    (row[idx('Poziom')] || row[idx('POZIOM')] || '').trim(),
-        opis:   (row[idx('Opis')] || row[idx('OPIS')] || '').trim(),
+        nazwa:  (r['UTWÓR'] || '').trim(),
+        wykonawca: (r['WYKONAWCA'] || '').trim(),
+        yt:     (r['YT'] || '').trim(),
+        link:   (r['Link do dysku'] || r['LINK'] || '#').trim(),
+        poziom: (r['Poziom'] || r['POZIOM'] || '').trim(),
+        opis:   (r['Opis'] || r['OPIS'] || '').trim(),
         tagi:   (r['Tagi'] || r['TAGI'] || '').split(',').map(t => t.trim()).filter(Boolean),
-        okladka:(row[idx('OKŁADKA (NAZWA PLIKU)')] || '').trim(),
+        okladka:(r['OKŁADKA (NAZWA PLIKU)'] || '').trim(),
       })).filter(e => e.nazwa);
 
       // Populate wykonawcy
