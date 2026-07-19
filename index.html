@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
@@ -213,7 +212,9 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51353a';
 // ==============================
 
-const PLIK = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx";
+const SHEET_ID = "1q8eKnP0Lsul4uiWSdT9tU9_Bhkrr9aNXKGjvN9kjD9k";
+const API_KEY = "AIzaSyASFzrvjpbRuGZixR6B2cQn2g-6BFZtovo";
+const SHEET_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Arkusz1?key=${API_KEY}`;
 const REPO_BASE = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main";
 
 async function sha256(text) {
@@ -268,23 +269,24 @@ let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
 function loadExcel() {
-  fetch(PLIK)
-    .then(r => { if (!r.ok) throw new Error('Nie znaleziono pliku Excel'); return r.arrayBuffer(); })
-    .then(buf => {
-      const wb = XLSX.read(buf, {type:'array'});
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+  fetch(SHEET_URL)
+    .then(r => { if (!r.ok) throw new Error('Błąd pobierania danych z Google Sheets'); return r.json(); })
+    .then(data => {
+      const rows = data.values;
+      if (!rows || rows.length < 2) throw new Error('Brak danych w arkuszu');
+      const headers = rows[0];
+      const idx = h => headers.indexOf(h);
 
-      exercises = rows.map((r, i) => ({
+      exercises = rows.slice(1).map((row, i) => ({
         id: i,
-        nazwa:  (r['UTWÓR'] || '').trim(),
-        wykonawca: (r['WYKONAWCA'] || '').trim(),
-        yt:     (r['YT'] || '').trim(),
-        link:   (r['Link do dysku'] || r['LINK'] || '#').trim(),
-        poziom: (r['Poziom'] || r['POZIOM'] || '').trim(),
-        opis:   (r['Opis'] || r['OPIS'] || '').trim(),
+        nazwa:     (row[idx('UTWÓR')]         || '').trim(),
+        wykonawca: (row[idx('WYKONAWCA')]      || '').trim(),
+        yt:        (row[idx('YT')]             || '').trim(),
+        link:      (row[idx('Link do dysku')]  || row[idx('LINK')] || '#').trim(),
+        poziom:    (row[idx('Poziom')] || row[idx('POZIOM')] || '').trim(),
+        opis:   (row[idx('Opis')] || row[idx('OPIS')] || '').trim(),
         tagi:   (r['Tagi'] || r['TAGI'] || '').split(',').map(t => t.trim()).filter(Boolean),
-        okladka:(r['OKŁADKA (NAZWA PLIKU)'] || '').trim(),
+        okladka:(row[idx('OKŁADKA (NAZWA PLIKU)')] || '').trim(),
       })).filter(e => e.nazwa);
 
       // Populate wykonawcy
