@@ -52,11 +52,12 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .btn-toolbar:hover{border-color:var(--accent);color:var(--accent);}
 .toolbar-btns{grid-column:1/-1;display:flex;gap:6px;}
 .toolbar-btns .btn-toolbar{flex:1;}
-#toolbar-toggle{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;height:24px;border:0;border-top:1px solid var(--border);background:#151515;color:var(--muted);font:600 9px 'Open Sans',sans-serif;letter-spacing:.06em;cursor:pointer;}
-#toolbar-toggle:hover,#toolbar-toggle:focus-visible{color:var(--accent);outline:none;}
-#toolbar-toggle i{font-size:14px;transition:transform .2s;}
-#toolbar-wrap.collapsed #toolbar-toggle i{transform:rotate(180deg);}
-@media(max-width:640px){#toolbar-toggle{height:28px;}#toolbar-toggle-label{display:none;}#toolbar-toggle::after{content:'Przesuń w dół, aby pokazać';font-size:9px;}#toolbar-wrap:not(.collapsed) #toolbar-toggle::after{content:'Przesuń w górę, aby schować';}}
+#toolbar-eye-close i,#options-btn i{font-size:18px;}
+#toolbar-restore{display:none;align-items:center;justify-content:center;gap:6px;width:100%;height:28px;border:0;border-top:1px solid var(--border);background:#151515;color:var(--muted);font:600 9px 'Open Sans',sans-serif;letter-spacing:.06em;cursor:pointer;}
+#toolbar-wrap.collapsed #toolbar-restore{display:flex;}
+#toolbar-restore:hover,#toolbar-restore:focus-visible{color:var(--accent);outline:none;}
+#toolbar-restore i{font-size:15px;}
+@media(max-width:640px){#toolbar-restore-label{display:none;}#toolbar-restore::after{content:'KLIKNIJ, ABY ROZWINĄĆ';}}
 
 /* OPTIONS */
 #options-modal{position:fixed;inset:0;z-index:220;display:none;}
@@ -82,6 +83,10 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .options-help{display:none;margin:8px 0 4px;padding:11px;border-radius:8px;background:#121212;color:#bbb;font-size:11.5px;line-height:1.55;}
 .options-help.open{display:block;}
 .options-contact{display:block;color:var(--accent);font-size:12px;margin-top:9px;text-decoration:none;}
+.option-contact-details{display:flex;align-items:center;gap:8px;min-width:0;flex:1;}
+.option-contact-label{color:#fff;white-space:nowrap;}
+.option-contact-address{color:var(--accent);font-size:12px;overflow-wrap:anywhere;}
+@media(max-width:480px){.option-contact-details{align-items:flex-start;flex-direction:column;gap:2px}.option-contact-row{gap:8px}.option-contact-address{font-size:11px}}
 #options-status{min-height:18px;color:#8bc34a;font-size:11px;margin-top:10px;}
 body.hide-descriptions .card-desc{display:none;}
 body.hide-tags .card-tags{display:none;}
@@ -262,11 +267,12 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()">TAGI<span id="tags-count-badge" style="display:none;background:#ffcc00;color:#000;border-radius:99px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:3px;"></span></button>
       <button class="btn-toolbar" onclick="exportPDF()">PDF</button>
       <button class="btn-toolbar" onclick="resetFilters()">RESET</button>
+      <button class="btn-toolbar" id="toolbar-eye-close" type="button" onclick="setToolbarCollapsed(true)" aria-label="Schowaj wyszukiwanie i sortowanie" title="Schowaj wyszukiwanie i sortowanie"><i class="ti ti-eye-off"></i></button>
       <button class="btn-toolbar" id="options-btn" onclick="openOptions()" aria-label="Opcje" title="Opcje"><i class="ti ti-settings"></i></button>
     </div>
     <span class="count" id="count"></span>
   </div>
-  <button id="toolbar-toggle" type="button" onclick="toggleToolbar()" aria-expanded="true" aria-controls="toolbar"><i class="ti ti-chevron-up"></i><span id="toolbar-toggle-label">SCHOWAJ WYSZUKIWANIE I FILTRY</span></button>
+  <button id="toolbar-restore" type="button" onclick="setToolbarCollapsed(false)" aria-label="Pokaż wyszukiwanie i filtry"><i class="ti ti-chevron-down"></i><span id="toolbar-restore-label">KLIKNIJ, ABY ROZWINĄĆ WYSZUKIWANIE I FILTRY</span></button>
 </div>
 
 <div class="grid-wrap">
@@ -318,9 +324,9 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     </div>
 
     <div class="options-section">
-      <div class="options-section-title">Kontakt i dodatki</div>
+      <div class="options-section-title">Kontakt i opinia o produkcie</div>
       <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action" onclick="sendFeedback()">NAPISZ</button></div>
-      <a class="options-contact" href="mailto:tomaszczerniuk@gmail.com">Napisz do mnie: tomaszczerniuk@gmail.com</a>
+      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Kontakt mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
       <div class="option-row"><span>Wyeksportuj demo</span><button class="option-action" disabled title="Funkcja zostanie dodana później">WKRÓTCE</button></div>
     </div>
     <div id="options-status" role="status"></div>
@@ -569,6 +575,18 @@ defaultReviewAvatar.src = './review-rock-avatar.jpg';
 function sendFeedback() {
   closeOptions();
   document.getElementById('review-modal').classList.add('open');
+}
+
+async function copyContactEmail() {
+  const address = 'tomaszczerniuk@gmail.com';
+  try {
+    await navigator.clipboard.writeText(address);
+  } catch (error) {
+    legacyCopyReviewEmail();
+  }
+  const status = document.getElementById('options-status');
+  status.textContent = 'Adres e-mail został skopiowany do schowka.';
+  setTimeout(() => { if (status.textContent.includes('skopiowany')) status.textContent = ''; }, 3000);
 }
 
 function closeReviewForm() {
@@ -953,12 +971,8 @@ let toolbarAutoHideStartY = window.scrollY;
 function setToolbarCollapsed(collapsed, remember = true) {
   const wrap = document.getElementById('toolbar-wrap');
   const toolbar = document.getElementById('toolbar');
-  const toggle = document.getElementById('toolbar-toggle');
-  const label = document.getElementById('toolbar-toggle-label');
   wrap.classList.toggle('collapsed', collapsed);
   toolbar.classList.toggle('hidden', collapsed);
-  toggle.setAttribute('aria-expanded', String(!collapsed));
-  label.textContent = collapsed ? 'POKAŻ WYSZUKIWANIE I FILTRY' : 'SCHOWAJ WYSZUKIWANIE I FILTRY';
   if (!collapsed) toolbarAutoHideStartY = window.scrollY;
   if (remember) localStorage.setItem('npr_toolbar_collapsed', collapsed ? '1' : '0');
 }
