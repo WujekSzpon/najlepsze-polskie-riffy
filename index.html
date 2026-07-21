@@ -7,7 +7,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -31,6 +30,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 #header-logo{display:flex;align-items:center;gap:10px;overflow:hidden;cursor:pointer;text-decoration:none;}
 #header-logo img{height:38px;object-fit:contain;flex-shrink:0;}
 #header-logo span{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;color:#fff;line-height:1.2;white-space:nowrap;}
+#header-logo>span{min-width:0;flex:1;}
 
 /* TOOLBAR */
 #toolbar-wrap{position:sticky;top:58px;z-index:9;background:var(--bg);border-bottom:1px solid var(--border);}
@@ -176,10 +176,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 #scroll-top-btn{position:fixed;bottom:24px;right:20px;z-index:150;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#000;border:none;font-size:20px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 
 /* POPUP */
-#tip-popup{position:fixed;overflow:hidden;top:-200px;left:50%;transform:translateX(-50%);width:min(500px,90vw);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px 14px 18px;display:flex;align-items:flex-start;gap:12px;z-index:100;transition:top 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 24px rgba(0,0,0,0.5);}
-#tip-popup.show{top:70px;}
+#tip-popup{position:fixed;overflow:hidden;top:0;left:50%;transform:translate(-50%,calc(-100% - 24px));width:min(500px,calc(100vw - 24px));max-height:calc(100vh - 86px);max-height:calc(100dvh - 86px);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px 14px 18px;display:flex;align-items:flex-start;gap:12px;z-index:100;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 24px rgba(0,0,0,0.5);}
+#tip-popup.show{transform:translate(-50%,70px);}
 #tip-popup.ad{border-color:var(--accent);}
-.tip-content{flex:1;}
+.tip-content{flex:1;min-width:0;max-height:calc(100vh - 118px);max-height:calc(100dvh - 118px);overflow-y:auto;overflow-wrap:anywhere;}
 .tip-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:3px;}
 .tip-label.ad-label{color:var(--accent);}
 .tip-text{font-size:13px;color:var(--text);line-height:1.45;}
@@ -242,7 +242,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <option value="new">🆕 Tylko nowe (ostatnie 30 dni)</option>
       <option value="fav">♥ Ulubione</option>
     </select>
-    <select id="kat" onchange="render()"><option value="">Wszyscy wykonawcy</option></select>
+    <select id="kat" onchange="render()">
+      <option value="">Wszyscy wykonawcy</option>
+      <option value="" disabled>ℹ️ Tylko wykonawcy z dwoma Riffami oraz powyżej</option>
+    </select>
     <select id="lvl" onchange="render()">
       <option value="">Wszystkie poziomy</option>
       <option>POCZĄTKUJĄCY</option>
@@ -335,7 +338,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
         <input id="review-name" type="text" maxlength="40" autocomplete="name" placeholder="np. Artur S.">
       </div>
       <div class="review-field">
-        <label for="review-photo">Twoje zdjęcie</label>
+        <label for="review-photo">Twoje zdjęcie <span style="color:#777;font-weight:400;">(opcjonalnie)</span></label>
         <div class="review-photo">
           <canvas id="review-photo-editor" width="300" height="300" aria-label="Edytor kadru zdjęcia" onpointerdown="startReviewPhotoDrag(event)" onpointermove="moveReviewPhoto(event)" onpointerup="endReviewPhotoDrag(event)" onpointercancel="endReviewPhotoDrag(event)"></canvas>
           <div class="review-crop-controls" id="review-crop-controls">
@@ -365,13 +368,13 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     </div>
     <label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label>
     <label class="review-consent"><input id="review-publication-consent" type="checkbox"><span>Wyrażam zgodę na nieodpłatne opublikowanie przesłanej opinii, podpisu i zdjęcia w materiałach dotyczących produktu „Najlepsze Polskie Riffy”, w tym na stronie internetowej i w mediach społecznościowych. Wiem, że zgodę mogę wycofać.</span></label>
-    <div class="review-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane są wykorzystywane wyłącznie do obsługi i ewentualnej publikacji opinii na podstawie Twojej zgody. Odbiorcą technicznym wiadomości może być EmailJS. Dane będą przechowywane do wycofania zgody lub ustania celu publikacji. Masz prawo dostępu, poprawienia, usunięcia i ograniczenia danych, wycofania zgody oraz złożenia skargi do Prezesa UODO. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania.</div>
+    <div class="review-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane są wykorzystywane wyłącznie do obsługi i ewentualnej publikacji opinii na podstawie Twojej zgody. Grafika powstaje lokalnie na urządzeniu i zostaje przekazana dalej dopiero po wybraniu przez Ciebie aplikacji do udostępnienia. Dane będą przechowywane do wycofania zgody lub ustania celu publikacji. Masz prawo dostępu, poprawienia, usunięcia i ograniczenia danych, wycofania zgody oraz złożenia skargi do Prezesa UODO. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania.</div>
     <canvas id="review-canvas" width="1024" height="576" hidden></canvas>
     <img id="review-output" alt="Podgląd wygenerowanej opinii">
     <div class="review-actions">
       <button class="review-secondary" type="button" onclick="previewReviewPng()">PODGLĄD PNG</button>
       <button class="review-secondary" type="button" onclick="downloadReviewPng()">POBIERZ PNG</button>
-      <button class="review-primary" type="button" onclick="sendReviewEmail()">WYŚLIJ OPINIĘ</button>
+      <button class="review-primary" type="button" onclick="shareReviewPng()">UDOSTĘPNIJ / WYŚLIJ</button>
     </div>
     <div id="review-status" role="status"></div>
   </div>
@@ -399,9 +402,6 @@ const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51
 const PLIK = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx";
 const REPO_BASE = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main";
 const REVIEW_PRODUCT = 'Najlepsze Polskie Riffy';
-const EMAILJS_PUBLIC_KEY = '';
-const EMAILJS_SERVICE_ID = '';
-const EMAILJS_TEMPLATE_ID = '';
 
 async function sha256(text) {
   const enc = new TextEncoder().encode(text);
@@ -553,10 +553,15 @@ function importSettings(event) {
 
 let reviewRating = 0;
 let reviewPhotoImage = null;
+let reviewDefaultAvatarImage = null;
 let reviewPhotoZoom = 1;
 let reviewPhotoOffsetX = 0;
 let reviewPhotoOffsetY = 0;
 let reviewPhotoDrag = null;
+
+const defaultReviewAvatar = new Image();
+defaultReviewAvatar.onload = () => { reviewDefaultAvatarImage = defaultReviewAvatar; };
+defaultReviewAvatar.src = './review-rock-avatar.jpg';
 
 function sendFeedback() {
   closeOptions();
@@ -614,20 +619,39 @@ function loadReviewPhoto(event) {
 }
 
 function drawReviewPhotoCrop(ctx, centerX, centerY, size) {
-  if (!reviewPhotoImage) return;
+  const sourceImage = reviewPhotoImage || reviewDefaultAvatarImage;
   ctx.save();
   ctx.beginPath();
   ctx.arc(centerX, centerY, size / 2, 0, Math.PI * 2);
   ctx.clip();
   ctx.fillStyle = '#dff7fa';
   ctx.fillRect(centerX - size / 2, centerY - size / 2, size, size);
-  const baseScale = Math.max(size / reviewPhotoImage.width, size / reviewPhotoImage.height);
-  const scale = baseScale * reviewPhotoZoom;
-  const drawW = reviewPhotoImage.width * scale;
-  const drawH = reviewPhotoImage.height * scale;
-  const drawX = centerX - drawW / 2 + reviewPhotoOffsetX * size;
-  const drawY = centerY - drawH / 2 + reviewPhotoOffsetY * size;
-  ctx.drawImage(reviewPhotoImage, drawX, drawY, drawW, drawH);
+  if (sourceImage) {
+    const zoom = reviewPhotoImage ? reviewPhotoZoom : 1;
+    const offsetX = reviewPhotoImage ? reviewPhotoOffsetX : 0;
+    const offsetY = reviewPhotoImage ? reviewPhotoOffsetY : 0;
+    const baseScale = Math.max(size / sourceImage.width, size / sourceImage.height);
+    const scale = baseScale * zoom;
+    const drawW = sourceImage.width * scale;
+    const drawH = sourceImage.height * scale;
+    const drawX = centerX - drawW / 2 + offsetX * size;
+    const drawY = centerY - drawH / 2 + offsetY * size;
+    ctx.drawImage(sourceImage, drawX, drawY, drawW, drawH);
+  } else {
+    ctx.fillStyle = '#777';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY - size * .18, size * .16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#555';
+    roundedRect(ctx, centerX - size * .27, centerY, size * .54, size * .38, size * .12);
+    ctx.fill();
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = size * .08;
+    ctx.beginPath();
+    ctx.moveTo(centerX - size * .3, centerY + size * .2);
+    ctx.lineTo(centerX + size * .35, centerY - size * .02);
+    ctx.stroke();
+  }
   ctx.restore();
 }
 
@@ -745,7 +769,6 @@ function validateReview(requireConsent = false) {
   const name = document.getElementById('review-name').value.trim();
   const text = document.getElementById('review-text').value.trim();
   if (name.length < 2) return 'Podaj imię lub podpis.';
-  if (!reviewPhotoImage) return 'Dodaj swoje zdjęcie.';
   if (!reviewRating) return 'Wybierz ocenę od 1 do 5 gwiazdek.';
   if (text.length < 10) return 'Opinia powinna zawierać co najmniej 10 znaków.';
   if (requireConsent && !document.getElementById('review-data-consent').checked) return 'Zaznacz zgodę na przetwarzanie danych.';
@@ -842,31 +865,80 @@ function downloadReviewPng() {
   }
 }
 
-async function sendReviewEmail() {
+function dataUrlToReviewFile(dataUrl, filename) {
+  const parts = dataUrl.split(',');
+  const mime = (parts[0].match(/:(.*?);/) || [])[1] || 'image/png';
+  const binary = atob(parts[1]);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, {type:mime});
+}
+
+function downloadAndOpenReviewEmail(dataUrl, filename) {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = dataUrl;
+  link.click();
+  const subject = encodeURIComponent(`Opinia o produkcie ${REVIEW_PRODUCT}`);
+  const body = encodeURIComponent(`Dzień dobry,\n\nw załączniku przesyłam opinię o produkcie ${REVIEW_PRODUCT}.\n\nProszę dołączyć pobrany plik: ${filename}`);
+  setReviewStatus('PNG został pobrany. Dołącz go do otwieranej wiadomości e-mail.');
+  window.location.href = `mailto:tomaszczerniuk@gmail.com?subject=${subject}&body=${body}`;
+}
+
+function legacyCopyReviewEmail() {
+  const field = document.createElement('textarea');
+  field.value = 'tomaszczerniuk@gmail.com';
+  field.setAttribute('readonly', '');
+  field.style.position = 'fixed';
+  field.style.opacity = '0';
+  document.body.appendChild(field);
+  field.select();
+  try { document.execCommand('copy'); } catch (_) {}
+  field.remove();
+}
+
+function copyReviewEmailAddress() {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText('tomaszczerniuk@gmail.com').catch(legacyCopyReviewEmail);
+  } else {
+    legacyCopyReviewEmail();
+  }
+}
+
+async function shareReviewPng() {
   const error = validateReview(true);
   if (error) {
     setReviewStatus(error, true);
     return;
   }
-  if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !window.emailjs) {
-    setReviewStatus('Wysyłka wymaga jeszcze podłączenia konta EmailJS. PNG możesz już pobrać.', true);
-    return;
-  }
+  copyReviewEmailAddress();
+  setReviewStatus('Adres tomaszczerniuk@gmail.com został skopiowany do schowka. Przygotowywanie PNG…');
   try {
-    setReviewStatus('Wysyłanie opinii…');
     const canvas = generateReviewCanvas();
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email: 'tomaszczerniuk@gmail.com',
-      from_name: document.getElementById('review-name').value.trim(),
-      product: REVIEW_PRODUCT,
-      rating: reviewRating,
-      review_text: document.getElementById('review-text').value.trim(),
-      attachment_name: reviewFileName(),
-      content: canvas.toDataURL('image/png')
-    }, { publicKey: EMAILJS_PUBLIC_KEY });
-    setReviewStatus('Dziękujemy! Opinia została wysłana.');
-  } catch (_) {
-    setReviewStatus('Nie udało się wysłać opinii. Spróbuj ponownie później.', true);
+    const dataUrl = canvas.toDataURL('image/png');
+    const filename = reviewFileName();
+    if (typeof File !== 'undefined' && navigator.share && navigator.canShare) {
+      const file = dataUrlToReviewFile(dataUrl, filename);
+      if (navigator.canShare({files:[file]})) {
+        try {
+          await navigator.share({
+            files:[file],
+            title:`Opinia o ${REVIEW_PRODUCT}`,
+            text:`Opinia o produkcie ${REVIEW_PRODUCT}. Adres odbiorcy: tomaszczerniuk@gmail.com`
+          });
+          setReviewStatus('Grafika została przekazana do wybranej aplikacji, a adres e-mail skopiowany do schowka.');
+          return;
+        } catch (shareError) {
+          if (shareError && shareError.name === 'AbortError') {
+            setReviewStatus('Udostępnianie zostało anulowane.', true);
+            return;
+          }
+        }
+      }
+    }
+    downloadAndOpenReviewEmail(dataUrl, filename);
+  } catch (error) {
+    setReviewStatus(error.message || 'Nie udało się przygotować opinii.', true);
   }
 }
 
@@ -929,6 +1001,26 @@ function scrollToTopAndShowToolbar() {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+function fitMobileHeaderTitle() {
+  const title = document.querySelector('#header-logo > span');
+  if (!title) return;
+  title.style.fontSize = '16px';
+  if (!window.matchMedia('(max-width: 640px)').matches) return;
+  let size = 16;
+  while (title.scrollWidth > title.clientWidth && size > 10) {
+    size -= 0.25;
+    title.style.fontSize = `${size}px`;
+  }
+}
+
+let headerResizeFrame;
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(headerResizeFrame);
+  headerResizeFrame = requestAnimationFrame(fitMobileHeaderTitle);
+});
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMobileHeaderTitle);
+else requestAnimationFrame(fitMobileHeaderTitle);
+
 initToolbarGestures();
 
 const NEW_DAYS = 30;
@@ -985,6 +1077,22 @@ function riffCountLabel(count) {
   if (count === 1) return '1 riff';
   if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return `${count} riffy`;
   return `${count} riffów`;
+}
+
+function songCountLabel(count) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (count === 1) return '1 utwór';
+  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return `${count} utwory`;
+  return `${count} utworów`;
+}
+
+function performerRiffCountLabel(count) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (count === 1) return '1 Riff';
+  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return `${count} Riffy`;
+  return `${count} Riffów`;
 }
 
 function latestEntryDate() {
@@ -1052,9 +1160,21 @@ function loadExcel() {
       })).filter(e => e.nazwa);
 
       // Populate wykonawcy
-      const wyk = [...new Set(exercises.map(e => e.wykonawca).filter(Boolean))].sort();
+      const performerCounts = exercises.reduce((counts, exercise) => {
+        if (exercise.wykonawca) counts.set(exercise.wykonawca, (counts.get(exercise.wykonawca) || 0) + 1);
+        return counts;
+      }, new Map());
+      const wyk = [...performerCounts.entries()]
+        .filter(([, count]) => count >= 2)
+        .map(([performer]) => performer)
+        .sort((a, b) => a.localeCompare(b, 'pl'));
       const sel = document.getElementById('kat');
-      wyk.forEach(w => { const o = document.createElement('option'); o.value = o.textContent = w; sel.appendChild(o); });
+      wyk.forEach(w => {
+        const o = document.createElement('option');
+        o.value = w;
+        o.textContent = `${w} - ${performerRiffCountLabel(performerCounts.get(w))}`;
+        sel.appendChild(o);
+      });
 
       // Populate tagi
       const allTags = [...new Set(exercises.flatMap(e => e.tagi))].sort();
@@ -1284,8 +1404,6 @@ function showPopup() {
     link.style.display='inline-block'; popup.classList.add('ad'); reklamyIdx++;
   }
   isAd=!isAd;
-  const popupH = popup.offsetHeight || 150;
-  popup.style.top = '-' + (popupH + 20) + 'px';
   popup.classList.add('show');
   const bar=document.getElementById('tip-progress');
   bar.style.transition='none'; bar.style.transform='scaleX(1)';
