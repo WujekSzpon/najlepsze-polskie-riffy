@@ -278,13 +278,23 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 @media(prefers-reduced-motion:reduce){.card-tag-demo{animation:none;}}
 #demo-offer-modal{position:fixed;inset:0;z-index:260;display:none;align-items:center;justify-content:center;padding:18px;}
 #demo-offer-modal.open{display:flex;}
-#demo-offer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(3px);}
-#demo-offer-panel{position:relative;width:min(480px,100%);background:#191919;border:1px solid #3b3b3b;border-radius:14px;padding:24px;box-shadow:0 18px 70px rgba(0,0,0,.8);text-align:center;}
-#demo-offer-panel h2{margin:5px 30px 12px;font-size:25px;color:#fff;}
-#demo-offer-panel p{margin:0 0 18px;color:#c8c8c8;line-height:1.55;}
-#demo-offer-panel .demo-product{color:#ffcc00;font-weight:900;text-transform:uppercase;font-size:18px;margin-bottom:8px;}
-.demo-buy-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#ffcc00;color:#111!important;text-decoration:none;font-weight:900;border-radius:8px;padding:12px 19px;}
-.demo-buy-button:hover{background:#ffe066;}
+#demo-offer-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(4px);}
+#demo-offer-panel{position:relative;width:min(780px,100%);max-height:calc(100vh - 36px);overflow:auto;background:#191919;border:1px solid #3b3b3b;border-radius:15px;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.85);display:grid;grid-template-columns:minmax(220px,.78fr) minmax(340px,1.45fr);gap:24px;align-items:center;}
+.demo-offer-cover{border-radius:9px;overflow:hidden;background:#111;}
+.demo-offer-cover img{display:block;width:100%;height:auto;object-fit:contain;}
+.demo-offer-content{min-width:0;}
+.demo-offer-kicker{display:flex;align-items:center;gap:7px;color:#aaa;font-size:12px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+#demo-offer-title{color:#ffcc00;font-size:27px;line-height:1.15;margin:0 34px 10px 0;}
+#demo-offer-panel p{margin:0 0 9px;color:#d1d1d1;line-height:1.5;font-size:14px;}
+#demo-offer-intro{color:#fff!important;font-weight:800;}
+.demo-offer-features{list-style:none;margin:7px 0 13px;padding:0;display:grid;gap:5px;color:#fff;font-size:13px;}
+.demo-offer-features li{display:flex;align-items:flex-start;gap:7px;line-height:1.4;}
+.demo-offer-features i{color:#ffcc00;font-size:16px;flex:0 0 auto;margin-top:1px;}
+.demo-offer-guide{color:#bdbdbd!important;font-size:12.5px!important;}
+#demo-offer-count{color:#fff!important;font-size:17px!important;font-weight:800;margin-top:12px!important;}
+.demo-offer-actions{display:flex;justify-content:center;padding-top:14px;margin-top:13px;border-top:1px solid #333;}
+.demo-buy-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#ffcc00;color:#111!important;text-decoration:none;font-weight:900;border-radius:8px;padding:12px 19px;box-shadow:0 0 7px rgba(255,204,0,.48),0 0 16px rgba(255,204,0,.28);}
+.demo-buy-button:hover{background:#ffe066;box-shadow:0 0 15px rgba(255,204,0,.58);}
 .demo-free-heading{color:#ffcc00;font-weight:800;}
 #demo-welcome-modal{position:fixed;inset:0;z-index:270;display:none;align-items:center;justify-content:center;padding:18px;}
 #demo-welcome-modal.open{display:flex;}
@@ -300,11 +310,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 #demo-welcome-free-list li::marker{color:#ffcc00;}
 .demo-welcome-help{display:flex;align-items:flex-start;gap:7px;color:#999;font-size:11.5px;line-height:1.4;margin:0 0 12px;}
 .demo-welcome-help i{flex:0 0 auto;font-size:15px;margin-top:1px;}
-.demo-welcome-actions{display:flex;align-items:center;gap:14px;padding-top:14px;border-top:1px solid #333;}
-.demo-welcome-actions small{color:#888;line-height:1.4;flex:1 1 auto;}
-.demo-welcome-buy{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;background:#ffcc00;color:#111!important;border:0;text-decoration:none;font-family:inherit;font-size:13px;font-weight:900;border-radius:8px;padding:12px 18px;cursor:pointer;}
-.demo-welcome-buy:hover{background:#ffe066;}
-@media(max-width:640px){#demo-offer-panel{padding:20px 16px}#demo-offer-panel h2{font-size:21px}.count{line-height:1.5}#demo-welcome-modal{padding:10px;align-items:flex-start}#demo-welcome-panel{max-height:calc(100vh - 20px);grid-template-columns:1fr;gap:12px;padding:14px;margin:auto 0;align-items:start}.demo-welcome-cover{height:min(225px,31vh)}.demo-welcome-cover img{width:100%;height:100%;object-fit:cover;object-position:center 28%}#demo-welcome-title{font-size:22px;margin-bottom:6px}.demo-welcome-content p,#demo-welcome-free-list{font-size:13px}.demo-welcome-help{font-size:11px;margin-bottom:9px}.demo-welcome-actions{padding-top:11px;gap:9px;flex-wrap:wrap}.demo-welcome-actions small{font-size:11px}.demo-welcome-buy{width:100%}}
+.demo-welcome-actions{display:flex;align-items:center;justify-content:center;gap:14px;padding-top:14px;border-top:1px solid #333;}
+.demo-welcome-buy{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;background:#ffcc00;color:#111!important;border:0;text-decoration:none;font-family:inherit;font-size:13px;font-weight:900;border-radius:8px;padding:12px 18px;cursor:pointer;box-shadow:0 0 7px rgba(255,204,0,.45),0 0 15px rgba(255,204,0,.24);}
+.demo-welcome-buy:hover{background:#ffe066;box-shadow:0 0 10px rgba(255,204,0,.7),0 0 20px rgba(255,204,0,.4);}
+@media(max-width:640px){.count{line-height:1.5}#demo-offer-modal,#demo-welcome-modal{padding:10px;align-items:flex-start}#demo-offer-panel,#demo-welcome-panel{max-height:calc(100vh - 20px);grid-template-columns:1fr;gap:12px;padding:14px;margin:auto 0;align-items:start}.demo-offer-cover,.demo-welcome-cover{width:min(180px,48vw);height:auto;margin:0 auto}.demo-offer-cover img,.demo-welcome-cover img{width:100%;height:auto;object-fit:contain;object-position:center;aspect-ratio:auto}#demo-offer-title,#demo-welcome-title{font-size:22px;margin-bottom:6px}#demo-offer-panel p,.demo-welcome-content p,#demo-welcome-free-list{font-size:13px}.demo-welcome-help{font-size:11px;margin-bottom:9px}.demo-offer-actions,.demo-welcome-actions{padding-top:11px;gap:9px}.demo-buy-button,.demo-welcome-buy{width:100%}}
 </style>
 </head>
 <body>
@@ -331,11 +340,27 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 <div id="demo-offer-modal" role="dialog" aria-modal="true" aria-labelledby="demo-offer-title">
   <div id="demo-offer-backdrop" onclick="closeDemoOffer()"></div>
   <div id="demo-offer-panel">
-    <button class="options-close" onclick="closeDemoOffer()" aria-label="Zamknij" style="position:absolute;right:12px;top:10px;">✕</button>
-    <div class="demo-product">Najlepsze Polskie Riffy</div>
-    <h2 id="demo-offer-title">Pełna wersja konspektu</h2>
-    <p>To opracowanie jest dostępne w pełnej wersji konspektu.</p>
-    <a class="demo-buy-button" href="https://najlepszepolskieriffy.short.gy/NPR" target="_blank" rel="noopener"><i class="ti ti-shopping-cart"></i> ZOBACZ PRODUKT</a>
+    <button class="options-close" onclick="closeDemoOffer()" aria-label="Zamknij" style="position:absolute;right:12px;top:10px;z-index:2;">✕</button>
+    <div class="demo-offer-cover">
+      <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/PNG%20-%20NPR%20-%20OK%C5%81ADKA%2001.png" alt="Okładka produktu Najlepsze Polskie Riffy">
+    </div>
+    <div class="demo-offer-content">
+      <div class="demo-offer-kicker"><i class="ti ti-lock"></i><span>Materiał z pełnej wersji</span></div>
+      <h2 id="demo-offer-title">Najlepsze Polskie Riffy</h2>
+      <p id="demo-offer-intro">Każde z <span id="demo-offer-contains-count"></span> opracowań zawiera…</p>
+      <ul class="demo-offer-features">
+        <li><i class="ti ti-check"></i><span>Tabulaturę PDF</span></li>
+        <li><i class="ti ti-check"></i><span>Pliki Guitar Pro 6/7/8</span></li>
+        <li><i class="ti ti-check"></i><span>Wideo-tabulatury w tempach od 50% do 100%</span></li>
+        <li><i class="ti ti-check"></i><span>Wideo-tabulaturę Backing Track w tempie 100%</span></li>
+        <li><i class="ti ti-check"></i><span>Nagranie z moją grą w tempie 100% oraz 80%</span></li>
+      </ul>
+      <p class="demo-offer-guide">To świetny produkt dla początkujących gitarzystów, którzy chcą uczyć się polskich utworów, zaczynając od najprostszych i przechodząc do coraz trudniejszych.</p>
+      <p id="demo-offer-count">Najlepsze Polskie Riffy czekają, aż zagrasz je na gitarze. 🎸</p>
+      <div class="demo-offer-actions">
+        <a class="demo-buy-button" href="https://najlepszepolskieriffy.short.gy/NPR" target="_blank" rel="noopener"><i class="ti ti-shopping-cart"></i> KUP TERAZ</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -352,9 +377,8 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <p>Dzięki tej wersji możesz zobaczyć, jak wygląda korzystanie z konspektu jeszcze przed podjęciem decyzji zakupowej.</p>
       <p>Dostępne są trzy darmowe riffy, które możesz otworzyć zupełnie jak w płatnej wersji:</p>
       <ul id="demo-welcome-free-list"></ul>
-      <div class="demo-welcome-help"><i class="ti ti-info-circle"></i><span>Kliknij tytuł riffu w nagłówku albo wybierz „Tylko darmowe opracowania” w sortowaniu. Darmowe riffy znajdziesz również na samym początku listy.</span></div>
+      <div class="demo-welcome-help"><i class="ti ti-info-circle"></i><span>Darmowe riffy zostały umieszczone na początku listy.</span></div>
       <div class="demo-welcome-actions">
-        <small>Pełna wersja zawiera dostęp do wszystkich opracowań prezentowanych w katalogu.</small>
         <button class="demo-welcome-buy" type="button" onclick="closeDemoWelcome()"><i class="ti ti-player-play"></i> PRZETESTUJ ZA DARMO</button>
       </div>
     </div>
@@ -631,6 +655,8 @@ function isDemoFree(entry) {
 }
 
 function openDemoOffer() {
+  const count = exercises.length;
+  document.getElementById('demo-offer-contains-count').textContent = count;
   document.getElementById('demo-offer-modal').classList.add('open');
 }
 
@@ -648,15 +674,13 @@ function populateDemoWelcomeList() {
   });
 }
 
-function showDemoWelcomeOnce() {
-  if (localStorage.getItem('npr_demo_welcome_seen') === '1') return;
+function showDemoWelcome() {
   populateDemoWelcomeList();
   document.getElementById('demo-welcome-modal').classList.add('open');
 }
 
 function closeDemoWelcome() {
   document.getElementById('demo-welcome-modal').classList.remove('open');
-  localStorage.setItem('npr_demo_welcome_seen', '1');
 }
 
 function handleDemoCardClick(event, id) {
@@ -1479,7 +1503,7 @@ function loadExcel() {
       document.getElementById('state-msg').style.display = 'none';
       render();
       changeSize(0);
-      showDemoWelcomeOnce();
+      showDemoWelcome();
     })
     .catch(e => {
       document.getElementById('state-msg').textContent = '⚠️ ' + e.message;
