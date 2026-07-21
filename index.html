@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -41,11 +42,94 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .toolbar select option{background:#1a1a1a;}
 #search{width:100% !important;}
 #sort,#kat,#lvl{width:100% !important;}
-.count{font-size:12px;color:var(--muted);text-align:right;grid-column:1/-1;padding:2px 0;}
+.count{font-size:12px;color:var(--muted);text-align:left;grid-column:1/-1;padding:2px 0;line-height:1.5;}
+.new-count-link{appearance:none;background:none;border:0;padding:0;color:#ffcc00;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;}
+.new-count-link:hover,.new-count-link:focus-visible{color:#fff;text-decoration:underline;outline:none;}
+@media(max-width:640px){
+  .count{font-size:10.5px;line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+}
 .btn-toolbar{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 11px;font-size:12px;cursor:pointer;font-family:'Open Sans',sans-serif;transition:border-color 0.15s,color 0.15s;width:100%;}
 .btn-toolbar:hover{border-color:var(--accent);color:var(--accent);}
 .toolbar-btns{grid-column:1/-1;display:flex;gap:6px;}
 .toolbar-btns .btn-toolbar{flex:1;}
+#toolbar-toggle{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;height:24px;border:0;border-top:1px solid var(--border);background:#151515;color:var(--muted);font:600 9px 'Open Sans',sans-serif;letter-spacing:.06em;cursor:pointer;}
+#toolbar-toggle:hover,#toolbar-toggle:focus-visible{color:var(--accent);outline:none;}
+#toolbar-toggle i{font-size:14px;transition:transform .2s;}
+#toolbar-wrap.collapsed #toolbar-toggle i{transform:rotate(180deg);}
+@media(max-width:640px){#toolbar-toggle{height:28px;}#toolbar-toggle-label{display:none;}#toolbar-toggle::after{content:'Przesuń w dół, aby pokazać';font-size:9px;}#toolbar-wrap:not(.collapsed) #toolbar-toggle::after{content:'Przesuń w górę, aby schować';}}
+
+/* OPTIONS */
+#options-modal{position:fixed;inset:0;z-index:220;display:none;}
+#options-modal.open{display:block;}
+#options-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.68);}
+#options-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:86vh;overflow-y:auto;}
+.options-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.options-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;letter-spacing:.04em;}
+.options-close{border:0;background:transparent;color:var(--muted);font-size:21px;cursor:pointer;padding:3px 6px;}
+.options-section{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
+.options-section-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.option-row{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #252525;font-size:13px;}
+.option-row:last-child{border-bottom:0;}
+.option-switch{position:relative;width:40px;height:22px;flex:0 0 40px;}
+.option-switch input{position:absolute;opacity:0;pointer-events:none;}
+.option-slider{position:absolute;inset:0;border-radius:99px;background:#333;cursor:pointer;transition:.18s;}
+.option-slider::after{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#aaa;transition:.18s;}
+.option-switch input:checked + .option-slider{background:var(--accent);}
+.option-switch input:checked + .option-slider::after{transform:translateX(18px);background:#111;}
+.option-action{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;padding:7px 10px;font:600 11px 'Open Sans',sans-serif;cursor:pointer;}
+.option-action:hover{border-color:var(--accent);color:var(--accent);}
+.option-action:disabled{opacity:.4;cursor:not-allowed;}
+.options-help{display:none;margin:8px 0 4px;padding:11px;border-radius:8px;background:#121212;color:#bbb;font-size:11.5px;line-height:1.55;}
+.options-help.open{display:block;}
+.options-contact{display:block;color:var(--accent);font-size:12px;margin-top:9px;text-decoration:none;}
+#options-status{min-height:18px;color:#8bc34a;font-size:11px;margin-top:10px;}
+body.hide-descriptions .card-desc{display:none;}
+body.hide-tags .card-tags{display:none;}
+body.hide-stars .difficulty-stars{display:none;}
+body.hide-stars .thumb.has-stars::after{display:none;}
+body.hide-thumbnails .thumb{display:none;}
+body.hide-thumbnails .card>button{display:none !important;}
+body.cards-mini .card-desc,body.cards-mini .card-tags,body.cards-mini .difficulty-stars{display:none !important;}
+body.cards-mini .thumb.has-stars::after{display:none;}
+body.cards-mini .card>button{display:none !important;}
+body.cards-mini .card-body{padding:8px 7px 9px;}
+body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
+@media(min-width:641px){#options-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:520px;max-height:82vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
+
+/* REVIEW FORM */
+#review-modal{position:fixed;inset:0;z-index:250;display:none;}
+#review-modal.open{display:block;}
+#review-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);}
+#review-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:92vh;overflow-y:auto;}
+.review-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.review-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;}
+.review-grid{display:grid;gap:12px;}
+.review-field label,.review-label{display:block;font-size:11px;color:#bbb;font-weight:700;margin-bottom:5px;}
+.review-field input[type="text"],.review-field textarea{width:100%;background:#111;border:1px solid var(--border);border-radius:7px;color:#fff;padding:9px 11px;font:13px 'Open Sans',sans-serif;outline:none;}
+.review-field input:focus,.review-field textarea:focus{border-color:var(--accent);}
+.review-field textarea{min-height:110px;resize:vertical;line-height:1.45;}
+.review-photo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+#review-photo-editor{width:150px;height:150px;border-radius:50%;background:#111;border:4px solid #c8f5fb;display:none;cursor:grab;touch-action:none;}
+#review-photo-editor.dragging{cursor:grabbing;}
+.review-crop-controls{display:none;flex:1;min-width:180px;}
+.review-crop-controls.open{display:block;}
+.review-crop-controls input[type="range"]{width:100%;accent-color:var(--accent);}
+.review-crop-help{font-size:10px;color:#888;line-height:1.4;margin-top:5px;}
+.review-stars{display:flex;gap:3px;}
+.review-star{border:0;background:transparent;color:#555;font-size:31px;line-height:1;cursor:pointer;padding:0 2px;}
+.review-star.active{color:#eda52b;}
+.review-consent{display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#bbb;line-height:1.45;margin-top:8px;}
+.review-consent input{margin-top:3px;accent-color:var(--accent);flex:0 0 auto;}
+.review-privacy{font-size:10px;color:#888;line-height:1.5;padding:10px;background:#121212;border-radius:7px;margin-top:8px;}
+.review-privacy a{color:var(--accent);}
+.review-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.review-actions button{flex:1;min-width:130px;border-radius:8px;padding:10px 12px;font:700 12px 'Open Sans',sans-serif;cursor:pointer;}
+.review-primary{border:0;background:var(--accent);color:#111;}
+.review-secondary{border:1px solid var(--border);background:transparent;color:#fff;}
+#review-output{display:none;width:100%;margin-top:14px;border-radius:8px;background:#000;}
+#review-status{min-height:18px;margin-top:9px;font-size:11px;color:#8bc34a;}
+#review-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
+@media(min-width:721px){#review-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:700px;max-height:90vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.review-grid{grid-template-columns:1fr 1fr}.review-wide{grid-column:1/-1;}}
 
 /* TAGS DROPDOWN */
 #tags-dropdown{position:fixed;inset:0;z-index:200;display:none;}
@@ -155,6 +239,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
       <option value="artist_za">Wykonawca Z → A</option>
       <option value="lvl_asc">Łatwe → Trudne</option>
       <option value="lvl_desc">Trudne → Łatwe</option>
+      <option value="new">🆕 Tylko nowe (ostatnie 30 dni)</option>
       <option value="fav">♥ Ulubione</option>
     </select>
     <select id="kat" onchange="render()"><option value="">Wszyscy wykonawcy</option></select>
@@ -172,9 +257,11 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
       <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()">TAGI<span id="tags-count-badge" style="display:none;background:#ffcc00;color:#000;border-radius:99px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:3px;"></span></button>
       <button class="btn-toolbar" onclick="exportPDF()">PDF</button>
       <button class="btn-toolbar" onclick="resetFilters()">RESET</button>
+      <button class="btn-toolbar" id="options-btn" onclick="openOptions()" aria-label="Opcje" title="Opcje"><i class="ti ti-settings"></i></button>
     </div>
     <span class="count" id="count"></span>
   </div>
+  <button id="toolbar-toggle" type="button" onclick="toggleToolbar()" aria-expanded="true" aria-controls="toolbar"><i class="ti ti-chevron-up"></i><span id="toolbar-toggle-label">SCHOWAJ WYSZUKIWANIE I FILTRY</span></button>
 </div>
 
 <div class="grid-wrap">
@@ -192,6 +279,101 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
     </div>
     <div id="tags-chips"></div>
     <button id="tags-apply" onclick="closeTagsPanel()">Zastosuj filtry</button>
+  </div>
+</div>
+
+<div id="options-modal" role="dialog" aria-modal="true" aria-labelledby="options-title">
+  <div id="options-backdrop" onclick="closeOptions()"></div>
+  <div id="options-panel">
+    <div class="options-header">
+      <span class="options-title" id="options-title"><i class="ti ti-settings"></i> OPCJE</span>
+      <button class="options-close" onclick="closeOptions()" aria-label="Zamknij">✕</button>
+    </div>
+
+    <div class="options-section">
+      <div class="options-section-title">Pomoc</div>
+      <div class="option-row"><span>Pokaż instrukcję</span><button class="option-action" onclick="toggleInstructions()">POKAŻ</button></div>
+      <div class="options-help" id="options-help">Użyj wyszukiwarki i filtrów, aby znaleźć riff. Przycisk TAGI pozwala łączyć kilka oznaczeń, a pozycja „Tylko nowe” pokazuje materiały dodane w ciągu ostatnich 30 dni. Kliknij kartę, aby otworzyć opracowanie.</div>
+    </div>
+
+    <div class="options-section">
+      <div class="options-section-title">Wygląd kart</div>
+      <div class="option-row"><span>Pokazuj opisy</span><label class="option-switch"><input id="opt-descriptions" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Pokazuj tagi</span><label class="option-switch"><input id="opt-tags" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Pokazuj gwiazdki trudności</span><label class="option-switch"><input id="opt-stars" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Pokazuj miniatury</span><label class="option-switch"><input id="opt-thumbnails" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Pokazuj powiadomienia pop-up</span><label class="option-switch"><input id="opt-notifications" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+    </div>
+
+    <div class="options-section">
+      <div class="options-section-title">Ustawienia</div>
+      <div class="option-row"><span>Wyeksportuj ustawienia do pliku TXT</span><button class="option-action" onclick="exportSettings()">EKSPORTUJ</button></div>
+      <div class="option-row"><span>Wczytaj ustawienia z pliku TXT</span><button class="option-action" onclick="document.getElementById('settings-file').click()">WCZYTAJ</button></div>
+      <input id="settings-file" type="file" accept=".txt,text/plain,application/json" hidden onchange="importSettings(event)">
+    </div>
+
+    <div class="options-section">
+      <div class="options-section-title">Kontakt i dodatki</div>
+      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action" onclick="sendFeedback()">NAPISZ</button></div>
+      <a class="options-contact" href="mailto:tomaszczerniuk@gmail.com">Napisz do mnie: tomaszczerniuk@gmail.com</a>
+      <div class="option-row"><span>Wyeksportuj demo</span><button class="option-action" disabled title="Funkcja zostanie dodana później">WKRÓTCE</button></div>
+    </div>
+    <div id="options-status" role="status"></div>
+  </div>
+</div>
+
+<div id="review-modal" role="dialog" aria-modal="true" aria-labelledby="review-title">
+  <div id="review-backdrop" onclick="closeReviewForm()"></div>
+  <div id="review-panel">
+    <div class="review-header">
+      <span class="review-title" id="review-title">DODAJ OPINIĘ</span>
+      <button class="options-close" onclick="closeReviewForm()" aria-label="Zamknij">✕</button>
+    </div>
+    <div class="review-grid">
+      <div class="review-field">
+        <label for="review-name">Imię lub podpis</label>
+        <input id="review-name" type="text" maxlength="40" autocomplete="name" placeholder="np. Artur S.">
+      </div>
+      <div class="review-field">
+        <label for="review-photo">Twoje zdjęcie</label>
+        <div class="review-photo">
+          <canvas id="review-photo-editor" width="300" height="300" aria-label="Edytor kadru zdjęcia" onpointerdown="startReviewPhotoDrag(event)" onpointermove="moveReviewPhoto(event)" onpointerup="endReviewPhotoDrag(event)" onpointercancel="endReviewPhotoDrag(event)"></canvas>
+          <div class="review-crop-controls" id="review-crop-controls">
+            <label for="review-photo-zoom">Powiększenie: <span id="review-photo-zoom-value">100%</span></label>
+            <input id="review-photo-zoom" type="range" min="0.65" max="3" step="0.01" value="1" oninput="changeReviewPhotoZoom(this.value)">
+            <button class="option-action" type="button" onclick="resetReviewPhotoCrop()">WYŚRODKUJ</button>
+            <div class="review-crop-help">Przeciągnij zdjęcie palcem lub myszą, aby ustawić twarz w okręgu.</div>
+          </div>
+          <input id="review-photo" type="file" accept="image/png,image/jpeg,image/webp" onchange="loadReviewPhoto(event)">
+        </div>
+      </div>
+      <div class="review-field review-wide">
+        <span class="review-label">Ocena produktu</span>
+        <div class="review-stars" id="review-stars" aria-label="Ocena od 1 do 5 gwiazdek">
+          <button class="review-star" type="button" onclick="setReviewRating(1)" aria-label="1 gwiazdka">★</button>
+          <button class="review-star" type="button" onclick="setReviewRating(2)" aria-label="2 gwiazdki">★</button>
+          <button class="review-star" type="button" onclick="setReviewRating(3)" aria-label="3 gwiazdki">★</button>
+          <button class="review-star" type="button" onclick="setReviewRating(4)" aria-label="4 gwiazdki">★</button>
+          <button class="review-star" type="button" onclick="setReviewRating(5)" aria-label="5 gwiazdek">★</button>
+        </div>
+      </div>
+      <div class="review-field review-wide">
+        <label for="review-text">Krótka opinia</label>
+        <textarea id="review-text" maxlength="420" placeholder="Napisz, co najbardziej podoba Ci się w produkcie…" oninput="updateReviewCharCount()"></textarea>
+        <div id="review-char-count">0 / 420</div>
+      </div>
+    </div>
+    <label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label>
+    <label class="review-consent"><input id="review-publication-consent" type="checkbox"><span>Wyrażam zgodę na nieodpłatne opublikowanie przesłanej opinii, podpisu i zdjęcia w materiałach dotyczących produktu „Najlepsze Polskie Riffy”, w tym na stronie internetowej i w mediach społecznościowych. Wiem, że zgodę mogę wycofać.</span></label>
+    <div class="review-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane są wykorzystywane wyłącznie do obsługi i ewentualnej publikacji opinii na podstawie Twojej zgody. Odbiorcą technicznym wiadomości może być EmailJS. Dane będą przechowywane do wycofania zgody lub ustania celu publikacji. Masz prawo dostępu, poprawienia, usunięcia i ograniczenia danych, wycofania zgody oraz złożenia skargi do Prezesa UODO. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania.</div>
+    <canvas id="review-canvas" width="1024" height="576" hidden></canvas>
+    <img id="review-output" alt="Podgląd wygenerowanej opinii">
+    <div class="review-actions">
+      <button class="review-secondary" type="button" onclick="previewReviewPng()">PODGLĄD PNG</button>
+      <button class="review-secondary" type="button" onclick="downloadReviewPng()">POBIERZ PNG</button>
+      <button class="review-primary" type="button" onclick="sendReviewEmail()">WYŚLIJ OPINIĘ</button>
+    </div>
+    <div id="review-status" role="status"></div>
   </div>
 </div>
 
@@ -216,6 +398,10 @@ const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51
 
 const PLIK = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx";
 const REPO_BASE = "https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main";
+const REVIEW_PRODUCT = 'Najlepsze Polskie Riffy';
+const EMAILJS_PUBLIC_KEY = '';
+const EMAILJS_SERVICE_ID = '';
+const EMAILJS_TEMPLATE_ID = '';
 
 async function sha256(text) {
   const enc = new TextEncoder().encode(text);
@@ -268,6 +454,463 @@ const savedSize = localStorage.getItem('npr_cardsize');
 let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280 : 440);
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
+const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, notifications:true };
+let uiSettings = {...DEFAULT_UI_SETTINGS};
+
+function applyUiSettings() {
+  document.body.classList.toggle('hide-descriptions', !uiSettings.descriptions);
+  document.body.classList.toggle('hide-tags', !uiSettings.tags);
+  document.body.classList.toggle('hide-stars', !uiSettings.stars);
+  document.body.classList.toggle('hide-thumbnails', !uiSettings.thumbnails);
+  const fields = {
+    descriptions:'opt-descriptions', tags:'opt-tags', stars:'opt-stars', thumbnails:'opt-thumbnails', notifications:'opt-notifications'
+  };
+  Object.entries(fields).forEach(([key, id]) => {
+    const input = document.getElementById(id);
+    if (input) input.checked = uiSettings[key];
+  });
+  if (!uiSettings.notifications) closePopup();
+}
+
+function loadUiSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('npr_ui_settings') || '{}');
+    uiSettings = {...DEFAULT_UI_SETTINGS, ...saved};
+  } catch (_) {
+    uiSettings = {...DEFAULT_UI_SETTINGS};
+  }
+  applyUiSettings();
+}
+
+function saveUiSettings() {
+  uiSettings = {
+    descriptions: document.getElementById('opt-descriptions').checked,
+    tags: document.getElementById('opt-tags').checked,
+    stars: document.getElementById('opt-stars').checked,
+    thumbnails: document.getElementById('opt-thumbnails').checked,
+    notifications: document.getElementById('opt-notifications').checked
+  };
+  localStorage.setItem('npr_ui_settings', JSON.stringify(uiSettings));
+  applyUiSettings();
+  showOptionsStatus('Ustawienia zapisane.');
+}
+
+function openOptions() {
+  applyUiSettings();
+  document.getElementById('options-modal').classList.add('open');
+}
+
+function closeOptions() {
+  document.getElementById('options-modal').classList.remove('open');
+}
+
+function toggleInstructions() {
+  document.getElementById('options-help').classList.toggle('open');
+}
+
+function showOptionsStatus(message, isError = false) {
+  const status = document.getElementById('options-status');
+  status.textContent = message;
+  status.style.color = isError ? '#e87070' : '#8bc34a';
+}
+
+function exportSettings() {
+  const data = { version:1, uiSettings, cardSize };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'ustawienia-najlepsze-polskie-riffy.txt';
+  link.click();
+  URL.revokeObjectURL(url);
+  showOptionsStatus('Plik ustawień został przygotowany.');
+}
+
+function importSettings(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || typeof data.uiSettings !== 'object') throw new Error('Nieprawidłowy format');
+      uiSettings = {...DEFAULT_UI_SETTINGS, ...data.uiSettings};
+      localStorage.setItem('npr_ui_settings', JSON.stringify(uiSettings));
+      if (Number.isFinite(data.cardSize)) {
+        cardSize = Math.min(550, Math.max(140, data.cardSize));
+        localStorage.setItem('npr_cardsize', cardSize);
+        changeSize(0);
+      }
+      applyUiSettings();
+      showOptionsStatus('Ustawienia zostały wczytane.');
+    } catch (_) {
+      showOptionsStatus('Nie udało się wczytać tego pliku ustawień.', true);
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+let reviewRating = 0;
+let reviewPhotoImage = null;
+let reviewPhotoZoom = 1;
+let reviewPhotoOffsetX = 0;
+let reviewPhotoOffsetY = 0;
+let reviewPhotoDrag = null;
+
+function sendFeedback() {
+  closeOptions();
+  document.getElementById('review-modal').classList.add('open');
+}
+
+function closeReviewForm() {
+  document.getElementById('review-modal').classList.remove('open');
+}
+
+function setReviewRating(rating) {
+  reviewRating = rating;
+  document.querySelectorAll('.review-star').forEach((star, index) => {
+    star.classList.toggle('active', index < rating);
+  });
+}
+
+function updateReviewCharCount() {
+  const text = document.getElementById('review-text').value;
+  document.getElementById('review-char-count').textContent = `${text.length} / 420`;
+}
+
+function setReviewStatus(message, isError = false) {
+  const status = document.getElementById('review-status');
+  status.textContent = message;
+  status.style.color = isError ? '#e87070' : '#8bc34a';
+}
+
+function loadReviewPhoto(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+    event.target.value = '';
+    reviewPhotoImage = null;
+    document.getElementById('review-photo-editor').style.display = 'none';
+    document.getElementById('review-crop-controls').classList.remove('open');
+    setReviewStatus('Wybierz zdjęcie JPG, PNG lub WebP o rozmiarze do 5 MB.', true);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    const image = new Image();
+    image.onload = () => {
+      reviewPhotoImage = image;
+      resetReviewPhotoCrop();
+      document.getElementById('review-photo-editor').style.display = 'block';
+      document.getElementById('review-crop-controls').classList.add('open');
+      drawReviewPhotoEditor();
+      setReviewStatus('Zdjęcie zostało wczytane lokalnie.');
+    };
+    image.onerror = () => setReviewStatus('Nie udało się odczytać zdjęcia.', true);
+    image.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function drawReviewPhotoCrop(ctx, centerX, centerY, size) {
+  if (!reviewPhotoImage) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, size / 2, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.fillStyle = '#dff7fa';
+  ctx.fillRect(centerX - size / 2, centerY - size / 2, size, size);
+  const baseScale = Math.max(size / reviewPhotoImage.width, size / reviewPhotoImage.height);
+  const scale = baseScale * reviewPhotoZoom;
+  const drawW = reviewPhotoImage.width * scale;
+  const drawH = reviewPhotoImage.height * scale;
+  const drawX = centerX - drawW / 2 + reviewPhotoOffsetX * size;
+  const drawY = centerY - drawH / 2 + reviewPhotoOffsetY * size;
+  ctx.drawImage(reviewPhotoImage, drawX, drawY, drawW, drawH);
+  ctx.restore();
+}
+
+function drawReviewPhotoEditor() {
+  const editor = document.getElementById('review-photo-editor');
+  if (!reviewPhotoImage || !editor) return;
+  const ctx = editor.getContext('2d');
+  ctx.clearRect(0, 0, editor.width, editor.height);
+  drawReviewPhotoCrop(ctx, editor.width / 2, editor.height / 2, editor.width);
+}
+
+function changeReviewPhotoZoom(value) {
+  reviewPhotoZoom = Number(value);
+  document.getElementById('review-photo-zoom-value').textContent = `${Math.round(reviewPhotoZoom * 100)}%`;
+  drawReviewPhotoEditor();
+}
+
+function resetReviewPhotoCrop() {
+  reviewPhotoZoom = 1;
+  reviewPhotoOffsetX = 0;
+  reviewPhotoOffsetY = 0;
+  const zoom = document.getElementById('review-photo-zoom');
+  if (zoom) zoom.value = '1';
+  const label = document.getElementById('review-photo-zoom-value');
+  if (label) label.textContent = '100%';
+  drawReviewPhotoEditor();
+}
+
+function startReviewPhotoDrag(event) {
+  if (!reviewPhotoImage) return;
+  reviewPhotoDrag = { x:event.clientX, y:event.clientY };
+  event.currentTarget.setPointerCapture(event.pointerId);
+  event.currentTarget.classList.add('dragging');
+}
+
+function moveReviewPhoto(event) {
+  if (!reviewPhotoDrag || !reviewPhotoImage) return;
+  const rect = event.currentTarget.getBoundingClientRect();
+  reviewPhotoOffsetX += (event.clientX - reviewPhotoDrag.x) / rect.width;
+  reviewPhotoOffsetY += (event.clientY - reviewPhotoDrag.y) / rect.height;
+  reviewPhotoOffsetX = Math.max(-1.5, Math.min(1.5, reviewPhotoOffsetX));
+  reviewPhotoOffsetY = Math.max(-1.5, Math.min(1.5, reviewPhotoOffsetY));
+  reviewPhotoDrag = { x:event.clientX, y:event.clientY };
+  drawReviewPhotoEditor();
+}
+
+function endReviewPhotoDrag(event) {
+  reviewPhotoDrag = null;
+  event.currentTarget.classList.remove('dragging');
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+}
+
+function roundedRect(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + width, y, x + width, y + height, r);
+  ctx.arcTo(x + width, y + height, x, y + height, r);
+  ctx.arcTo(x, y + height, x, y, r);
+  ctx.arcTo(x, y, x + width, y, r);
+  ctx.closePath();
+}
+
+function wrapCanvasText(ctx, text, maxWidth, maxLines) {
+  const words = text.trim().split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (ctx.measureText(candidate).width <= maxWidth) {
+      line = candidate;
+    } else {
+      if (line) lines.push(line);
+      line = word;
+      if (lines.length === maxLines) break;
+    }
+  }
+  if (line && lines.length < maxLines) lines.push(line);
+  if (lines.length === maxLines && words.join(' ').length > lines.join(' ').length) {
+    while (ctx.measureText(lines[maxLines - 1] + '…').width > maxWidth) {
+      lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1);
+    }
+    lines[maxLines - 1] += '…';
+  }
+  return lines;
+}
+
+function fitReviewText(ctx, text, maxWidth, maxHeight) {
+  const normalized = text.trim().replace(/\s+/g, ' ');
+  for (let fontSize = 46; fontSize >= 21; fontSize--) {
+    ctx.font = `400 ${fontSize}px Arial, sans-serif`;
+    const words = normalized.split(' ');
+    const lines = [];
+    let line = '';
+    for (const word of words) {
+      const candidate = line ? `${line} ${word}` : word;
+      if (!line || ctx.measureText(candidate).width <= maxWidth) {
+        line = candidate;
+      } else {
+        lines.push(line);
+        line = word;
+      }
+    }
+    if (line) lines.push(line);
+    const lineHeight = Math.round(fontSize * 1.27);
+    if (lines.length * lineHeight <= maxHeight && lines.every(item => ctx.measureText(item).width <= maxWidth)) {
+      return { fontSize, lineHeight, lines };
+    }
+  }
+  ctx.font = '400 21px Arial, sans-serif';
+  return { fontSize:21, lineHeight:27, lines:wrapCanvasText(ctx, normalized, maxWidth, Math.floor(maxHeight / 27)) };
+}
+
+function validateReview(requireConsent = false) {
+  const name = document.getElementById('review-name').value.trim();
+  const text = document.getElementById('review-text').value.trim();
+  if (name.length < 2) return 'Podaj imię lub podpis.';
+  if (!reviewPhotoImage) return 'Dodaj swoje zdjęcie.';
+  if (!reviewRating) return 'Wybierz ocenę od 1 do 5 gwiazdek.';
+  if (text.length < 10) return 'Opinia powinna zawierać co najmniej 10 znaków.';
+  if (requireConsent && !document.getElementById('review-data-consent').checked) return 'Zaznacz zgodę na przetwarzanie danych.';
+  if (requireConsent && !document.getElementById('review-publication-consent').checked) return 'Zaznacz zgodę na publikację opinii i zdjęcia.';
+  return '';
+}
+
+function generateReviewCanvas() {
+  const error = validateReview(false);
+  if (error) throw new Error(error);
+  const canvas = document.getElementById('review-canvas');
+  const ctx = canvas.getContext('2d');
+  const name = document.getElementById('review-name').value.trim();
+  const review = document.getElementById('review-text').value.trim();
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const gradient = ctx.createLinearGradient(146, 100, 956, 528);
+  gradient.addColorStop(0, '#bceff5');
+  gradient.addColorStop(1, '#f7f8f8');
+  ctx.fillStyle = gradient;
+  roundedRect(ctx, 146, 100, 810, 428, 28);
+  ctx.fill();
+
+  ctx.fillStyle = '#c9f4f8';
+  ctx.beginPath();
+  ctx.arc(146, 292, 104, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(146, 292, 80, 0, Math.PI * 2);
+  ctx.clip();
+  ctx.restore();
+  drawReviewPhotoCrop(ctx, 146, 292, 160);
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.arc(146, 292, 84, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = '#111';
+  ctx.font = '700 34px Arial, sans-serif';
+  ctx.fillText(name, 276, 172);
+  const nameWidth = ctx.measureText(name).width;
+  ctx.fillStyle = '#555';
+  ctx.font = '600 21px Arial, sans-serif';
+  const productX = Math.min(276 + nameWidth + 18, 700);
+  ctx.fillText(`• ${REVIEW_PRODUCT}`, productX, 171);
+
+  ctx.fillStyle = '#111';
+  const fittedText = fitReviewText(ctx, review, 625, 238);
+  ctx.font = `400 ${fittedText.fontSize}px Arial, sans-serif`;
+  const textHeight = fittedText.lines.length * fittedText.lineHeight;
+  const textStartY = 220 + Math.max(0, (238 - textHeight) / 2) + fittedText.fontSize;
+  fittedText.lines.forEach((line, index) => ctx.fillText(line, 276, textStartY + index * fittedText.lineHeight));
+
+  ctx.fillStyle = '#f7f2e9';
+  roundedRect(ctx, 526, 484, 318, 82, 38);
+  ctx.fill();
+  ctx.font = '700 43px Arial, sans-serif';
+  ctx.fillStyle = '#eda52b';
+  ctx.textAlign = 'center';
+  ctx.fillText('★'.repeat(reviewRating) + '☆'.repeat(5 - reviewRating), 685, 541);
+  ctx.textAlign = 'left';
+  return canvas;
+}
+
+function previewReviewPng() {
+  try {
+    const canvas = generateReviewCanvas();
+    const output = document.getElementById('review-output');
+    output.src = canvas.toDataURL('image/png');
+    output.style.display = 'block';
+    setReviewStatus('Podgląd PNG jest gotowy.');
+  } catch (error) {
+    setReviewStatus(error.message, true);
+  }
+}
+
+function reviewFileName() {
+  const name = document.getElementById('review-name').value.trim().replace(/[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ_-]+/g, '-');
+  return `opinia-${name || 'klienta'}.png`;
+}
+
+function downloadReviewPng() {
+  try {
+    const canvas = generateReviewCanvas();
+    const link = document.createElement('a');
+    link.download = reviewFileName();
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    setReviewStatus('Plik PNG został przygotowany.');
+  } catch (error) {
+    setReviewStatus(error.message, true);
+  }
+}
+
+async function sendReviewEmail() {
+  const error = validateReview(true);
+  if (error) {
+    setReviewStatus(error, true);
+    return;
+  }
+  if (!EMAILJS_PUBLIC_KEY || !EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !window.emailjs) {
+    setReviewStatus('Wysyłka wymaga jeszcze podłączenia konta EmailJS. PNG możesz już pobrać.', true);
+    return;
+  }
+  try {
+    setReviewStatus('Wysyłanie opinii…');
+    const canvas = generateReviewCanvas();
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: 'tomaszczerniuk@gmail.com',
+      from_name: document.getElementById('review-name').value.trim(),
+      product: REVIEW_PRODUCT,
+      rating: reviewRating,
+      review_text: document.getElementById('review-text').value.trim(),
+      attachment_name: reviewFileName(),
+      content: canvas.toDataURL('image/png')
+    }, { publicKey: EMAILJS_PUBLIC_KEY });
+    setReviewStatus('Dziękujemy! Opinia została wysłana.');
+  } catch (_) {
+    setReviewStatus('Nie udało się wysłać opinii. Spróbuj ponownie później.', true);
+  }
+}
+
+loadUiSettings();
+
+let toolbarTouchStart = null;
+
+function setToolbarCollapsed(collapsed, remember = true) {
+  const wrap = document.getElementById('toolbar-wrap');
+  const toolbar = document.getElementById('toolbar');
+  const toggle = document.getElementById('toolbar-toggle');
+  const label = document.getElementById('toolbar-toggle-label');
+  wrap.classList.toggle('collapsed', collapsed);
+  toolbar.classList.toggle('hidden', collapsed);
+  toggle.setAttribute('aria-expanded', String(!collapsed));
+  label.textContent = collapsed ? 'POKAŻ WYSZUKIWANIE I FILTRY' : 'SCHOWAJ WYSZUKIWANIE I FILTRY';
+  if (remember) localStorage.setItem('npr_toolbar_collapsed', collapsed ? '1' : '0');
+}
+
+function toggleToolbar() {
+  setToolbarCollapsed(!document.getElementById('toolbar-wrap').classList.contains('collapsed'));
+}
+
+function initToolbarGestures() {
+  const wrap = document.getElementById('toolbar-wrap');
+  setToolbarCollapsed(localStorage.getItem('npr_toolbar_collapsed') === '1', false);
+  wrap.addEventListener('touchstart', event => {
+    const touch = event.changedTouches[0];
+    toolbarTouchStart = { x:touch.clientX, y:touch.clientY };
+  }, {passive:true});
+  wrap.addEventListener('touchend', event => {
+    if (!toolbarTouchStart) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - toolbarTouchStart.x;
+    const dy = touch.clientY - toolbarTouchStart.y;
+    toolbarTouchStart = null;
+    if (Math.abs(dy) < 60 || Math.abs(dy) <= Math.abs(dx)) return;
+    if (dy < 0) setToolbarCollapsed(true);
+    else setToolbarCollapsed(false);
+  }, {passive:true});
+}
+
+initToolbarGestures();
+
 const NEW_DAYS = 30;
 
 function parseExcelDate(value) {
@@ -305,6 +948,66 @@ function isNewEntry(value) {
   const addedUtc = Date.UTC(added.getFullYear(), added.getMonth(), added.getDate());
   const ageInDays = Math.floor((todayUtc - addedUtc) / 86400000);
   return ageInDays >= 0 && ageInDays <= NEW_DAYS;
+}
+
+function formatPolishDate(date) {
+  if (!date) return '';
+  return [
+    String(date.getDate()).padStart(2, '0'),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    date.getFullYear()
+  ].join('.');
+}
+
+function riffCountLabel(count) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (count === 1) return '1 riff';
+  if (last >= 2 && last <= 4 && !(lastTwo >= 12 && lastTwo <= 14)) return `${count} riffy`;
+  return `${count} riffów`;
+}
+
+function latestEntryDate() {
+  return exercises
+    .map(e => parseExcelDate(e.data))
+    .filter(Boolean)
+    .reduce((latest, date) => !latest || date > latest ? date : latest, null);
+}
+
+function showOnlyNewEntries() {
+  document.getElementById('sort').value = 'new';
+  render();
+}
+
+function updateCountHeader(filteredCount) {
+  const count = document.getElementById('count');
+  const newEntries = exercises
+    .filter(e => isNewEntry(e.data))
+    .sort((a, b) => parseExcelDate(b.data) - parseExcelDate(a.data))
+    .slice(0, 5);
+  const latestDate = latestEntryDate();
+
+  count.replaceChildren();
+
+  if (newEntries.length) {
+    count.append(document.createTextNode('🆕 Nowości - '));
+    newEntries.forEach((entry, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'new-count-link';
+      button.textContent = entry.nazwa;
+      button.title = 'Pokaż wszystkie nowe opracowania';
+      button.addEventListener('click', showOnlyNewEntries);
+      count.append(button);
+      if (index < newEntries.length - 1) count.append(document.createTextNode(', '));
+    });
+    count.append(document.createTextNode(' • '));
+  }
+
+  if (latestDate) {
+    count.append(document.createTextNode(`Aktualizacja: ${formatPolishDate(latestDate)} • `));
+  }
+  count.append(document.createTextNode(riffCountLabel(filteredCount)));
 }
 
 function loadExcel() {
@@ -365,7 +1068,8 @@ function render() {
     (!kt || e.wykonawca === kt) &&
     (!lv || e.poziom === lv) &&
     (activeTags.size === 0 || [...activeTags].every(t => e.tagi.includes(t))) &&
-    (sv !== 'fav' || favorites.has(e.id))
+    (sv !== 'fav' || favorites.has(e.id)) &&
+    (sv !== 'new' || isNewEntry(e.data))
   );
 
   const lvlOrder = {'POCZĄTKUJĄCY':0,'PROSTY':1,'ŚREDNI':2,'TRUDNY':3,'EXPERT':4};
@@ -376,11 +1080,12 @@ function render() {
   else if (sv === 'lvl_asc') filtered.sort((a,b) => (lvlOrder[a.poziom]??99)-(lvlOrder[b.poziom]??99));
   else if (sv === 'lvl_desc') filtered.sort((a,b) => (lvlOrder[b.poziom]??99)-(lvlOrder[a.poziom]??99));
 
-  document.getElementById('count').textContent = filtered.length + ' riffów';
+  updateCountHeader(filtered.length);
 
   const parts = [];
   if (kt) parts.push(kt);
   if (lv) parts.push(lv);
+  if (sv === 'new') parts.push('Nowości z ostatnich 30 dni');
   activeTags.forEach(t => parts.push('#'+t));
   document.getElementById('section-label').textContent = parts.length ? parts.join(' · ') : 'Wszystkie riffy';
 
@@ -453,6 +1158,13 @@ function updateTagsBadge() {
 function changeSize(delta) {
   cardSize = Math.min(550, Math.max(140, cardSize + delta));
   document.getElementById('grid').style.gridTemplateColumns = `repeat(auto-fill,minmax(${cardSize}px,1fr))`;
+  document.body.classList.toggle('cards-mini', cardSize <= 150);
+  const isMini = cardSize <= 150;
+  document.querySelectorAll('.toolbar-btns .btn-toolbar').forEach(button => {
+    if (button.getAttribute('onclick') === 'changeSize(-40)') {
+      button.title = isMini ? 'Minimalny rozmiar: tylko miniatura i tytuł' : 'Zmniejsz karty';
+    }
+  });
   if (delta !== 0) localStorage.setItem('npr_cardsize', cardSize);
 }
 
@@ -535,6 +1247,7 @@ fetch(`${REPO_BASE}/data/tresci.txt`)
   }).catch(()=>{});
 
 function showPopup() {
+  if (!uiSettings.notifications) return;
   if (!PORADY.length && !REKLAMY.length) return;
   const popup=document.getElementById('tip-popup');
   const label=document.getElementById('tip-label');
