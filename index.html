@@ -52,7 +52,10 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .btn-toolbar:hover{border-color:var(--accent);color:var(--accent);}
 .toolbar-btns{grid-column:1/-1;display:flex;gap:6px;}
 .toolbar-btns .btn-toolbar{flex:1;}
+#export-btn{display:flex;align-items:center;justify-content:center;gap:5px;}
+#export-btn i{font-size:17px;}
 #toolbar-eye-close i,#options-btn i{font-size:18px;}
+#card-size-btn i{font-size:18px;}
 #toolbar-restore{display:none;align-items:center;justify-content:center;gap:6px;width:100%;height:28px;border:0;border-top:1px solid var(--border);background:#151515;color:var(--muted);font:600 9px 'Open Sans',sans-serif;letter-spacing:.06em;cursor:pointer;}
 #toolbar-wrap.collapsed #toolbar-restore{display:flex;}
 #toolbar-restore:hover,#toolbar-restore:focus-visible{color:var(--accent);outline:none;}
@@ -100,6 +103,31 @@ body.cards-mini .card>button{display:none !important;}
 body.cards-mini .card-body{padding:8px 7px 9px;}
 body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 @media(min-width:641px){#options-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:520px;max-height:82vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
+
+/* EXPORT */
+#export-modal{position:fixed;inset:0;z-index:235;display:none;}
+#export-modal.open{display:block;}
+#export-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);}
+#export-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:86vh;overflow-y:auto;}
+.export-choice{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #2a2a2a;}
+.export-choice:last-child{border-bottom:0;}
+.export-intro{margin:-5px 0 6px;padding:10px 11px;border:1px solid rgba(255,204,0,.28);border-radius:8px;background:rgba(255,204,0,.055);color:#d8d8d8;font-size:11px;line-height:1.5;}
+.export-intro strong{color:var(--accent);}
+.export-choice-text{min-width:0;}
+.export-choice-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.export-choice-desc{font-size:10.5px;line-height:1.45;color:#888;}
+@media(max-width:640px){#export-panel{max-height:calc(100dvh - 10px);padding:15px 16px calc(15px + env(safe-area-inset-bottom));}.export-intro{font-size:9.5px;line-height:1.4;padding:8px 9px}.export-choice{gap:10px;padding:9px 0}.export-choice-title{font-size:12.5px}.export-choice-desc{font-size:9.5px;line-height:1.35}.export-choice .option-action{flex:0 0 auto;padding:7px 8px;font-size:10px}}
+@media(min-width:641px){#export-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:540px;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
+
+/* CARD SIZE */
+#card-size-modal{position:fixed;inset:0;z-index:234;display:none;}
+#card-size-modal.open{display:block;}
+#card-size-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.65);}
+#card-size-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,calc(100vw - 28px));background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;box-shadow:0 8px 40px rgba(0,0,0,.75);}
+.card-size-actions{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;}
+.card-size-actions .option-action{font-size:15px;min-height:42px;}
+.card-size-actions .card-size-auto{font-size:11px;color:var(--accent);}
+.card-size-actions .card-size-auto.active{background:var(--accent);border-color:var(--accent);color:#111;}
 
 /* REVIEW FORM */
 #review-modal{position:fixed;inset:0;z-index:250;display:none;}
@@ -205,13 +233,39 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
 /* PRINT */
 @media print{
-  #login-screen,header,#toolbar-wrap,#tags-dropdown,#tip-popup,#scroll-top-btn{display:none !important;}
+  #login-screen,header,#toolbar-wrap,#tags-dropdown,#tip-popup,#scroll-top-btn,#export-modal,#card-size-modal{display:none !important;}
   body{background:white !important;color:black !important;}
   .card{border:1px solid #ccc !important;break-inside:avoid;background:#f9f9f9 !important;}
   .card-title{color:black !important;}
   .card-desc{color:#555 !important;}
   .grid-wrap{padding:0 !important;}
 }
+
+/* ===== TESTOWY EKSPORT KATALOGU PDF — początek ===== */
+#print-catalog-header{display:none;}
+@media print{
+  @page{size:420mm 1000mm;margin:0;background:#0f0f0f;}
+  html,body.print-catalog{width:420mm !important;margin:0 !important;background:#0f0f0f !important;color:#fff !important;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  body.print-catalog{padding:20mm !important;}
+  body.print-catalog #options-modal,body.print-catalog #review-modal{display:none !important;}
+  body.print-catalog #print-catalog-header{display:block !important;margin-bottom:5mm;padding:0 1mm 3mm;border-bottom:2px solid #ffcc00;color:#fff;background:#0f0f0f !important;}
+  body.print-catalog #print-catalog-header h1{font:700 19pt 'Oswald',sans-serif;letter-spacing:.03em;margin:0 0 2mm;}
+  body.print-catalog #print-catalog-meta{font:10pt 'Open Sans',sans-serif;color:#aaa;}
+  body.print-catalog .grid-wrap{padding:0 !important;background:#0f0f0f !important;}
+  body.print-catalog .section-label{font-size:9pt;color:#aaa;margin-bottom:3mm;}
+  body.print-catalog .grid{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:7mm !important;}
+  body.print-catalog .card{height:92mm !important;overflow:hidden !important;break-inside:avoid;page-break-inside:avoid;border:1.5px solid #3b3b3b !important;border-radius:3mm !important;background:#1a1a1a !important;transform:none !important;box-shadow:none !important;}
+  body.print-catalog .card>button{display:none !important;}
+  body.print-catalog .thumb{display:flex !important;}
+  body.print-catalog .card-body{padding:3mm !important;}
+  body.print-catalog .card-title{font-size:11pt !important;color:#fff !important;}
+  body.print-catalog .card-desc{display:-webkit-box !important;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;font-size:8pt !important;color:#bbb !important;}
+  body.print-catalog .card-tags{display:flex !important;max-height:16mm;overflow:hidden;border-color:#333 !important;}
+  body.print-catalog .card-tag{color:#aaa !important;background:#222 !important;border-color:#3a3a3a !important;}
+  body.print-catalog .card-tag-new{color:#fff !important;background:#d71920 !important;border-color:#d71920 !important;}
+  body.print-catalog .difficulty-stars{display:block !important;}
+}
+/* ===== TESTOWY EKSPORT KATALOGU PDF — koniec ===== */
 </style>
 </head>
 <body>
@@ -237,7 +291,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
 <div id="toolbar-wrap">
   <div class="toolbar" id="toolbar">
-    <input type="text" id="search" placeholder="🔍 Szukaj utworu lub wykonawcy…" oninput="render()">
+    <input type="text" id="search" placeholder="🔍 Szukaj utworu lub wykonawcy… (Shift + Spacja)" oninput="render()">
     <select id="sort" onchange="render()">
       <option value="">Sortuj…</option>
       <option value="song_az">Utwór A → Z</option>
@@ -262,10 +316,9 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <option>EXPERT</option>
     </select>
     <div class="toolbar-btns">
-      <button class="btn-toolbar" onclick="changeSize(-40)">−</button>
-      <button class="btn-toolbar" onclick="changeSize(40)">+</button>
+      <button class="btn-toolbar" id="card-size-btn" onclick="openCardSizeModal()" aria-label="Ustaw wielkość kart" title="Ustaw wielkość kart"><i class="ti ti-zoom-in"></i></button>
       <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()">TAGI<span id="tags-count-badge" style="display:none;background:#ffcc00;color:#000;border-radius:99px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:3px;"></span></button>
-      <button class="btn-toolbar" onclick="exportPDF()">PDF</button>
+      <button class="btn-toolbar" id="export-btn" onclick="openExportModal()" aria-label="PDF i eksport list" title="PDF i eksport list"><i class="ti ti-device-floppy"></i><span>PDF</span></button>
       <button class="btn-toolbar" onclick="resetFilters()">RESET</button>
       <button class="btn-toolbar" id="toolbar-eye-close" type="button" onclick="setToolbarCollapsed(true)" aria-label="Schowaj wyszukiwanie i sortowanie" title="Schowaj wyszukiwanie i sortowanie"><i class="ti ti-eye-off"></i></button>
       <button class="btn-toolbar" id="options-btn" onclick="openOptions()" aria-label="Opcje" title="Opcje"><i class="ti ti-settings"></i></button>
@@ -274,6 +327,13 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   </div>
   <button id="toolbar-restore" type="button" onclick="setToolbarCollapsed(false)" aria-label="Pokaż wyszukiwanie i filtry"><i class="ti ti-chevron-down"></i><span id="toolbar-restore-label">KLIKNIJ, ABY ROZWINĄĆ WYSZUKIWANIE I FILTRY</span></button>
 </div>
+
+<!-- TESTOWY EKSPORT KATALOGU PDF — początek -->
+<section id="print-catalog-header">
+  <h1>NAJLEPSZE POLSKIE RIFFY</h1>
+  <div id="print-catalog-meta"></div>
+</section>
+<!-- TESTOWY EKSPORT KATALOGU PDF — koniec -->
 
 <div class="grid-wrap">
   <div class="section-label" id="section-label">Wszystkie riffy</div>
@@ -330,6 +390,48 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="option-row"><span>Wyeksportuj demo</span><button class="option-action" disabled title="Funkcja zostanie dodana później">WKRÓTCE</button></div>
     </div>
     <div id="options-status" role="status"></div>
+  </div>
+</div>
+
+<div id="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-title">
+  <div id="export-backdrop" onclick="closeExportModal()"></div>
+  <div id="export-panel">
+    <div class="options-header">
+      <span class="options-title" id="export-title"><i class="ti ti-device-floppy"></i> EKSPORT</span>
+      <button class="options-close" onclick="closeExportModal()" aria-label="Zamknij">✕</button>
+    </div>
+    <div class="export-intro"><strong>Warto zapisać materiały dla siebie</strong> na wypadek, gdyby strona internetowa przestała być dostępna. Pamiętaj, że aktualnie ustawione filtry oraz sortowanie mają wpływ na zawartość i kolejność finalnego eksportu.</div>
+    <div class="export-choice">
+      <div class="export-choice-text"><div class="export-choice-title">Pełny eksport graficzny</div><div class="export-choice-desc">Długi katalog z czterema kartami w rzędzie, okładkami, opisami, tagami i gwiazdkami.</div></div>
+      <button class="option-action" onclick="exportCatalogPreview()">EKSPORTUJ</button>
+    </div>
+    <div class="export-choice">
+      <div class="export-choice-text"><div class="export-choice-title">Zwykła lista PDF</div><div class="export-choice-desc">Lekka lista aktualnie widocznych utworów z aktywnymi linkami.</div></div>
+      <button class="option-action" onclick="closeExportModal();exportPDF()">EKSPORTUJ</button>
+    </div>
+    <div class="export-choice">
+      <div class="export-choice-text"><div class="export-choice-title">Lista utworów do Worda</div><div class="export-choice-desc">Edytowalna lista aktualnie widocznych utworów w pliku otwieranym przez Microsoft Word.</div></div>
+      <button class="option-action" onclick="exportWordList()">EKSPORTUJ</button>
+    </div>
+    <div class="export-choice">
+      <div class="export-choice-text"><div class="export-choice-title">Lista utworów do Notatnika</div><div class="export-choice-desc">Prosty plik TXT z numerowaną listą aktualnie widocznych utworów.</div></div>
+      <button class="option-action" onclick="exportTextList()">EKSPORTUJ</button>
+    </div>
+  </div>
+</div>
+
+<div id="card-size-modal" role="dialog" aria-modal="true" aria-labelledby="card-size-title">
+  <div id="card-size-backdrop" onclick="closeCardSizeModal()"></div>
+  <div id="card-size-panel">
+    <div class="options-header">
+      <span class="options-title" id="card-size-title"><i class="ti ti-zoom-in"></i> WIELKOŚĆ KART</span>
+      <button class="options-close" onclick="closeCardSizeModal()" aria-label="Zamknij">✕</button>
+    </div>
+    <div class="card-size-actions">
+      <button class="option-action" type="button" onclick="changeSize(-40)">−</button>
+      <button class="option-action card-size-auto active" id="card-size-auto" type="button" onclick="setAutoCardSize()" aria-pressed="true">AUTO</button>
+      <button class="option-action" type="button" onclick="changeSize(40)">+</button>
+    </div>
   </div>
 </div>
 
@@ -461,6 +563,7 @@ let exercises = [];
 let activeTags = new Set();
 const savedSize = localStorage.getItem('npr_cardsize');
 let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280 : 440);
+let cardSizeAuto = !savedSize;
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
 const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, notifications:true };
@@ -511,6 +614,37 @@ function openOptions() {
 
 function closeOptions() {
   document.getElementById('options-modal').classList.remove('open');
+}
+
+function openExportModal() {
+  document.getElementById('export-modal').classList.add('open');
+}
+
+function closeExportModal() {
+  document.getElementById('export-modal').classList.remove('open');
+}
+
+function openCardSizeModal() {
+  updateCardSizeModeUI();
+  document.getElementById('card-size-modal').classList.add('open');
+}
+
+function closeCardSizeModal() {
+  document.getElementById('card-size-modal').classList.remove('open');
+}
+
+function setAutoCardSize() {
+  cardSize = window.innerWidth <= 640 ? 280 : 440;
+  cardSizeAuto = true;
+  localStorage.removeItem('npr_cardsize');
+  changeSize(0);
+}
+
+function updateCardSizeModeUI() {
+  const autoButton = document.getElementById('card-size-auto');
+  if (!autoButton) return;
+  autoButton.classList.toggle('active', cardSizeAuto);
+  autoButton.setAttribute('aria-pressed', String(cardSizeAuto));
 }
 
 function toggleInstructions() {
@@ -1040,6 +1174,16 @@ else requestAnimationFrame(fitMobileHeaderTitle);
 
 initToolbarGestures();
 
+document.addEventListener('keydown', event => {
+  if (event.code !== 'Space' || !event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return;
+  const target = event.target;
+  const isEditing = target && (target.matches('input, textarea, select') || target.isContentEditable);
+  if (isEditing) return;
+  event.preventDefault();
+  setToolbarCollapsed(false, false);
+  requestAnimationFrame(() => document.getElementById('search').focus());
+});
+
 const NEW_DAYS = 30;
 
 function parseExcelDate(value) {
@@ -1214,14 +1358,22 @@ function loadExcel() {
     });
 }
 
+function normalizeSearchText(value) {
+  return String(value || '')
+    .toLocaleLowerCase('pl')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ł/g, 'l');
+}
+
 function render() {
-  const q  = document.getElementById('search').value.toLowerCase();
+  const q  = normalizeSearchText(document.getElementById('search').value);
   const kt = document.getElementById('kat').value;
   const lv = document.getElementById('lvl').value;
   const sv = document.getElementById('sort').value;
 
   let filtered = exercises.filter(e =>
-    (!q  || e.nazwa.toLowerCase().includes(q) || e.wykonawca.toLowerCase().includes(q) || e.opis.toLowerCase().includes(q)) &&
+    (!q  || normalizeSearchText(e.nazwa).includes(q) || normalizeSearchText(e.wykonawca).includes(q) || normalizeSearchText(e.opis).includes(q)) &&
     (!kt || e.wykonawca === kt) &&
     (!lv || e.poziom === lv) &&
     (activeTags.size === 0 || [...activeTags].every(t => e.tagi.includes(t))) &&
@@ -1314,6 +1466,7 @@ function updateTagsBadge() {
 
 function changeSize(delta) {
   cardSize = Math.min(550, Math.max(140, cardSize + delta));
+  if (delta !== 0) cardSizeAuto = false;
   document.getElementById('grid').style.gridTemplateColumns = `repeat(auto-fill,minmax(${cardSize}px,1fr))`;
   document.body.classList.toggle('cards-mini', cardSize <= 150);
   const isMini = cardSize <= 150;
@@ -1323,6 +1476,7 @@ function changeSize(delta) {
     }
   });
   if (delta !== 0) localStorage.setItem('npr_cardsize', cardSize);
+  updateCardSizeModeUI();
 }
 
 function resetFilters() {
@@ -1389,6 +1543,92 @@ function exportPDF() {
   });
   doc.save('najlepsze-polskie-riffy.pdf');
 }
+
+function escapeExportHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+
+function exportWordList() {
+  const cards = [...document.querySelectorAll('#grid .card')];
+  const section = document.getElementById('section-label').textContent.trim();
+  const items = cards.map((card, index) => {
+    const title = card.querySelector('.card-title')?.textContent || '';
+    const href = card.getAttribute('href') || '';
+    const safeTitle = escapeExportHtml(title);
+    const content = href && href !== '#' ? `<a href="${escapeExportHtml(href)}">${safeTitle}</a>` : safeTitle;
+    return `<li>${content}</li>`;
+  }).join('');
+  const html = `<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><title>Najlepsze Polskie Riffy</title><style>body{font-family:Arial,sans-serif;margin:36px;color:#111}h1{font-size:24px;margin-bottom:6px}p{color:#666;margin-top:0}li{margin:0 0 8px;line-height:1.35}a{color:#9a7400}</style></head><body><h1>Najlepsze Polskie Riffy</h1><p>${escapeExportHtml(section)} • ${riffCountLabel(cards.length)} • ${formatPolishDate(new Date())}</p><ol>${items}</ol></body></html>`;
+  const blob = new Blob(['\ufeff', html], {type:'application/msword;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'najlepsze-polskie-riffy-lista.doc';
+  link.click();
+  URL.revokeObjectURL(url);
+  closeExportModal();
+}
+
+function exportTextList() {
+  const cards = [...document.querySelectorAll('#grid .card')];
+  const section = document.getElementById('section-label').textContent.trim();
+  const lines = cards.map((card, index) => `${index + 1}. ${card.querySelector('.card-title')?.textContent || ''}`);
+  const content = [
+    'NAJLEPSZE POLSKIE RIFFY',
+    `${section} • ${riffCountLabel(cards.length)} • ${formatPolishDate(new Date())}`,
+    '',
+    ...lines
+  ].join('\r\n');
+  const blob = new Blob(['\ufeff', content], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'najlepsze-polskie-riffy-lista.txt';
+  link.click();
+  URL.revokeObjectURL(url);
+  closeExportModal();
+}
+
+// ===== TESTOWY EKSPORT KATALOGU PDF — początek =====
+async function exportCatalogPreview() {
+  const visibleCards = document.querySelectorAll('#grid .card').length;
+  const section = document.getElementById('section-label').textContent.trim();
+  const generated = formatPolishDate(new Date());
+  const rows = Math.max(1, Math.ceil(visibleCards / 4));
+  const pageHeightMm = 190 + (rows * 92) + (Math.max(0, rows - 1) * 7);
+  const catalogImages = [...document.querySelectorAll('#grid .thumb img')];
+  const previousLoading = catalogImages.map(image => image.getAttribute('loading'));
+  catalogImages.forEach(image => image.setAttribute('loading', 'eager'));
+  await Promise.all(catalogImages.map(async image => {
+    const deadline = Date.now() + 12000;
+    while ((!image.complete || image.naturalWidth === 0) && Date.now() < deadline) {
+      await new Promise(resolve => setTimeout(resolve, 120));
+    }
+    if (image.complete && image.naturalWidth > 0 && image.decode) await image.decode().catch(() => {});
+  }));
+  let pageStyle = document.getElementById('print-catalog-page-size');
+  if (!pageStyle) {
+    pageStyle = document.createElement('style');
+    pageStyle.id = 'print-catalog-page-size';
+    document.head.appendChild(pageStyle);
+  }
+  pageStyle.textContent = `@media print { @page { size: 420mm ${pageHeightMm}mm; margin: 0; } }`;
+  document.getElementById('print-catalog-meta').textContent = `${section} • ${riffCountLabel(visibleCards)} • Wygenerowano: ${generated}`;
+  document.body.classList.add('print-catalog');
+  closeOptions();
+  closeExportModal();
+  const cleanup = () => {
+    document.body.classList.remove('print-catalog');
+    catalogImages.forEach((image, index) => {
+      if (previousLoading[index] === null) image.removeAttribute('loading');
+      else image.setAttribute('loading', previousLoading[index]);
+    });
+    pageStyle.remove();
+  };
+  window.addEventListener('afterprint', cleanup, {once:true});
+  requestAnimationFrame(() => window.print());
+}
+// ===== TESTOWY EKSPORT KATALOGU PDF — koniec =====
 
 // POPUP
 let PORADY = [], REKLAMY = [], isAd = false, poradyIdx = 0, reklamyIdx = 0, popupTimeout;
