@@ -377,7 +377,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   </div>
 </div>
 
-<button id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<button id="scroll-top-btn" onclick="scrollToTopAndShowToolbar()" aria-label="Wróć na górę i pokaż wyszukiwanie">↑</button>
 
 <div id="tip-popup">
   <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20WUJEK%20SZPON%20ROUND.png" alt="Wujek Szpon" style="width:55px;height:55px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ffcc00;">
@@ -873,6 +873,7 @@ async function sendReviewEmail() {
 loadUiSettings();
 
 let toolbarTouchStart = null;
+let toolbarAutoHideStartY = window.scrollY;
 
 function setToolbarCollapsed(collapsed, remember = true) {
   const wrap = document.getElementById('toolbar-wrap');
@@ -883,6 +884,7 @@ function setToolbarCollapsed(collapsed, remember = true) {
   toolbar.classList.toggle('hidden', collapsed);
   toggle.setAttribute('aria-expanded', String(!collapsed));
   label.textContent = collapsed ? 'POKAŻ WYSZUKIWANIE I FILTRY' : 'SCHOWAJ WYSZUKIWANIE I FILTRY';
+  if (!collapsed) toolbarAutoHideStartY = window.scrollY;
   if (remember) localStorage.setItem('npr_toolbar_collapsed', collapsed ? '1' : '0');
 }
 
@@ -892,7 +894,9 @@ function toggleToolbar() {
 
 function initToolbarGestures() {
   const wrap = document.getElementById('toolbar-wrap');
-  setToolbarCollapsed(localStorage.getItem('npr_toolbar_collapsed') === '1', false);
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+  const savedCollapsed = localStorage.getItem('npr_toolbar_collapsed') === '1';
+  setToolbarCollapsed(isMobile ? false : savedCollapsed, false);
   wrap.addEventListener('touchstart', event => {
     const touch = event.changedTouches[0];
     toolbarTouchStart = { x:touch.clientX, y:touch.clientY };
@@ -907,6 +911,22 @@ function initToolbarGestures() {
     if (dy < 0) setToolbarCollapsed(true);
     else setToolbarCollapsed(false);
   }, {passive:true});
+}
+
+function autoHideToolbarOnMobile() {
+  if (!window.matchMedia('(max-width: 640px)').matches) return;
+  const wrap = document.getElementById('toolbar-wrap');
+  if (wrap.classList.contains('collapsed')) return;
+  const firstCard = document.querySelector('#grid .card');
+  const twoCardsHeight = firstCard ? firstCard.getBoundingClientRect().height * 2 : window.innerHeight * 0.7;
+  const hideDistance = Math.max(320, twoCardsHeight);
+  if (window.scrollY - toolbarAutoHideStartY >= hideDistance) setToolbarCollapsed(true);
+}
+
+function scrollToTopAndShowToolbar() {
+  setToolbarCollapsed(false);
+  toolbarAutoHideStartY = 0;
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 initToolbarGestures();
@@ -1279,6 +1299,7 @@ setTimeout(()=>{ showPopup(); setInterval(showPopup,60000); },15000);
 // SCROLL TO TOP
 window.addEventListener('scroll',()=>{
   document.getElementById('scroll-top-btn').style.display = window.scrollY>300?'flex':'none';
+  autoHideToolbarOnMobile();
 });
 </script>
 </body>
