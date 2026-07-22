@@ -353,9 +353,6 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 /* WERSJA DEMO */
 #login-screen{display:none!important;}
 .demo-disabled{opacity:.42!important;cursor:not-allowed!important;filter:grayscale(1);}
-.demo-free-strip{margin:0 0 13px;padding:11px 13px;border:1px solid rgba(255,204,0,.35);border-radius:9px;background:rgba(255,204,0,.055);color:#ddd;font-size:12px;line-height:1.55;cursor:pointer;}
-.demo-free-strip strong{color:#ffcc00;}
-.demo-free-strip:hover{border-color:#ffcc00;background:rgba(255,204,0,.09);}
 .card-tag-demo{color:#fff!important;background:#e00018!important;border-color:#ff4053!important;font-weight:900!important;text-shadow:0 0 5px rgba(255,255,255,.7);box-shadow:0 0 5px rgba(255,0,35,.8),0 0 12px rgba(255,0,35,.55);animation:demo-neon-pulse 1.9s ease-in-out infinite;}
 @keyframes demo-neon-pulse{0%,100%{box-shadow:0 0 4px rgba(255,0,35,.65),0 0 10px rgba(255,0,35,.4)}50%{box-shadow:0 0 8px rgba(255,0,35,1),0 0 18px rgba(255,0,35,.75)}}
 @media(prefers-reduced-motion:reduce){.card-tag-demo{animation:none;}}
@@ -382,7 +379,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .demo-modal-actions{display:flex;justify-content:center;padding-top:14px;margin-top:13px;border-top:1px solid #333;}
 .demo-yellow-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#ffcc00;color:#111!important;border:0;text-decoration:none;font-family:inherit;font-size:13px;font-weight:900;border-radius:8px;padding:12px 18px;cursor:pointer;box-shadow:0 0 7px rgba(255,204,0,.45),0 0 15px rgba(255,204,0,.24);}
 .demo-yellow-button:hover{background:#ffe066;box-shadow:0 0 10px rgba(255,204,0,.7),0 0 20px rgba(255,204,0,.4);}
-@media(max-width:640px){#demo-offer-modal,#demo-welcome-modal{padding:10px;align-items:flex-start}.demo-modal-panel{max-height:calc(100vh - 20px);grid-template-columns:1fr;gap:12px;padding:14px;margin:auto 0;align-items:start}.demo-modal-cover{width:min(180px,48vw);height:auto;margin:0 auto}.demo-modal-cover img{width:100%;height:auto;object-fit:contain;aspect-ratio:auto}.demo-modal-title{font-size:22px;margin-bottom:6px}.demo-modal-content p,#demo-welcome-free-list{font-size:13px}.demo-welcome-help{font-size:11px;margin-bottom:9px}.demo-modal-actions{padding-top:11px}.demo-yellow-button{width:100%}.demo-free-strip{font-size:11px;padding:9px 10px}}
+@media(max-width:640px){#demo-offer-modal,#demo-welcome-modal{padding:10px;align-items:flex-start}.demo-modal-panel{max-height:calc(100vh - 20px);grid-template-columns:1fr;gap:12px;padding:14px;margin:auto 0;align-items:start}.demo-modal-cover{width:min(180px,48vw);height:auto;margin:0 auto}.demo-modal-cover img{width:100%;height:auto;object-fit:contain;aspect-ratio:auto}.demo-modal-title{font-size:22px;margin-bottom:6px}.demo-modal-content p,#demo-welcome-free-list{font-size:13px}.demo-welcome-help{font-size:11px;margin-bottom:9px}.demo-modal-actions{padding-top:11px}.demo-yellow-button{width:100%}}
 </style>
 </head>
 <body>
@@ -458,7 +455,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <option value="artist_za">Wykonawca Z → A</option>
       <option value="lvl_asc">Łatwe → Trudne</option>
       <option value="lvl_desc">Trudne → Łatwe</option>
-      <option value="fav" disabled>♥ Ulubione — pełna wersja</option>
+      <option value="fav">♥ Ulubione</option>
       <option value="demo">🎁 Tylko darmowe opracowania</option>
     </select>
     <select id="kat" aria-label="Wybierz wykonawcę" onchange="render()">
@@ -494,7 +491,6 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 <!-- TESTOWY EKSPORT KATALOGU PDF — koniec -->
 
 <main class="grid-wrap" id="main-content">
-  <button class="demo-free-strip" id="demo-free-strip" type="button" onclick="showOnlyDemoFree()" aria-label="Pokaż tylko darmowe opracowania"></button>
   <div class="section-label" id="section-label">Wszystkie riffy</div>
   <div class="grid" id="grid"></div>
   <div class="state-message" id="state-msg" role="status" aria-live="polite"><div class="state-message-title">Ładowanie materiałów…</div><div class="state-message-copy">Pobieram aktualną listę riffów.</div></div>
@@ -764,7 +760,7 @@ let activeTags = new Set();
 const savedSize = localStorage.getItem('npr_cardsize');
 let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280 : 440);
 let cardSizeAuto = !savedSize;
-let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
+let favorites = new Set(JSON.parse(localStorage.getItem('npr_demo_favorites') || '[]'));
 
 const POPUP_FREQUENCY_MINUTES = [0, 1, 2, 3, 4];
 const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, autoHideToolbar:false, popupFrequency:2, popupPosition:'bottom', popupSettingsVersion:2 };
@@ -1909,16 +1905,8 @@ function isDemoFree(entry) {
 function populateDemoInformation() {
   const list = document.getElementById('demo-welcome-free-list');
   if (list) list.innerHTML = FREE_DEMO_TITLES.map(title => `<li>${title}</li>`).join('');
-  const strip = document.getElementById('demo-free-strip');
-  if (strip) strip.innerHTML = `<strong>🎁 Przetestuj te opracowania za darmo</strong> – ${FREE_DEMO_TITLES.join(', ')}`;
   const count = document.getElementById('demo-offer-contains-count');
   if (count) count.textContent = String(exercises.length);
-}
-
-function showOnlyDemoFree() {
-  document.getElementById('sort').value = 'demo';
-  render();
-  document.getElementById('section-label')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function showDemoWelcome() {
@@ -2018,16 +2006,17 @@ function render() {
     const thumb = `<img src="${baseUrl}.png" alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="if(this.src.endsWith('.png')){this.src=this.src.replace('.png','.jpg')}else{this.style.display='none';this.nextElementSibling.style.display='block';}"><span class="thumb-icon" style="display:none">🎸</span>`;
 
     const demoFree = isDemoFree(e);
-    const favBtn = `<button class="card-icon-btn card-icon-favorite demo-disabled" type="button" disabled aria-label="Ulubione dostępne w pełnej wersji"><i class="ti ti-heart" aria-hidden="true"></i></button>`;
+    const isFav = favorites.has(e.id);
+    const favBtn = `<button class="card-icon-btn card-icon-favorite${isFav ? ' is-favorite' : ''}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" aria-label="${isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}" aria-pressed="${isFav}"><i class="ti ${isFav ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i></button>`;
 
     const ytUrl = e.yt.startsWith('http') ? e.yt : '';
-    const ytBtn = ytUrl && demoFree ? `<button class="card-icon-btn card-icon-youtube" onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" aria-label="Otwórz film na YouTube"><span class="youtube-play-triangle" aria-hidden="true"></span></button>` : '';
+    const ytBtn = ytUrl ? `<button class="card-icon-btn card-icon-youtube" onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" aria-label="Otwórz film na YouTube"><span class="youtube-play-triangle" aria-hidden="true"></span></button>` : '';
 
     const sortByArtist = sv === 'artist_az' || sv === 'artist_za';
     const tytul = sortByArtist && e.wykonawca ? `${e.wykonawca} - ${e.nazwa}` : (e.wykonawca ? `${e.nazwa} - ${e.wykonawca}` : e.nazwa);
     const desc  = e.opis ? `<div class="card-desc">${e.opis}</div>` : '';
     const starsHtml = difficultyStars(e.poziom);
-    const newTag = demoFree ? '<span class="card-tag card-tag-demo">ZA DARMO</span>' : (isNewEntry(e.data) ? '<span class="card-tag card-tag-new">NEW!</span>' : '');
+    const newTag = demoFree ? '<span class="card-tag card-tag-demo">PRZETESTUJ ZA DARMO</span>' : (isNewEntry(e.data) ? '<span class="card-tag card-tag-new">NEW!</span>' : '');
     const regularTags = e.tagi.map(t=>`<span class="card-tag">${t}</span>`).join('');
     const tagsDiv = (newTag || regularTags) ? `<div class="card-tags">${newTag}${regularTags}</div>` : '';
 
@@ -2058,7 +2047,7 @@ function toggleFav(id, btn) {
     btn.setAttribute('aria-label','Usuń z ulubionych');
     btn.setAttribute('aria-pressed','true');
   }
-  localStorage.setItem('npr_favorites', JSON.stringify([...favorites]));
+  localStorage.setItem('npr_demo_favorites', JSON.stringify([...favorites]));
 }
 
 function toggleTag(tag, btn) {
