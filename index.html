@@ -121,8 +121,29 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .option-action{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;padding:7px 10px;font:600 11px 'Open Sans',sans-serif;cursor:pointer;}
 .option-action:hover{border-color:var(--accent);color:var(--accent);}
 .option-action:disabled{opacity:.4;cursor:not-allowed;}
-.options-help{display:none;margin:8px 0 4px;padding:11px;border-radius:8px;background:#121212;color:#bbb;font-size:11.5px;line-height:1.55;}
-.options-help.open{display:block;}
+#guide-modal{position:fixed;inset:0;z-index:245;display:none;}
+#guide-modal.open{display:block;}
+#guide-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(3px);}
+#guide-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:18px;max-height:94dvh;overflow-y:auto;overscroll-behavior:contain;}
+.guide-intro{margin:-4px 0 16px;padding:14px;border:1px solid rgba(255,204,0,.38);border-radius:10px;background:rgba(255,204,0,.065);color:#e0e0e0;font-size:13px;line-height:1.62;}
+.guide-intro strong,.guide-section-title{color:var(--accent);}
+.guide-section{padding:15px 0;border-top:1px solid var(--border);}
+.guide-section-title{font:700 18px 'Oswald',sans-serif;letter-spacing:.035em;margin-bottom:10px;}
+.guide-section-copy{color:#c6c6c6;font-size:13px;line-height:1.62;margin:0 0 10px;}
+.guide-subsection{margin-top:11px;padding:12px 13px;border:1px solid #303030;border-radius:10px;background:#141414;}
+.guide-subsection-title{color:#fff;font:700 15.5px 'Oswald',sans-serif;letter-spacing:.025em;margin-bottom:7px;}
+.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+.guide-card{border:1px solid #383838;border-radius:9px;background:#141414;padding:12px;color:#c6c6c6;font-size:12.5px;line-height:1.58;}
+.guide-card strong{display:block;color:#fff;font-size:13.5px;font-weight:800;margin-bottom:4px;}
+.guide-list{margin:8px 0 0;padding-left:20px;color:#c6c6c6;font-size:12.5px;line-height:1.62;}
+.guide-list li+li{margin-top:5px;}
+.guide-note{margin-top:11px;padding:12px 13px;border-left:4px solid var(--accent);background:#111;color:#d0d0d0;font-size:12.5px;line-height:1.62;}
+.guide-card b,.guide-list b,.guide-note b,.guide-section-copy b{color:#fff;font-weight:800;}
+.guide-actions{display:flex;justify-content:center;padding-top:15px;border-top:1px solid var(--border);}
+.guide-start{border:0;border-radius:9px;background:var(--accent);color:#111;padding:11px 22px;font:700 12px 'Open Sans',sans-serif;cursor:pointer;box-shadow:0 0 13px rgba(255,204,0,.24);}
+@media(min-width:641px){#guide-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 36px));max-height:88vh;border-radius:13px;box-shadow:0 10px 50px rgba(0,0,0,.8);padding:22px 24px;}}
+@media(max-width:640px){.guide-grid{grid-template-columns:1fr}.guide-section{padding:13px 0}.guide-section-title{font-size:17px}.guide-intro{font-size:12.5px;line-height:1.58}.guide-card,.guide-list,.guide-note{font-size:12px}#guide-panel{padding-bottom:calc(18px + env(safe-area-inset-bottom));}}
+@media print{#guide-modal{display:none!important;}}
 .options-contact{display:block;color:var(--accent);font-size:12px;margin-top:9px;text-decoration:none;}
 .option-contact-details{display:flex;align-items:center;gap:8px;min-width:0;flex:1;}
 .option-contact-label{color:#fff;white-space:nowrap;}
@@ -163,7 +184,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .export-choice-text{min-width:0;}
 .export-choice-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
 .export-choice-desc{font-size:10.5px;line-height:1.45;color:#888;}
-@media(max-width:640px){#export-panel{max-height:calc(100dvh - 10px);padding:15px 16px calc(15px + env(safe-area-inset-bottom));}.export-intro{font-size:9.5px;line-height:1.4;padding:8px 9px}.export-choice{gap:10px;padding:9px 0}.export-choice-title{font-size:12.5px}.export-choice-desc{font-size:9.5px;line-height:1.35}.export-choice .option-action{flex:0 0 auto;padding:7px 8px;font-size:10px}}
+.export-guide-box{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.export-guide-copy{min-width:0;}
+.export-guide-box .option-action{flex:0 0 auto;white-space:nowrap;}
+@media(max-width:640px){#export-panel{max-height:calc(100dvh - 10px);padding:15px 16px calc(15px + env(safe-area-inset-bottom));}.export-intro{font-size:9.5px;line-height:1.4;padding:8px 9px}.export-choice{gap:10px;padding:9px 0}.export-choice-title{font-size:12.5px}.export-choice-desc{font-size:9.5px;line-height:1.35}.export-choice .option-action{flex:0 0 auto;padding:7px 8px;font-size:10px}.export-guide-box{align-items:stretch;flex-direction:column}.export-guide-box .option-action{width:100%;padding:9px}}
 @media(min-width:641px){#export-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:540px;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
 
 /* CARD SIZE */
@@ -240,7 +264,8 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 /* GRID */
 .grid-wrap{padding:1.5rem 1.5rem 3rem;}
 .section-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-label::after{content:'';order:2;flex:1;height:1px;background:var(--border);}
+.section-label::before{content:attr(data-count);order:1;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;white-space:nowrap;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
 .state-message{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:14px;line-height:1.55;}
 .state-message-title{color:#fff;font:600 18px 'Oswald',sans-serif;margin-bottom:5px;}
@@ -259,6 +284,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .thumb-icon{position:relative;z-index:1;}
 .card-body{padding:10px 12px 13px;}
 .card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.35;text-align:center;}
+.card.keyboard-selected{outline:3px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 1px rgba(255,204,0,.55),0 0 22px rgba(255,204,0,.48);}
 .card-desc{font-size:11.5px;color:#b3b3b3;margin-bottom:8px;line-height:1.4;text-align:center;}
 .card-badges{display:block;text-align:center;padding-top:10px;border-top:1px solid var(--border);margin-top:4px;margin-bottom:0;}
 .card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border);justify-content:center;}
@@ -422,7 +448,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 <!-- TESTOWY EKSPORT KATALOGU PDF — koniec -->
 
 <main class="grid-wrap" id="main-content">
-  <div class="section-label" id="section-label">Wszystkie riffy</div>
+  <div class="section-label" id="section-label" data-count="">Wszystkie riffy</div>
   <div class="grid" id="grid"></div>
   <div class="state-message" id="state-msg" role="status" aria-live="polite"><div class="state-message-title">Ładowanie materiałów…</div><div class="state-message-copy">Pobieram aktualną listę riffów.</div></div>
 </main>
@@ -449,8 +475,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
     <div class="options-section">
       <div class="options-section-title">Pomoc</div>
-      <div class="option-row"><span>Pokaż instrukcję</span><button class="option-action" onclick="toggleInstructions()">POKAŻ</button></div>
-      <div class="options-help" id="options-help">Użyj wyszukiwarki i filtrów, aby znaleźć riff. W widoku domyślnym nowe materiały z ostatnich 30 dni są wyświetlane najpierw, a pozostałe poniżej — obie grupy alfabetycznie. Przycisk TAGI pozwala łączyć kilka oznaczeń. Kliknij kartę, aby otworzyć opracowanie.</div>
+      <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">OTWÓRZ</button></div>
     </div>
 
     <div class="options-section">
@@ -497,6 +522,77 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   </div>
 </div>
 
+<div id="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-hidden="true">
+  <div id="guide-backdrop" onclick="closeUserGuide()"></div>
+  <div id="guide-panel" tabindex="-1">
+    <div class="options-header">
+      <span class="options-title" id="guide-title"><i class="ti ti-book-2" aria-hidden="true"></i> INSTRUKCJA OBSŁUGI</span>
+      <button class="options-close" onclick="closeUserGuide()" aria-label="Zamknij instrukcję">✕</button>
+    </div>
+    <div class="guide-intro"><strong>Witaj w konspekcie „Najlepsze Polskie Riffy”!</strong> Ta strona pomaga szybko znaleźć odpowiedni utwór, dopasować poziom trudności i otworzyć materiały do nauki. Cały konspekt możesz dostosować do swoich potrzeb i upodobań — wystarczy otworzyć <strong>Opcje</strong>. Tę instrukcję znajdziesz tam ponownie w dowolnym momencie.</div>
+
+    <section class="guide-section">
+      <div class="guide-section-title">1. Górny panel — wyszukiwanie, sortowanie i filtry</div>
+      <p class="guide-section-copy">Panel na górze strony służy do zawężania listy. Kilka filtrów może działać jednocześnie, a ich ustawienie wpływa również na eksport.</p>
+      <div class="guide-grid">
+        <div class="guide-card"><strong>🔍 Szukaj</strong>Wpisz tytuł utworu lub nazwę wykonawcy. Wyszukiwarka rozpoznaje również zapytania wpisane bez polskich znaków. Skrót <b>Shift + Spacja</b> przenosi kursor od razu do wyszukiwarki.</div>
+        <div class="guide-card"><strong>Sortowanie</strong>Ułóż utwory według tytułu, wykonawcy, poziomu trudności albo pokaż ulubione. Domyślnie nowe opracowania są przez 30 dni wyświetlane najpierw, a obie grupy są ułożone alfabetycznie.</div>
+        <div class="guide-card"><strong>Wykonawca i poziom trudności</strong>Wybierz wykonawcę albo poziom od początkującego do eksperta. Lista wykonawców pokazuje tylko tych, dla których znajdują się co najmniej dwa riffy.</div>
+        <div class="guide-card"><strong>TAGI</strong>Połącz kilka cech, np. technikę gry lub rodzaj akordów. Licznik przy przycisku pokazuje liczbę aktywnych tagów.</div>
+        <div class="guide-card"><strong>Lupa i oko</strong>Lupa reguluje wielkość kart lub przywraca tryb automatyczny. Przekreślone oko chowa panel; po zwinięciu użyj paska „KLIKNIJ, ABY ROZWINĄĆ”.</div>
+        <div class="guide-card"><strong>PDF, RESET i Opcje</strong>PDF otwiera sposoby eksportu. RESET czyści aktywne filtry i sortowanie. Koło zębate otwiera ustawienia wyglądu, powiadomień, kontaktu i kontroli danych.</div>
+        <div class="guide-card"><strong>⌨ Sterowanie klawiaturą</strong>Klawisze <b>+</b> i <b>−</b> powiększają lub pomniejszają karty. Naciśnij samą literę, bez łączenia jej z innym klawiszem, aby przejść do pierwszego widocznego tytułu zaczynającego się od niej. Kolejne naciśnięcia tej samej litery wybierają następne tytuły alfabetycznie. <b>Enter</b> otwiera zaznaczoną kartę.</div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <div class="guide-section-title">2. Co znajduje się na karcie utworu?</div>
+      <div class="guide-grid">
+        <div class="guide-card"><strong>Okładka i tytuł</strong>Miniatura pozwala szybko rozpoznać opracowanie. Kliknięcie karty otwiera przypisane materiały do nauki.</div>
+        <div class="guide-card"><strong>♡ Ulubione</strong>Serce w lewym dolnym rogu dodaje riff do ulubionych. Ulubione są zapisywane w używanej przeglądarce i można je później wyświetlić przez sortowanie.</div>
+        <div class="guide-card"><strong>★ Poziom trudności</strong>Gwiazdki pokazują poziom od początkującego do eksperta. Dzięki nim możesz stopniowo przechodzić od łatwiejszych riffów do trudniejszych.</div>
+        <div class="guide-card"><strong>▶ YouTube</strong>Jeżeli materiał ma przypisany film, żółty przycisk odtwarzania otwiera go w nowej karcie.</div>
+        <div class="guide-card"><strong>Opis</strong>Krótka informacja pod tytułem podpowiada, czego można spodziewać się po riffie i na co zwrócić uwagę podczas ćwiczenia.</div>
+        <div class="guide-card"><strong>Tagi i NEW!</strong>Tagi opisują techniki oraz charakter riffu. Czerwone oznaczenie NEW! jest widoczne przez 30 dni od daty dodania opracowania.</div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <div class="guide-section-title">3. Jak zapisać konspekt i listę materiałów?</div>
+      <div class="guide-subsection">
+        <div class="guide-subsection-title">A. Zapis do osobnego pliku</div>
+        <p class="guide-section-copy">Ta metoda tworzy plik, który możesz przechowywać, kopiować i otwierać później. Najwygodniej użyć przycisku <b>PDF</b> w górnym panelu. Ustawione filtry, wyszukiwanie i sortowanie wpływają na zawartość eksportu.</p>
+        <ul class="guide-list">
+          <li><b>Pełny eksport graficzny</b> — katalog z kartami, okładkami, opisami, tagami i gwiazdkami.</li>
+          <li><b>Zwykła lista PDF</b> — lekka lista aktualnie widocznych utworów z aktywnymi linkami.</li>
+          <li><b>Lista do Worda</b> — edytowalny dokument z widocznymi utworami.</li>
+          <li><b>Lista do Notatnika</b> — prosty plik TXT z numerowaną listą.</li>
+          <li><b>Zapis całej strony na komputerze</b> — użyj <b>Ctrl + S</b> w Windowsie albo <b>Cmd + S</b> na Macu i wybierz zapis kompletnej strony.</li>
+          <li><b>PDF z przeglądarki</b> — użyj <b>Ctrl/Cmd + P</b>, a następnie wybierz „Zapisz jako PDF”. Na telefonie znajdziesz podobną funkcję w poleceniu „Udostępnij” lub „Drukuj”.</li>
+        </ul>
+      </div>
+      <div class="guide-subsection">
+        <div class="guide-subsection-title">B. Zapisanie skrótu na komputerze lub telefonie</div>
+        <p class="guide-section-copy">Skrót nie tworzy kopii konspektu. Jest wygodną ikoną, która pozwala szybko ponownie otworzyć aktualną stronę.</p>
+        <ul class="guide-list">
+          <li><b>Komputer</b> — przeciągnij ikonę strony znajdującą się przy pasku adresu na pulpit albo wybierz w menu przeglądarki „Utwórz skrót”, „Zainstaluj aplikację” lub podobne polecenie.</li>
+          <li><b>Android</b> — otwórz menu przeglądarki i wybierz „Dodaj do ekranu głównego” albo „Zainstaluj aplikację”.</li>
+          <li><b>iPhone/iPad</b> — w Safari wybierz przycisk „Udostępnij”, a następnie „Do ekranu początkowego”.</li>
+        </ul>
+      </div>
+      <div class="guide-note"><b>Ważne:</b> skrót do strony nadal wymaga dostępu do internetu. Zapis strony lub eksport konspektu nie pobiera automatycznie plików znajdujących się pod linkami. Jeśli chcesz korzystać całkowicie bez internetu, pobierz potrzebne materiały z Dysku Google osobno. Nazwy poleceń mogą nieznacznie różnić się zależnie od przeglądarki.</div>
+    </section>
+
+    <section class="guide-section">
+      <div class="guide-section-title">4. Dostosuj konspekt do siebie</div>
+      <p class="guide-section-copy">W <b>Opcjach</b> możesz włączać lub wyłączać opisy, tagi, gwiazdki i miniatury, ustawić częstotliwość oraz położenie powiadomień, zdecydować o automatycznym chowaniu panelu na telefonie, wyeksportować ustawienia, skontaktować się ze mną albo dodać opinię o produkcie. Wielkość kart ustawisz przyciskiem lupy.</p>
+      <div class="guide-note">Nie musisz niczego konfigurować od razu. Zacznij od wyszukania utworu, a wygląd i zachowanie strony dopasuj wtedy, gdy będzie Ci to potrzebne. Instrukcję zawsze otworzysz ponownie przez <b>Opcje → Instrukcja obsługi</b>.</div>
+    </section>
+
+    <div class="guide-actions"><button class="guide-start" type="button" onclick="closeUserGuide()">ROZPOCZNIJ KORZYSTANIE</button></div>
+  </div>
+</div>
+
 <div id="export-modal" role="dialog" aria-modal="true" aria-labelledby="export-title" aria-hidden="true">
   <div id="export-backdrop" onclick="closeExportModal()"></div>
   <div id="export-panel" tabindex="-1">
@@ -521,6 +617,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="export-choice-text"><div class="export-choice-title">Lista utworów do Notatnika</div><div class="export-choice-desc">Prosty plik TXT z numerowaną listą aktualnie widocznych utworów.</div></div>
       <button class="option-action" onclick="exportTextList()">EKSPORTUJ</button>
     </div>
+    <div class="export-intro export-guide-box" style="margin-top:12px;"><div class="export-guide-copy"><strong>Chcesz mieć szybki dostęp do konspektu?</strong> W instrukcji obsługi znajdziesz opis zapisywania strony oraz tworzenia skrótu na komputerze i telefonie.</div><button class="option-action" type="button" onclick="openGuideFromExport()">OTWÓRZ INSTRUKCJĘ</button></div>
   </div>
 </div>
 
@@ -651,6 +748,7 @@ async function checkPwd() {
     localStorage.setItem('npr_auth', HASLO_HASH);
     document.getElementById('login-screen').style.display = 'none';
     loadExcel();
+    setTimeout(maybeOpenUserGuide, 300);
   } else {
     inp.classList.add('error');
     err.style.display = 'block';
@@ -662,7 +760,7 @@ async function checkPwd() {
 (function() {
   if (localStorage.getItem('npr_auth') === HASLO_HASH) {
     document.getElementById('login-screen').style.display = 'none';
-    document.addEventListener('DOMContentLoaded', loadExcel);
+    document.addEventListener('DOMContentLoaded', () => { loadExcel();setTimeout(maybeOpenUserGuide, 350); });
   }
 })();
 
@@ -845,6 +943,11 @@ function closeExportModal() {
   closeAccessibleDialog('export-modal');
 }
 
+function openGuideFromExport() {
+  closeExportModal();
+  setTimeout(() => openUserGuide(false), 100);
+}
+
 function openCardSizeModal() {
   updateCardSizeModeUI();
   openAccessibleDialog('card-size-modal', 'card-size-panel');
@@ -884,7 +987,24 @@ function updateCardSizeModeUI() {
 }
 
 function toggleInstructions() {
-  document.getElementById('options-help').classList.toggle('open');
+  closeOptions();
+  setTimeout(() => openUserGuide(false), 100);
+}
+
+const USER_GUIDE_STORAGE_KEY = 'npr_user_guide_seen_v1';
+
+function openUserGuide(markAsSeen = true) {
+  if (markAsSeen) localStorage.setItem(USER_GUIDE_STORAGE_KEY, '1');
+  openAccessibleDialog('guide-modal', 'guide-panel');
+}
+
+function closeUserGuide() {
+  closeAccessibleDialog('guide-modal');
+}
+
+function maybeOpenUserGuide() {
+  if (localStorage.getItem(USER_GUIDE_STORAGE_KEY) === '1') return;
+  openUserGuide(true);
 }
 
 function showOptionsStatus(message, isError = false) {
@@ -1481,6 +1601,7 @@ else requestAnimationFrame(fitMobileHeaderTitle);
 initToolbarGestures();
 
 const ACCESSIBLE_DIALOGS = [
+  {id:'guide-modal', close:closeUserGuide},
   {id:'review-modal', close:closeReviewForm},
   {id:'export-modal', close:closeExportModal},
   {id:'card-size-modal', close:closeCardSizeModal},
@@ -1528,6 +1649,65 @@ document.addEventListener('keydown', event => {
   event.preventDefault();
   setToolbarCollapsed(false, false);
   requestAnimationFrame(() => document.getElementById('search').focus());
+});
+
+let alphabetNavigationLetter = '';
+let alphabetNavigationIndex = -1;
+
+function resetAlphabetNavigation() {
+  document.querySelectorAll('#grid .card.keyboard-selected').forEach(card => {
+    card.classList.remove('keyboard-selected');
+    card.removeAttribute('aria-current');
+  });
+  alphabetNavigationLetter = '';
+  alphabetNavigationIndex = -1;
+}
+
+function isKeyboardEditingTarget(target) {
+  return Boolean(target && (target.matches('input, textarea, select') || target.isContentEditable));
+}
+
+function navigateCardsByLetter(letter) {
+  const matches = [...document.querySelectorAll(`#grid .card[data-nav-letter="${letter}"]`)]
+    .sort((a, b) => decodeURIComponent(a.dataset.navName || '').localeCompare(decodeURIComponent(b.dataset.navName || ''), 'pl'));
+  if (!matches.length) {
+    resetAlphabetNavigation();
+    return;
+  }
+  document.querySelectorAll('#grid .card.keyboard-selected').forEach(card => {
+    card.classList.remove('keyboard-selected');
+    card.removeAttribute('aria-current');
+  });
+  alphabetNavigationIndex = alphabetNavigationLetter === letter ? (alphabetNavigationIndex + 1) % matches.length : 0;
+  alphabetNavigationLetter = letter;
+  const selectedCard = matches[alphabetNavigationIndex];
+  selectedCard.classList.add('keyboard-selected');
+  selectedCard.setAttribute('aria-current', 'true');
+  selectedCard.focus({preventScroll:true});
+  selectedCard.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center',inline:'nearest'});
+}
+
+document.addEventListener('keydown', event => {
+  const hasSystemModifier = event.ctrlKey || event.altKey || event.metaKey;
+  const isPlusShortcut = !hasSystemModifier && (event.key === '+' || event.code === 'NumpadAdd');
+  const isMinusShortcut = !hasSystemModifier && !event.shiftKey && (event.key === '-' || event.code === 'NumpadSubtract');
+  const isPlainLetter = !hasSystemModifier && !event.shiftKey && !event.repeat && event.key.length === 1 && /^\p{L}$/u.test(event.key);
+  if (!isPlusShortcut && !isMinusShortcut && !isPlainLetter) return;
+  if (event.defaultPrevented || activeAccessibleDialog() || isKeyboardEditingTarget(event.target)) return;
+  if (isPlusShortcut) {
+    event.preventDefault();
+    changeSize(25);
+    return;
+  }
+  if (isMinusShortcut) {
+    event.preventDefault();
+    changeSize(-25);
+    return;
+  }
+  const letter = normalizeSearchText(event.key).charAt(0);
+  if (!/^[a-z]$/.test(letter)) return;
+  event.preventDefault();
+  navigateCardsByLetter(letter);
 });
 
 const NEW_DAYS = APP_CONFIG.newDays;
@@ -1851,6 +2031,7 @@ function render() {
   const lv = document.getElementById('lvl').value;
   const sv = document.getElementById('sort').value;
   updateResetButtonState();
+  resetAlphabetNavigation();
 
   let filtered = exercises.filter(e =>
     (!q  || normalizeSearchText(e.nazwa).includes(q) || normalizeSearchText(e.wykonawca).includes(q) || normalizeSearchText(e.opis).includes(q)) &&
@@ -1873,7 +2054,12 @@ function render() {
   if (kt) parts.push(kt);
   if (lv) parts.push(lv);
   activeTags.forEach(t => parts.push('#'+t));
-  document.getElementById('section-label').textContent = parts.length ? parts.join(' · ') : 'Wszystkie riffy';
+  const sectionLabel = document.getElementById('section-label');
+  const sectionTitle = parts.length ? parts.join(' · ') : 'Wszystkie riffy';
+  const visibleCountLabel = riffCountLabel(filtered.length);
+  sectionLabel.textContent = sectionTitle;
+  sectionLabel.dataset.count = visibleCountLabel;
+  sectionLabel.setAttribute('aria-label', `${sectionTitle}, ${visibleCountLabel}`);
 
   const grid = document.getElementById('grid');
   const msg  = document.getElementById('state-msg');
@@ -1909,7 +2095,7 @@ function render() {
     const tagsDiv = (newTag || regularTags) ? `<div class="card-tags">${newTag}${regularTags}</div>` : '';
 
     return `
-      <a class="card" href="${e.link}" target="_blank" rel="noopener" onclick="rememberCurrentPlace()" style="position:relative;">
+      <a class="card" data-nav-letter="${normalizeSearchText(e.nazwa).charAt(0)}" data-nav-name="${encodeURIComponent(e.nazwa)}" href="${e.link}" target="_blank" rel="noopener" onclick="rememberCurrentPlace()" style="position:relative;">
         ${favBtn}${ytBtn}
         <div class="thumb ${starsHtml ? 'has-stars' : ''}" style="background:#1a1a2e;">${thumb}${starsHtml}</div>
         <div class="card-body">
