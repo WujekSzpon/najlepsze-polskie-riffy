@@ -196,6 +196,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .review-field input:focus,.review-field textarea:focus{border-color:var(--accent);}
 .review-field textarea{min-height:110px;resize:vertical;line-height:1.45;}
 .review-photo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.review-avatar-choice{display:flex;gap:8px;flex-wrap:wrap;margin:7px 0 10px}.review-avatar-choice label{display:flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:7px;background:#111;padding:7px 10px;color:#bbb;font-size:10.5px;cursor:pointer}.review-avatar-choice input{accent-color:var(--accent)}
 #review-photo-editor{width:150px;height:150px;border-radius:50%;background:#111;border:4px solid #c8f5fb;display:none;cursor:grab;touch-action:none;}
 #review-photo-editor.dragging{cursor:grabbing;}
 .review-crop-controls{display:none;flex:1;min-width:180px;}
@@ -203,8 +204,8 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .review-crop-controls input[type="range"]{width:100%;accent-color:var(--accent);}
 .review-crop-help{font-size:10px;color:#888;line-height:1.4;margin-top:5px;}
 .review-stars{display:flex;gap:3px;}
-.review-star{border:0;background:transparent;color:#555;font-size:31px;line-height:1;cursor:pointer;padding:0 2px;}
-.review-star.active{color:#eda52b;}
+.review-star{border:0;background:transparent;color:#eda52b;font-size:31px;line-height:1;cursor:pointer;padding:0 2px;}
+.review-star.active{color:#eda52b;text-shadow:0 0 7px rgba(237,165,43,.42);}
 .review-consent{display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#bbb;line-height:1.45;margin-top:8px;}
 .review-consent input{margin-top:3px;accent-color:var(--accent);flex:0 0 auto;}
 .review-privacy{font-size:10px;color:#888;line-height:1.5;padding:10px;background:#121212;border-radius:7px;margin-top:8px;}
@@ -213,9 +214,11 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .review-send-instruction strong{display:block;font-family:'Oswald',sans-serif;font-size:16px;letter-spacing:.03em;margin-bottom:3px;}
 .review-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
 .review-actions button{flex:1;min-width:130px;border-radius:8px;padding:10px 12px;font:700 12px 'Open Sans',sans-serif;cursor:pointer;}
-.review-primary{border:0;background:var(--accent);color:#111;}
+.review-primary{border:0;background:var(--accent);color:#111;display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+.review-primary .ti{font-size:18px;line-height:1;}
+.review-hint{margin:4px 0 8px;color:#aaa;font-size:12px;line-height:1.45;}
 .review-secondary{border:1px solid var(--border);background:transparent;color:#fff;}
-#review-output{display:none;width:100%;margin-top:14px;border-radius:8px;background:#000;}
+.review-output-grid{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.review-output-grid.open{display:grid}.review-output-image{display:block;width:100%;border-radius:8px;background:#000}@media(max-width:620px){.review-output-grid{grid-template-columns:1fr}}
 #review-status{min-height:18px;margin-top:9px;font-size:11px;color:#8bc34a;}
 #review-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
 @media(min-width:721px){#review-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:700px;max-height:90vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.review-grid{grid-template-columns:1fr 1fr}.review-wide{grid-column:1/-1;}}
@@ -472,6 +475,12 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     </div>
 
     <div class="options-section">
+      <div class="options-section-title">Kontakt i opinia o produkcie</div>
+      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action" onclick="sendFeedback()">NAPISZ</button></div>
+      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Kontakt mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
+    </div>
+
+    <div class="options-section">
       <div class="options-section-title">Ustawienia</div>
       <div class="option-row"><span>Wyeksportuj ustawienia do pliku TXT</span><button class="option-action" onclick="exportSettings()">EKSPORTUJ</button></div>
       <div class="option-row"><span>Wczytaj ustawienia z pliku TXT</span><button class="option-action" onclick="document.getElementById('settings-file').click()">WCZYTAJ</button></div>
@@ -482,12 +491,6 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="options-section-title">Kontrola danych</div>
       <div class="option-row"><span>Sprawdź poprawność danych z Excela</span><button class="option-action" type="button" onclick="showDataValidationReport()">SPRAWDŹ</button></div>
       <div class="data-check-report" id="data-check-report" role="status" aria-live="polite"></div>
-    </div>
-
-    <div class="options-section">
-      <div class="options-section-title">Kontakt i opinia o produkcie</div>
-      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action" onclick="sendFeedback()">NAPISZ</button></div>
-      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Kontakt mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
     </div>
     <div id="options-status" role="status"></div>
     <div class="app-version" id="app-version"></div>
@@ -541,16 +544,18 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   <div id="review-backdrop" onclick="closeReviewForm()"></div>
   <div id="review-panel" tabindex="-1">
     <div class="review-header">
-      <span class="review-title" id="review-title">DODAJ OPINIĘ</span>
+      <span class="review-title" id="review-title">DODAJ OPINIĘ O PRODUKCIE</span>
       <button class="options-close" onclick="closeReviewForm()" aria-label="Zamknij">✕</button>
     </div>
     <div class="review-grid">
       <div class="review-field">
         <label for="review-name">Imię lub podpis</label>
-        <input id="review-name" type="text" maxlength="40" autocomplete="name" placeholder="np. Artur S.">
+        <input id="review-name" type="text" maxlength="40" autocomplete="name" placeholder="np. Artur S." oninput="previewReviewPng(false)">
       </div>
       <div class="review-field">
         <label for="review-photo">Twoje zdjęcie <span style="color:#777;font-weight:400;">(opcjonalnie)</span></label>
+        <span class="review-label">Avatar zastępczy, jeśli nie dodasz zdjęcia</span>
+        <div class="review-avatar-choice"><label><input type="radio" name="review-avatar" value="male" checked onchange="setReviewAvatarStyle(this.value)"> Męski</label><label><input type="radio" name="review-avatar" value="female" onchange="setReviewAvatarStyle(this.value)"> Żeński</label></div>
         <div class="review-photo">
           <canvas id="review-photo-editor" width="300" height="300" aria-label="Edytor kadru zdjęcia" onpointerdown="startReviewPhotoDrag(event)" onpointermove="moveReviewPhoto(event)" onpointerup="endReviewPhotoDrag(event)" onpointercancel="endReviewPhotoDrag(event)"></canvas>
           <div class="review-crop-controls" id="review-crop-controls">
@@ -565,29 +570,28 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="review-field review-wide">
         <span class="review-label">Ocena produktu</span>
         <div class="review-stars" id="review-stars" role="radiogroup" aria-label="Ocena od 1 do 5 gwiazdek">
-          <button class="review-star" type="button" role="radio" aria-checked="false" onclick="setReviewRating(1)" aria-label="1 gwiazdka">★</button>
-          <button class="review-star" type="button" role="radio" aria-checked="false" onclick="setReviewRating(2)" aria-label="2 gwiazdki">★</button>
-          <button class="review-star" type="button" role="radio" aria-checked="false" onclick="setReviewRating(3)" aria-label="3 gwiazdki">★</button>
-          <button class="review-star" type="button" role="radio" aria-checked="false" onclick="setReviewRating(4)" aria-label="4 gwiazdki">★</button>
-          <button class="review-star" type="button" role="radio" aria-checked="false" onclick="setReviewRating(5)" aria-label="5 gwiazdek">★</button>
+          <button class="review-star active" type="button" role="radio" aria-checked="false" onclick="setReviewRating(1)" aria-label="1 gwiazdka">★</button>
+          <button class="review-star active" type="button" role="radio" aria-checked="false" onclick="setReviewRating(2)" aria-label="2 gwiazdki">★</button>
+          <button class="review-star active" type="button" role="radio" aria-checked="false" onclick="setReviewRating(3)" aria-label="3 gwiazdki">★</button>
+          <button class="review-star active" type="button" role="radio" aria-checked="false" onclick="setReviewRating(4)" aria-label="4 gwiazdki">★</button>
+          <button class="review-star active" type="button" role="radio" aria-checked="true" onclick="setReviewRating(5)" aria-label="5 gwiazdek">★</button>
         </div>
       </div>
       <div class="review-field review-wide">
         <label for="review-text">Krótka opinia</label>
-        <textarea id="review-text" maxlength="420" placeholder="Napisz, co najbardziej podoba Ci się w produkcie…" oninput="updateReviewCharCount()"></textarea>
-        <div id="review-char-count">0 / 420</div>
+        <div class="review-hint">Napisz krótką opinię — maksymalnie 180 znaków. Możesz polecić ten produkt innym gitarzystom lub powiedzieć mi, co warto w nim jeszcze poprawić.</div>
+        <textarea id="review-text" maxlength="180" placeholder="Napisz swoją opinię…" oninput="updateReviewCharCount()"></textarea>
+        <div id="review-char-count">0 / 180</div>
       </div>
     </div>
     <label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label>
     <label class="review-consent"><input id="review-publication-consent" type="checkbox"><span>Wyrażam zgodę na nieodpłatne opublikowanie przesłanej opinii, podpisu i zdjęcia w materiałach dotyczących produktu „Najlepsze Polskie Riffy”, w tym na stronie internetowej i w mediach społecznościowych. Wiem, że zgodę mogę wycofać.</span></label>
     <div class="review-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane są wykorzystywane wyłącznie do obsługi i ewentualnej publikacji opinii na podstawie Twojej zgody. Grafika powstaje lokalnie na urządzeniu i zostaje przekazana dalej dopiero po wybraniu przez Ciebie aplikacji do udostępnienia. Dane będą przechowywane do wycofania zgody lub ustania celu publikacji. Masz prawo dostępu, poprawienia, usunięcia i ograniczenia danych, wycofania zgody oraz złożenia skargi do Prezesa UODO. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania.</div>
-    <canvas id="review-canvas" width="1024" height="576" hidden></canvas>
-    <img id="review-output" alt="Podgląd wygenerowanej opinii">
-    <div class="review-send-instruction"><strong>Jak wysłać opinię?</strong>Kliknij „Udostępnij / Wyślij”. Adres e-mail zostanie automatycznie skopiowany do schowka. Wybierz swoją aplikację pocztową i wklej ze schowka mój adres w okienko „Odbiorca”.</div>
+    <canvas id="review-canvas-light" width="1024" height="576" hidden></canvas>
+    <canvas id="review-canvas-dark" width="1024" height="576" hidden></canvas>
+    <div class="review-output-grid" id="review-output-grid"><img class="review-output-image" id="review-output-light" alt="Podgląd jasnej wersji opinii"><img class="review-output-image" id="review-output-dark" alt="Podgląd ciemnej wersji opinii"></div>
     <div class="review-actions">
-      <button class="review-secondary" type="button" onclick="previewReviewPng()">PODGLĄD PNG</button>
-      <button class="review-secondary" type="button" onclick="downloadReviewPng()">POBIERZ PNG</button>
-      <button class="review-primary" type="button" onclick="shareReviewPng()">UDOSTĘPNIJ / WYŚLIJ</button>
+      <button class="review-primary" id="review-send-button" type="button" onclick="sendReviewViaGoogle()"><i class="ti ti-send" aria-hidden="true"></i><span>WYŚLIJ OPINIĘ</span></button>
     </div>
     <div id="review-status" role="status"></div>
   </div>
@@ -618,6 +622,7 @@ const APP_CONFIG = Object.freeze({
   repositoryBase: 'https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main',
   productName: 'Najlepsze Polskie Riffy',
   contactEmail: 'tomaszczerniuk@gmail.com',
+  reviewAppsScriptUrl: 'https://script.google.com/macros/s/AKfycbwvWlBF6u7UxVi5vCulYTtm_Z_gumekiDf_SJvlfJndHgIMjWGXsNYb0Vg6zGDa1XF_/exec',
   newDays: 30
 });
 const STORAGE_KEYS = Object.freeze({
@@ -626,6 +631,10 @@ const STORAGE_KEYS = Object.freeze({
 const PLIK = APP_CONFIG.excelUrl;
 const REPO_BASE = APP_CONFIG.repositoryBase;
 const REVIEW_PRODUCT = APP_CONFIG.productName;
+const REVIEW_FORM_TOKEN = 'WSG_OPINIA_2026_V1';
+const REVIEW_ENDPOINT_STORAGE_KEY = 'wsg_review_apps_script_endpoint';
+const REVIEW_COOLDOWN_STORAGE_KEY = 'wsg_review_last_submission';
+const REVIEW_MAX_PNG_BYTES = 4 * 1024 * 1024;
 
 async function sha256(text) {
   const enc = new TextEncoder().encode(text);
@@ -929,21 +938,36 @@ function importSettings(event) {
   reader.readAsText(file);
 }
 
-let reviewRating = 0;
+let reviewRating = 5;
 let reviewPhotoImage = null;
-let reviewDefaultAvatarImage = null;
 let reviewPhotoZoom = 1;
 let reviewPhotoOffsetX = 0;
 let reviewPhotoOffsetY = 0;
 let reviewPhotoDrag = null;
+let reviewFormOpenedAt = Date.now();
+let reviewAvatarStyle = 'male';
+const REVIEW_AVATAR_URLS = Object.freeze({
+  male: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female-male.jpg',
+  female: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female.png'
+});
+const reviewAvatarImages = { male: null, female: null };
 
-const defaultReviewAvatar = new Image();
-defaultReviewAvatar.onload = () => { reviewDefaultAvatarImage = defaultReviewAvatar; };
-defaultReviewAvatar.src = './review-rock-avatar.jpg';
+function preloadReviewAvatars() {
+  Object.entries(REVIEW_AVATAR_URLS).forEach(([style, url]) => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.onload = () => { reviewAvatarImages[style] = image; previewReviewPng(false); };
+    image.onerror = () => console.warn(`Nie udało się wczytać avatara: ${style}`);
+    image.src = url;
+  });
+}
 
 function sendFeedback() {
   closeOptions();
+  reviewFormOpenedAt = Date.now();
   openAccessibleDialog('review-modal', 'review-panel');
+  setReviewRating(5);
+  requestAnimationFrame(()=>previewReviewPng(false));
 }
 
 async function copyContactEmail() {
@@ -966,13 +990,16 @@ function setReviewRating(rating) {
   reviewRating = rating;
   document.querySelectorAll('.review-star').forEach((star, index) => {
     star.classList.toggle('active', index < rating);
+    star.textContent = index < rating ? '★' : '☆';
     star.setAttribute('aria-checked', String(index + 1 === rating));
   });
+  previewReviewPng(false);
 }
 
 function updateReviewCharCount() {
   const text = document.getElementById('review-text').value;
-  document.getElementById('review-char-count').textContent = `${text.length} / 420`;
+  document.getElementById('review-char-count').textContent = `${text.length} / 180`;
+  previewReviewPng(false);
 }
 
 function setReviewStatus(message, isError = false) {
@@ -1001,6 +1028,7 @@ function loadReviewPhoto(event) {
       document.getElementById('review-photo-editor').style.display = 'block';
       document.getElementById('review-crop-controls').classList.add('open');
       drawReviewPhotoEditor();
+      previewReviewPng(false);
       setReviewStatus('Zdjęcie zostało wczytane lokalnie.');
     };
     image.onerror = () => setReviewStatus('Nie udało się odczytać zdjęcia.', true);
@@ -1009,8 +1037,10 @@ function loadReviewPhoto(event) {
   reader.readAsDataURL(file);
 }
 
+function setReviewAvatarStyle(style) { reviewAvatarStyle = style === 'female' ? 'female' : 'male'; previewReviewPng(false); }
+
 function drawReviewPhotoCrop(ctx, centerX, centerY, size) {
-  const sourceImage = reviewPhotoImage || reviewDefaultAvatarImage;
+  const sourceImage = reviewPhotoImage || reviewAvatarImages[reviewAvatarStyle];
   ctx.save();
   ctx.beginPath();
   ctx.arc(centerX, centerY, size / 2, 0, Math.PI * 2);
@@ -1029,6 +1059,9 @@ function drawReviewPhotoCrop(ctx, centerX, centerY, size) {
     const drawY = centerY - drawH / 2 + offsetY * size;
     ctx.drawImage(sourceImage, drawX, drawY, drawW, drawH);
   } else {
+    ctx.fillStyle = '#303030';
+    if (reviewAvatarStyle === 'female') { ctx.beginPath();ctx.arc(centerX,centerY-size*.17,size*.24,Math.PI*.78,Math.PI*2.22);ctx.lineTo(centerX+size*.2,centerY+size*.16);ctx.lineTo(centerX-size*.2,centerY+size*.16);ctx.closePath();ctx.fill(); }
+    else { ctx.beginPath();ctx.arc(centerX,centerY-size*.23,size*.17,Math.PI,Math.PI*2);ctx.fill(); }
     ctx.fillStyle = '#777';
     ctx.beginPath();
     ctx.arc(centerX, centerY - size * .18, size * .16, 0, Math.PI * 2);
@@ -1046,6 +1079,8 @@ function drawReviewPhotoCrop(ctx, centerX, centerY, size) {
   ctx.restore();
 }
 
+preloadReviewAvatars();
+
 function drawReviewPhotoEditor() {
   const editor = document.getElementById('review-photo-editor');
   if (!reviewPhotoImage || !editor) return;
@@ -1058,6 +1093,7 @@ function changeReviewPhotoZoom(value) {
   reviewPhotoZoom = Number(value);
   document.getElementById('review-photo-zoom-value').textContent = `${Math.round(reviewPhotoZoom * 100)}%`;
   drawReviewPhotoEditor();
+  previewReviewPng(false);
 }
 
 function resetReviewPhotoCrop() {
@@ -1069,6 +1105,7 @@ function resetReviewPhotoCrop() {
   const label = document.getElementById('review-photo-zoom-value');
   if (label) label.textContent = '100%';
   drawReviewPhotoEditor();
+  previewReviewPng(false);
 }
 
 function startReviewPhotoDrag(event) {
@@ -1087,6 +1124,7 @@ function moveReviewPhoto(event) {
   reviewPhotoOffsetY = Math.max(-1.5, Math.min(1.5, reviewPhotoOffsetY));
   reviewPhotoDrag = { x:event.clientX, y:event.clientY };
   drawReviewPhotoEditor();
+  previewReviewPng(false);
 }
 
 function endReviewPhotoDrag(event) {
@@ -1132,7 +1170,7 @@ function wrapCanvasText(ctx, text, maxWidth, maxLines) {
 
 function fitReviewText(ctx, text, maxWidth, maxHeight) {
   const normalized = text.trim().replace(/\s+/g, ' ');
-  for (let fontSize = 46; fontSize >= 21; fontSize--) {
+  for (let fontSize = 47; fontSize >= 20; fontSize--) {
     ctx.font = `400 ${fontSize}px Arial, sans-serif`;
     const words = normalized.split(' ');
     const lines = [];
@@ -1147,13 +1185,13 @@ function fitReviewText(ctx, text, maxWidth, maxHeight) {
       }
     }
     if (line) lines.push(line);
-    const lineHeight = Math.round(fontSize * 1.27);
+    const lineHeight = Math.round(fontSize * 1.24);
     if (lines.length * lineHeight <= maxHeight && lines.every(item => ctx.measureText(item).width <= maxWidth)) {
       return { fontSize, lineHeight, lines };
     }
   }
-  ctx.font = '400 21px Arial, sans-serif';
-  return { fontSize:21, lineHeight:27, lines:wrapCanvasText(ctx, normalized, maxWidth, Math.floor(maxHeight / 27)) };
+  ctx.font = '400 20px Arial, sans-serif';
+  return { fontSize:20, lineHeight:25, lines:wrapCanvasText(ctx, normalized, maxWidth, Math.floor(maxHeight / 25)) };
 }
 
 function validateReview(requireConsent = false) {
@@ -1162,95 +1200,57 @@ function validateReview(requireConsent = false) {
   if (name.length < 2) return 'Podaj imię lub podpis.';
   if (!reviewRating) return 'Wybierz ocenę od 1 do 5 gwiazdek.';
   if (text.length < 10) return 'Opinia powinna zawierać co najmniej 10 znaków.';
+  if (text.length > 180) return 'Opinia może zawierać maksymalnie 180 znaków.';
   if (requireConsent && !document.getElementById('review-data-consent').checked) return 'Zaznacz zgodę na przetwarzanie danych.';
-  if (requireConsent && !document.getElementById('review-publication-consent').checked) return 'Zaznacz zgodę na publikację opinii i zdjęcia.';
   return '';
 }
 
-function generateReviewCanvas() {
-  const error = validateReview(false);
-  if (error) throw new Error(error);
-  const canvas = document.getElementById('review-canvas');
+function generateReviewCanvas(theme = 'light', requireValid = true) {
+  if (requireValid) { const error = validateReview(false); if (error) throw new Error(error); }
+  const dark = theme === 'dark';
+  const canvas = document.getElementById(dark ? 'review-canvas-dark' : 'review-canvas-light');
   const ctx = canvas.getContext('2d');
-  const name = document.getElementById('review-name').value.trim();
-  const review = document.getElementById('review-text').value.trim();
-
+  const name = document.getElementById('review-name').value.trim() || 'Twój podpis';
+  const review = document.getElementById('review-text').value.trim() || 'Tutaj pojawi się Twoja opinia o produkcie.';
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const gradient = ctx.createLinearGradient(146, 100, 956, 528);
-  gradient.addColorStop(0, '#bceff5');
-  gradient.addColorStop(1, '#f7f8f8');
-  ctx.fillStyle = gradient;
-  roundedRect(ctx, 146, 100, 810, 428, 28);
-  ctx.fill();
-
-  ctx.fillStyle = '#c9f4f8';
-  ctx.beginPath();
-  ctx.arc(146, 292, 104, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(146, 292, 80, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.restore();
-  drawReviewPhotoCrop(ctx, 146, 292, 160);
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 10;
-  ctx.beginPath();
-  ctx.arc(146, 292, 84, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.fillStyle = '#111';
-  ctx.font = '700 34px Arial, sans-serif';
-  ctx.fillText(name, 276, 172);
-  const nameWidth = ctx.measureText(name).width;
-  ctx.fillStyle = '#555';
-  ctx.font = '600 21px Arial, sans-serif';
-  const productX = Math.min(276 + nameWidth + 18, 700);
-  ctx.fillText(`• ${REVIEW_PRODUCT}`, productX, 171);
-
-  ctx.fillStyle = '#111';
-  const fittedText = fitReviewText(ctx, review, 625, 238);
-  ctx.font = `400 ${fittedText.fontSize}px Arial, sans-serif`;
-  const textHeight = fittedText.lines.length * fittedText.lineHeight;
-  const textStartY = 220 + Math.max(0, (238 - textHeight) / 2) + fittedText.fontSize;
-  fittedText.lines.forEach((line, index) => ctx.fillText(line, 276, textStartY + index * fittedText.lineHeight));
-
-  ctx.fillStyle = '#f7f2e9';
-  roundedRect(ctx, 526, 484, 318, 82, 38);
-  ctx.fill();
-  ctx.font = '700 43px Arial, sans-serif';
-  ctx.fillStyle = '#eda52b';
-  ctx.textAlign = 'center';
-  ctx.fillText('★'.repeat(reviewRating) + '☆'.repeat(5 - reviewRating), 685, 541);
-  ctx.textAlign = 'left';
+  const shiftX = -9, cardX = 172 + shiftX, cardY = 63, avatarX = 72 + shiftX, avatarY = 182, avatarSize = 199, contentX = 325 + shiftX, productX = 325 + shiftX, starsX = 601 + shiftX;
+  const accent = dark ? '#5adefa' : '#148fa0', textColor = dark ? '#f5f7f8' : '#101313';
+  const gradient = ctx.createLinearGradient(cardX, cardY, cardX + 815, cardY + 430);
+  gradient.addColorStop(0, dark ? '#162630' : '#bceff4');gradient.addColorStop(1, dark ? '#080b0d' : '#f4f5f5');
+  ctx.save();ctx.shadowColor = dark ? accent : 'rgba(0,0,0,.25)';ctx.shadowBlur = dark ? 40 : 23;ctx.fillStyle = gradient;roundedRect(ctx, cardX, cardY, 815, 430, 28);ctx.fill();ctx.strokeStyle = accent;ctx.lineWidth = 4;ctx.stroke();ctx.restore();
+  const avatarCenterX = avatarX + avatarSize / 2, avatarCenterY = avatarY + avatarSize / 2;
+  ctx.save();ctx.shadowColor = dark ? accent : 'rgba(0,0,0,.24)';ctx.shadowBlur = dark ? 36 : 24;ctx.fillStyle = dark ? '#17323b' : '#d9fbff';ctx.beginPath();ctx.arc(avatarCenterX, avatarCenterY, avatarSize / 2 + 18, 0, Math.PI * 2);ctx.fill();ctx.strokeStyle = accent;ctx.lineWidth = 4;ctx.stroke();ctx.restore();
+  drawReviewPhotoCrop(ctx, avatarCenterX, avatarCenterY, avatarSize);
+  ctx.fillStyle = textColor;ctx.font = '800 37px Arial, sans-serif';ctx.fillText(name, contentX, 124);
+  let productSize = 34;while(productSize > 18){ctx.font = `800 ${productSize}px Arial, sans-serif`;if(productX + ctx.measureText(REVIEW_PRODUCT).width <= cardX + 787) break;productSize--;}ctx.fillStyle = dark ? accent : '#555f63';ctx.fillText(REVIEW_PRODUCT, productX, 163);
+  ctx.fillStyle = textColor;const fittedText = fitReviewText(ctx, review, 610, 224);ctx.font = `400 ${fittedText.fontSize}px Arial, sans-serif`;fittedText.lines.forEach((line, index) => ctx.fillText(line, contentX, 225 + index * fittedText.lineHeight));
+  ctx.save();ctx.shadowColor = dark ? accent : 'rgba(0,0,0,.15)';ctx.shadowBlur = dark ? 30 : 13;ctx.fillStyle = dark ? '#171b1d' : '#f7f4ef';roundedRect(ctx, starsX, 462, 340, 72, 20);ctx.fill();ctx.strokeStyle = accent;ctx.lineWidth = 4;ctx.stroke();ctx.restore();
+  ctx.font = '67px Arial, sans-serif';ctx.textAlign = 'left';const gold = '#eda52b',starGlyph='★',starWidth=ctx.measureText(starGlyph).width,starGap=2,starsTotal=starWidth*5+starGap*4;let starDrawX=starsX+(340-starsTotal)/2;for(let i=0;i<5;i++){if(i<reviewRating){ctx.fillStyle=gold;ctx.fillText(starGlyph,starDrawX,516);}else{ctx.save();ctx.strokeStyle=gold;ctx.lineWidth=2.8;ctx.lineJoin='round';ctx.strokeText(starGlyph,starDrawX,516);ctx.restore();}starDrawX+=starWidth+starGap;}
   return canvas;
 }
 
-function previewReviewPng() {
+function previewReviewPng(announce = true) {
   try {
-    const canvas = generateReviewCanvas();
-    const output = document.getElementById('review-output');
-    output.src = canvas.toDataURL('image/png');
-    output.style.display = 'block';
-    setReviewStatus('Podgląd PNG jest gotowy.');
+    const light = generateReviewCanvas('light', false);
+    const dark = generateReviewCanvas('dark', false);
+    document.getElementById('review-output-light').src = light.toDataURL('image/png');
+    document.getElementById('review-output-dark').src = dark.toDataURL('image/png');
+    document.getElementById('review-output-grid').classList.add('open');
+    if (announce) setReviewStatus('Jasny i ciemny podgląd PNG są gotowe.');
   } catch (error) {
     setReviewStatus(error.message, true);
   }
 }
 
-function reviewFileName() {
+function reviewFileName(variant = 'jasna') {
   const name = document.getElementById('review-name').value.trim().replace(/[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ_-]+/g, '-');
-  return `opinia-${name || 'klienta'}.png`;
+  return `opinia-${name || 'klienta'}-${variant}.png`;
 }
 
 function downloadReviewPng() {
   try {
-    const canvas = generateReviewCanvas();
-    const link = document.createElement('a');
-    link.download = reviewFileName();
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    setReviewStatus('Plik PNG został przygotowany.');
+    [['light','jasna'],['dark','ciemna']].forEach(([theme,variant])=>{const link=document.createElement('a');link.download=reviewFileName(variant);link.href=generateReviewCanvas(theme).toDataURL('image/png');link.click();});
+    setReviewStatus('Jasny i ciemny plik PNG zostały przygotowane.');
   } catch (error) {
     setReviewStatus(error.message, true);
   }
@@ -1265,14 +1265,11 @@ function dataUrlToReviewFile(dataUrl, filename) {
   return new File([bytes], filename, {type:mime});
 }
 
-function downloadAndOpenReviewEmail(dataUrl, filename) {
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = dataUrl;
-  link.click();
+function downloadAndOpenReviewEmail(items) {
+  items.forEach(item=>{const link=document.createElement('a');link.download=item.filename;link.href=item.dataUrl;link.click();});
   const subject = encodeURIComponent(`Opinia o produkcie ${REVIEW_PRODUCT}`);
-  const body = encodeURIComponent(`Dzień dobry,\n\nw załączniku przesyłam opinię o produkcie ${REVIEW_PRODUCT}.\n\nProszę dołączyć pobrany plik: ${filename}`);
-  setReviewStatus('PNG został pobrany. Dołącz go do otwieranej wiadomości e-mail.');
+  const body = encodeURIComponent(`Dzień dobry,\n\nw załączniku przesyłam opinię o produkcie ${REVIEW_PRODUCT}.\n\nProszę dołączyć dwa pobrane pliki PNG: wersję jasną i ciemną.`);
+  setReviewStatus('Oba pliki PNG zostały pobrane. Dołącz je do otwieranej wiadomości e-mail.');
   window.location.href = `mailto:${APP_CONFIG.contactEmail}?subject=${subject}&body=${body}`;
 }
 
@@ -1296,6 +1293,33 @@ function copyReviewEmailAddress() {
   }
 }
 
+function getReviewAppsScriptUrl() {
+  return APP_CONFIG.reviewAppsScriptUrl || localStorage.getItem(REVIEW_ENDPOINT_STORAGE_KEY) || '';
+}
+
+function reviewPngByteSize(dataUrl) {
+  return Math.ceil((dataUrl.length - dataUrl.indexOf(',') - 1) * .75);
+}
+
+async function sendReviewViaGoogle() {
+  const error = validateReview(true);
+  if (error) return setReviewStatus(error, true);
+  const url = getReviewAppsScriptUrl();
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(url)) return setReviewStatus('Brakuje adresu wdrożenia Google Apps Script. Właściciel strony musi dodać adres kończący się na /exec.', true);
+  const last = Number(localStorage.getItem(REVIEW_COOLDOWN_STORAGE_KEY) || 0);
+  if (Date.now() - last < 60000) return setReviewStatus('Opinia była przed chwilą wysyłana. Odczekaj minutę.', true);
+  const lightPngData = generateReviewCanvas('light').toDataURL('image/png');
+  const darkPngData = generateReviewCanvas('dark').toDataURL('image/png');
+  if (reviewPngByteSize(lightPngData) > REVIEW_MAX_PNG_BYTES || reviewPngByteSize(darkPngData) > REVIEW_MAX_PNG_BYTES) return setReviewStatus('Jedna z grafik PNG jest zbyt duża. Użyj mniejszego zdjęcia.', true);
+  const name = document.getElementById('review-name').value.trim();
+  const review = document.getElementById('review-text').value.trim();
+  const payload = {token:REVIEW_FORM_TOKEN,product:REVIEW_PRODUCT,name,email:'',rating:reviewRating,review,consentData:document.getElementById('review-data-consent').checked,consentPublication:document.getElementById('review-publication-consent').checked,hasPhoto:Boolean(reviewPhotoImage),lightPngData,darkPngData,lightFileName:reviewFileName('jasna'),darkFileName:reviewFileName('ciemna'),openedAt:new Date(reviewFormOpenedAt).toISOString(),submittedAt:new Date().toISOString(),sourceUrl:location.href,website:''};
+  const button = document.getElementById('review-send-button');button.disabled = true;button.innerHTML = '<i class="ti ti-loader-2" aria-hidden="true"></i><span>WYSYŁANIE…</span>';setReviewStatus('Przekazuję opinię do Google Apps Script…');
+  try { await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});localStorage.setItem(REVIEW_COOLDOWN_STORAGE_KEY,String(Date.now()));setReviewStatus('Opinia została przekazana do wysłania. Dziękuję!'); }
+  catch (_) { setReviewStatus('Nie udało się połączyć ze skryptem Google. Sprawdź internet i adres wdrożenia.', true); }
+  finally { button.disabled = false;button.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i><span>WYŚLIJ OPINIĘ</span>'; }
+}
+
 async function shareReviewPng() {
   const error = validateReview(true);
   if (error) {
@@ -1305,15 +1329,13 @@ async function shareReviewPng() {
   copyReviewEmailAddress();
   setReviewStatus(`Adres ${APP_CONFIG.contactEmail} został skopiowany do schowka. Przygotowywanie PNG…`);
   try {
-    const canvas = generateReviewCanvas();
-    const dataUrl = canvas.toDataURL('image/png');
-    const filename = reviewFileName();
+    const items=[{dataUrl:generateReviewCanvas('light').toDataURL('image/png'),filename:reviewFileName('jasna')},{dataUrl:generateReviewCanvas('dark').toDataURL('image/png'),filename:reviewFileName('ciemna')}];
     if (typeof File !== 'undefined' && navigator.share && navigator.canShare) {
-      const file = dataUrlToReviewFile(dataUrl, filename);
-      if (navigator.canShare({files:[file]})) {
+      const files=items.map(item=>dataUrlToReviewFile(item.dataUrl,item.filename));
+      if (navigator.canShare({files})) {
         try {
           await navigator.share({
-            files:[file],
+            files,
             title:`Opinia o ${REVIEW_PRODUCT}`,
             text:`Opinia o produkcie ${REVIEW_PRODUCT}. Adres odbiorcy: ${APP_CONFIG.contactEmail}`
           });
@@ -1327,7 +1349,7 @@ async function shareReviewPng() {
         }
       }
     }
-    downloadAndOpenReviewEmail(dataUrl, filename);
+    downloadAndOpenReviewEmail(items);
   } catch (error) {
     setReviewStatus(error.message || 'Nie udało się przygotować opinii.', true);
   }
