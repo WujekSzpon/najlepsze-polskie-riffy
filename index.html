@@ -121,6 +121,8 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .option-action{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;padding:7px 10px;font:600 11px 'Open Sans',sans-serif;cursor:pointer;}
 .option-action:hover{border-color:var(--accent);color:var(--accent);}
 .option-action:disabled{opacity:.4;cursor:not-allowed;}
+.option-action-review{border-color:#ed1160;color:#ff4b88;background:rgba(237,17,96,.09);box-shadow:0 0 7px rgba(237,17,96,.28),inset 0 0 6px rgba(237,17,96,.06);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
+.option-action-review:hover,.option-action-review:focus-visible{border-color:#ff4b88;color:#fff;background:rgba(237,17,96,.18);box-shadow:0 0 13px rgba(237,17,96,.52),inset 0 0 8px rgba(237,17,96,.1);transform:translateY(-1px);outline:none;}
 #guide-modal{position:fixed;inset:0;z-index:245;display:none;}
 #guide-modal.open{display:block;}
 #guide-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(3px);}
@@ -247,6 +249,29 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 #review-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
 @media(min-width:721px){#review-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:700px;max-height:90vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.review-grid{grid-template-columns:1fr 1fr}.review-wide{grid-column:1/-1;}}
 
+/* CONTACT FORM */
+#contact-modal{position:fixed;inset:0;z-index:252;display:none;}
+#contact-modal.open{display:block;}
+#contact-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);}
+#contact-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:92vh;overflow-y:auto;}
+.contact-grid{display:grid;gap:12px;}
+.contact-field label{display:block;font-size:11px;color:#bbb;font-weight:700;margin-bottom:5px;}
+.contact-field input[type="text"],.contact-field input[type="email"],.contact-field textarea{width:100%;background:#111;border:1px solid var(--border);border-radius:7px;color:#fff;padding:9px 11px;font:13px 'Open Sans',sans-serif;outline:none;}
+.contact-field input[type="text"]:focus,.contact-field input[type="email"]:focus,.contact-field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,204,0,.08);}
+.contact-field input[type="email"]:disabled{opacity:.45;cursor:not-allowed;}
+.contact-field textarea{min-height:160px;resize:vertical;line-height:1.5;}
+.contact-email-required{color:var(--accent);font-size:11px;font-weight:800;line-height:1.4;text-transform:uppercase;margin:0 0 7px;}
+.contact-reply-choice{display:flex;gap:8px;align-items:flex-start;margin:2px 0 11px;color:#ddd;font-size:11px;line-height:1.45;}
+.contact-reply-choice input{width:auto;margin-top:2px;accent-color:var(--accent);flex:0 0 auto;}
+.contact-hint{margin:4px 0 8px;color:#999;font-size:11px;line-height:1.45;}
+.contact-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
+.contact-privacy{font-size:10px;color:#888;line-height:1.5;padding:10px;background:#121212;border-radius:7px;margin-top:10px;}
+.contact-privacy a{color:var(--accent);}
+.contact-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
+#contact-status{min-height:18px;margin-top:9px;font-size:11px;color:#8bc34a;}
+@media(min-width:641px){#contact-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(610px,calc(100% - 36px));max-height:88vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.contact-grid{grid-template-columns:1fr 1fr}.contact-wide{grid-column:1/-1;}}
+@media(max-width:640px){#contact-panel{padding:17px 16px calc(17px + env(safe-area-inset-bottom));}.contact-field textarea{min-height:135px;}}
+
 /* TAGS DROPDOWN */
 #tags-dropdown{position:fixed;inset:0;z-index:200;display:none;}
 #tags-dropdown.open{display:block;}
@@ -274,6 +299,59 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .state-message-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:15px;}
 .state-message-button{border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#111;padding:9px 15px;font:700 11px 'Open Sans',sans-serif;cursor:pointer;}
 .state-message-button.secondary{background:transparent;color:var(--accent);}
+
+/* CARD PREVIEW */
+#card-preview-modal{position:fixed;inset:0;z-index:245;display:none;align-items:center;justify-content:center;padding:18px;}
+#card-preview-modal.open{display:flex;}
+#card-preview-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(3px);}
+#card-preview-panel{position:relative;width:min(580px,100%);max-height:calc(100dvh - 36px);overflow-y:auto;background:var(--surface);border:2px solid #343434;border-radius:16px;box-shadow:0 20px 70px rgba(0,0,0,.75);transform-origin:center;animation:card-preview-in .28s cubic-bezier(.2,.8,.2,1);outline:none;}
+@keyframes card-preview-in{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card-preview-close{position:absolute;z-index:5;top:10px;right:10px;width:38px;height:38px;border:1px solid rgba(255,255,255,.28);border-radius:50%;background:rgba(8,8,8,.82);color:#fff;font-size:20px;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.55);}
+.card-preview-thumb{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#111;container-type:inline-size;border-radius:14px 14px 0 0;}
+.card-preview-thumb::after{content:'';position:absolute;z-index:1;left:0;right:0;bottom:0;height:18cqw;background:linear-gradient(to top,#080808 0%,rgba(8,8,8,.94) 28%,rgba(8,8,8,.58) 62%,rgba(8,8,8,0) 100%);pointer-events:none;}
+.card-preview-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.card-preview-thumb .thumb-icon{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:52px;}
+.card-preview-thumb .difficulty-stars{font-size:clamp(34px,11.5cqw,58px);}
+.card-preview-actions{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border);background:#101010;}
+.card-preview-round{width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;border:3px solid currentColor;border-radius:50%;background:#0a0a0a;color:var(--card-icon-light);font-size:25px;cursor:pointer;box-shadow:0 0 8px rgba(211,211,211,.22);}
+.card-preview-favorite{justify-self:start;}
+.card-preview-favorite.is-favorite{color:#ed1160;background:rgba(237,17,96,.13);box-shadow:0 0 12px rgba(237,17,96,.48);}
+.card-preview-youtube{justify-self:end;}
+.card-preview-youtube[hidden]{display:block;visibility:hidden;pointer-events:none;}
+.card-preview-material{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 17px;border:2px solid var(--accent);border-radius:999px;background:rgba(255,204,0,.1);color:var(--accent);font:800 11px 'Open Sans',sans-serif;cursor:pointer;box-shadow:0 0 11px rgba(255,204,0,.3),inset 0 0 8px rgba(255,204,0,.05);}
+.card-preview-material i{font-size:21px;}
+.card-preview-content{padding:16px 18px 20px;text-align:center;}
+.card-preview-title{color:#fff;font-size:20px;font-weight:700;line-height:1.35;}
+.card-preview-description{margin-top:9px;color:#bbb;font-size:13px;line-height:1.5;}
+.card-preview-tags{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
+@media(max-width:480px){#card-preview-modal{padding:10px}.card-preview-actions{padding:10px 13px;gap:8px}.card-preview-round{width:42px;height:42px;font-size:23px}.card-preview-material{min-height:42px;padding:0 13px;font-size:10px}.card-preview-content{padding:14px 15px 18px}.card-preview-title{font-size:18px}}
+@media(prefers-reduced-motion:reduce){#card-preview-panel{animation:none}}
+
+/* NEW ITEMS */
+#new-items-modal{position:fixed;inset:0;z-index:248;display:none;align-items:center;justify-content:center;padding:18px;}
+#new-items-modal.open{display:flex;}
+#new-items-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(4px);}
+#new-items-panel{position:relative;width:min(780px,100%);max-height:calc(100dvh - 36px);overflow-y:auto;background:linear-gradient(145deg,#18120d 0%,#111 42%,#160b16 100%);border:2px solid rgba(255,204,0,.58);border-radius:17px;padding:20px;box-shadow:0 0 24px rgba(255,204,0,.18),0 24px 80px rgba(0,0,0,.82);animation:new-items-in .34s cubic-bezier(.18,.9,.25,1.15);outline:none;}
+@keyframes new-items-in{from{opacity:0;transform:translateY(18px) scale(.93)}to{opacity:1;transform:translateY(0) scale(1)}}
+.new-items-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px;}
+.new-items-heading{font:800 23px 'Oswald',sans-serif;letter-spacing:.035em;color:var(--accent);text-shadow:0 0 12px rgba(255,204,0,.38);}
+.new-items-subtitle{margin-top:4px;color:#ccc;font-size:12px;line-height:1.5;}
+.new-items-close{flex:0 0 auto;width:39px;height:39px;border:1px solid #555;border-radius:50%;background:#111;color:#fff;font-size:20px;cursor:pointer;}
+.new-items-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;}
+.new-item-card{display:block;width:100%;overflow:hidden;padding:0;border:2px solid #3d3430;border-radius:13px;background:#171717;color:#fff;text-align:left;cursor:pointer;box-shadow:0 7px 22px rgba(0,0,0,.42);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
+.new-item-card:hover,.new-item-card:focus-visible{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 0 17px rgba(255,204,0,.28),0 10px 26px rgba(0,0,0,.48);outline:none;}
+.new-item-cover{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#0d0d0d;container-type:inline-size;}
+.new-item-cover::after{content:'';position:absolute;z-index:1;left:0;right:0;bottom:0;height:20cqw;background:linear-gradient(to top,#090909 0%,rgba(9,9,9,.92) 30%,rgba(9,9,9,.48) 68%,transparent 100%);}
+.new-item-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.new-item-cover .difficulty-stars{font-size:clamp(27px,10.5cqw,46px);}
+.new-item-copy{position:relative;padding:12px 13px 14px;}
+.new-item-title{font-size:14px;font-weight:700;line-height:1.4;text-align:center;}
+.new-items-info{margin-top:15px;padding:11px 12px;border:1px solid rgba(255,204,0,.3);border-radius:9px;background:rgba(255,204,0,.055);color:#d4d4d4;font-size:11.5px;line-height:1.55;text-align:center;}
+.new-items-info strong{color:var(--accent);}
+.new-items-actions{display:flex;justify-content:center;margin-top:16px;padding-top:14px;border-top:1px solid #3a3028;}
+.new-items-done{border:1px solid var(--accent);border-radius:9px;background:var(--accent);color:#111;padding:10px 22px;font:800 11px 'Open Sans',sans-serif;cursor:pointer;box-shadow:0 0 13px rgba(255,204,0,.3);}
+@media(max-width:600px){#new-items-modal{padding:9px}#new-items-panel{padding:16px 13px calc(16px + env(safe-area-inset-bottom));max-height:calc(100dvh - 18px)}.new-items-list{grid-template-columns:1fr}.new-items-heading{font-size:21px}.new-item-title{font-size:13.5px}}
+@media(prefers-reduced-motion:reduce){#new-items-panel{animation:none}.new-item-card{transition:none}}
 
 /* CARD */
 .card{background:var(--surface);border:3px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:border-color 0.2s,transform 0.15s;text-decoration:none;display:block;container-type:inline-size;}
@@ -359,7 +437,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   @page{size:420mm 1000mm;margin:0;background:#0f0f0f;}
   html,body.print-catalog{width:420mm !important;margin:0 !important;background:#0f0f0f !important;color:#fff !important;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
   body.print-catalog{padding:20mm !important;}
-  body.print-catalog #options-modal,body.print-catalog #review-modal{display:none !important;}
+  body.print-catalog #options-modal,body.print-catalog #review-modal,body.print-catalog #contact-modal,body.print-catalog #card-preview-modal,body.print-catalog #new-items-modal{display:none !important;}
   body.print-catalog #print-catalog-header{display:block !important;margin-bottom:5mm;padding:0 1mm 3mm;border-bottom:2px solid #ffcc00;color:#fff;background:#0f0f0f !important;}
   body.print-catalog #print-catalog-header h1{font:700 19pt 'Oswald',sans-serif;letter-spacing:.03em;margin:0 0 2mm;}
   body.print-catalog #print-catalog-meta{font:10pt 'Open Sans',sans-serif;color:#aaa;}
@@ -465,12 +543,57 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   </div>
 </div>
 
+<div id="card-preview-modal" role="dialog" aria-modal="true" aria-labelledby="card-preview-title" aria-hidden="true">
+  <div id="card-preview-backdrop" onclick="closeCardPreview()"></div>
+  <div id="card-preview-panel" tabindex="-1">
+    <button class="card-preview-close" type="button" onclick="closeCardPreview()" aria-label="Zamknij podgląd">✕</button>
+    <div class="card-preview-thumb" id="card-preview-thumb">
+      <img id="card-preview-image" alt="">
+      <span class="thumb-icon" id="card-preview-fallback">🎸</span>
+      <div id="card-preview-stars"></div>
+    </div>
+    <div class="card-preview-actions">
+      <button class="card-preview-round card-preview-favorite" id="card-preview-favorite" type="button" onclick="togglePreviewFavorite()" aria-label="Dodaj do ulubionych"><i class="ti ti-heart" aria-hidden="true"></i></button>
+      <button class="card-preview-material" type="button" onclick="openPreviewMaterial()"><i class="ti ti-folder-open" aria-hidden="true"></i><span>OTWÓRZ MATERIAŁY</span></button>
+      <button class="card-preview-round card-preview-youtube" id="card-preview-youtube" type="button" onclick="openPreviewYoutube()" aria-label="Otwórz film na YouTube"><i class="ti ti-player-play-filled" aria-hidden="true"></i></button>
+    </div>
+    <div class="card-preview-content">
+      <div class="card-preview-title" id="card-preview-title"></div>
+      <div class="card-preview-description" id="card-preview-description"></div>
+      <div class="card-preview-tags" id="card-preview-tags"></div>
+    </div>
+  </div>
+</div>
+
+<div id="new-items-modal" role="dialog" aria-modal="true" aria-labelledby="new-items-title" aria-hidden="true">
+  <div id="new-items-backdrop" onclick="closeNewItemsModal()"></div>
+  <div id="new-items-panel" tabindex="-1">
+    <div class="new-items-header">
+      <div>
+        <div class="new-items-heading" id="new-items-title">✨ NOWE OPRACOWANIA!</div>
+        <div class="new-items-subtitle" id="new-items-subtitle">Zobacz materiały, które właśnie pojawiły się w konspekcie.</div>
+      </div>
+      <button class="new-items-close" type="button" onclick="closeNewItemsModal()" aria-label="Zamknij powiadomienie o nowościach">✕</button>
+    </div>
+    <div class="new-items-list" id="new-items-list"></div>
+    <div class="new-items-info"><strong>Nie przegapisz żadnej nowości:</strong> nowe opracowania są również domyślnie wyświetlane na początku głównej listy. Te jednorazowe powiadomienia możesz wyłączyć w Opcjach.</div>
+    <div class="new-items-actions"><button class="new-items-done" type="button" onclick="closeNewItemsModal()">SUPER, POKAŻ KONSPEKT</button></div>
+  </div>
+</div>
+
 <div id="options-modal" role="dialog" aria-modal="true" aria-labelledby="options-title" aria-hidden="true">
   <div id="options-backdrop" onclick="closeOptions()"></div>
   <div id="options-panel" tabindex="-1">
     <div class="options-header">
       <span class="options-title" id="options-title"><i class="ti ti-settings"></i> OPCJE</span>
       <button class="options-close" onclick="closeOptions()" aria-label="Zamknij">✕</button>
+    </div>
+
+    <div class="options-section">
+      <div class="options-section-title">Kontakt i opinia o produkcie</div>
+      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" onclick="sendFeedback()">DODAJ OPINIĘ</button></div>
+      <div class="option-row"><span>Napisz do mnie</span><button class="option-action" onclick="openContactForm()">NAPISZ</button></div>
+      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Adres mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
     </div>
 
     <div class="options-section">
@@ -484,7 +607,9 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="option-row"><span>Pokazuj tagi</span><label class="option-switch"><input id="opt-tags" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Pokazuj gwiazdki trudności</span><label class="option-switch"><input id="opt-stars" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Pokazuj miniatury</span><label class="option-switch"><input id="opt-thumbnails" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Otwieraj karty w oknie podglądu</span><label class="option-switch"><input id="opt-card-preview" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Automatycznie chowaj panel podczas przewijania (telefon)</span><label class="option-switch"><input id="opt-auto-hide-toolbar" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Powiadamiaj o nowych opracowaniach</span><label class="option-switch"><input id="opt-new-item-notifications" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row popup-frequency-row">
         <div class="popup-frequency-copy"><span>Powiadomienia pop-up</span><span class="popup-frequency-value" id="opt-popup-frequency-label">Co 2 minuty</span></div>
         <input id="opt-popup-frequency" type="range" min="0" max="4" step="1" value="2" aria-label="Częstotliwość powiadomień pop-up" oninput="updatePopupFrequencyPreview(this.value)" onchange="saveUiSettings()">
@@ -497,12 +622,6 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
           <button class="popup-position-button" type="button" data-popup-position="bottom" onclick="setPopupPosition('bottom')">DÓŁ</button>
         </div>
       </div>
-    </div>
-
-    <div class="options-section">
-      <div class="options-section-title">Kontakt i opinia o produkcie</div>
-      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action" onclick="sendFeedback()">NAPISZ</button></div>
-      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Kontakt mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
     </div>
 
     <div class="options-section">
@@ -548,7 +667,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     <section class="guide-section">
       <div class="guide-section-title">2. Co znajduje się na karcie utworu?</div>
       <div class="guide-grid">
-        <div class="guide-card"><strong>Okładka i tytuł</strong>Miniatura pozwala szybko rozpoznać opracowanie. Kliknięcie karty otwiera przypisane materiały do nauki.</div>
+        <div class="guide-card"><strong>Okładka i tytuł</strong>Miniatura pozwala szybko rozpoznać opracowanie. Gdy podgląd kart jest włączony, kliknięcie pokazuje większą kartę z sercem, folderem „Otwórz materiały” i opcjonalnym YouTube. Funkcję można zmienić w Opcjach.</div>
         <div class="guide-card"><strong>♡ Ulubione</strong>Serce w lewym dolnym rogu dodaje riff do ulubionych. Ulubione są zapisywane w używanej przeglądarce i można je później wyświetlić przez sortowanie.</div>
         <div class="guide-card"><strong>★ Poziom trudności</strong>Gwiazdki pokazują poziom od początkującego do eksperta. Dzięki nim możesz stopniowo przechodzić od łatwiejszych riffów do trudniejszych.</div>
         <div class="guide-card"><strong>▶ YouTube</strong>Jeżeli materiał ma przypisany film, żółty przycisk odtwarzania otwiera go w nowej karcie.</div>
@@ -585,7 +704,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
     <section class="guide-section">
       <div class="guide-section-title">4. Dostosuj konspekt do siebie</div>
-      <p class="guide-section-copy">W <b>Opcjach</b> możesz włączać lub wyłączać opisy, tagi, gwiazdki i miniatury, ustawić częstotliwość oraz położenie powiadomień, zdecydować o automatycznym chowaniu panelu na telefonie, wyeksportować ustawienia, skontaktować się ze mną albo dodać opinię o produkcie. Wielkość kart ustawisz przyciskiem lupy.</p>
+      <p class="guide-section-copy">W <b>Opcjach</b> możesz włączać lub wyłączać opisy, tagi, gwiazdki, miniatury, okno podglądu kart oraz jednorazowe powiadomienia o nowych riffach. Możesz także ustawić częstotliwość i położenie zwykłych powiadomień, zdecydować o automatycznym chowaniu panelu na telefonie, wyeksportować ustawienia, skontaktować się ze mną albo dodać opinię o produkcie. Podgląd kart jest domyślnie włączony na telefonie i wyłączony na komputerze. Wielkość kart ustawisz przyciskiem lupy.</p>
       <div class="guide-note">Nie musisz niczego konfigurować od razu. Zacznij od wyszukania utworu, a wygląd i zachowanie strony dopasuj wtedy, gdy będzie Ci to potrzebne. Instrukcję zawsze otworzysz ponownie przez <b>Opcje → Instrukcja obsługi</b>.</div>
     </section>
 
@@ -634,6 +753,46 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="card-size-current" id="card-size-current" aria-live="polite">Tryb automatyczny</div>
       <button class="option-action card-size-auto active" id="card-size-auto" type="button" onclick="setAutoCardSize()" aria-pressed="true">AUTO</button>
     </div>
+  </div>
+</div>
+
+<div id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title" aria-hidden="true">
+  <div id="contact-backdrop" onclick="closeContactForm()"></div>
+  <div id="contact-panel" tabindex="-1">
+    <div class="review-header">
+      <span class="review-title" id="contact-title"><i class="ti ti-mail" aria-hidden="true"></i> NAPISZ DO MNIE</span>
+      <button class="options-close" onclick="closeContactForm()" aria-label="Zamknij formularz kontaktowy">✕</button>
+    </div>
+    <div class="contact-hint">Masz pytanie dotyczące produktu albo potrzebujesz pomocy? Napisz wiadomość bezpośrednio z tego formularza.</div>
+    <div class="contact-grid">
+      <div class="contact-field">
+        <label for="contact-name">Imię</label>
+        <input id="contact-name" type="text" maxlength="40" autocomplete="given-name" placeholder="np. Jan">
+      </div>
+      <div class="contact-field">
+        <label for="contact-email">Adres e-mail</label>
+        <div class="contact-email-required" id="contact-email-required">Adres jest potrzebny, żebym mógł odpowiedzieć</div>
+        <label class="contact-reply-choice"><input id="contact-reply-requested" type="checkbox" checked onchange="toggleContactReply()"><span>Chcę otrzymać odpowiedź na podany adres e-mail.</span></label>
+        <input id="contact-email" type="email" maxlength="120" autocomplete="email" placeholder="twoj@email.pl" required>
+      </div>
+      <div class="contact-field contact-wide">
+        <label for="contact-subject">Tytuł wiadomości</label>
+        <input id="contact-subject" type="text" maxlength="100" placeholder="Wpisz krótki temat wiadomości" oninput="updateContactCharCounts()">
+        <div class="contact-char-count" id="contact-subject-count">0 / 100</div>
+      </div>
+      <div class="contact-field contact-wide">
+        <label for="contact-message">Wiadomość</label>
+        <textarea id="contact-message" maxlength="1500" placeholder="Napisz swoją wiadomość…" oninput="updateContactCharCounts()"></textarea>
+        <div class="contact-char-count" id="contact-message-count">0 / 1500</div>
+      </div>
+    </div>
+    <label class="review-consent"><input id="contact-data-consent" type="checkbox"><span>Zgadzam się na wykorzystanie podanych danych wyłącznie w celu obsługi wiadomości i udzielenia odpowiedzi.</span></label>
+    <div class="contact-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane zostaną wykorzystane wyłącznie do obsługi tej wiadomości. Masz prawo dostępu do danych, ich poprawienia, usunięcia, ograniczenia przetwarzania oraz złożenia skargi do Prezesa UODO.</div>
+    <label class="contact-honeypot" aria-hidden="true">Strona internetowa<input id="contact-website" type="text" tabindex="-1" autocomplete="off"></label>
+    <div class="review-actions">
+      <button class="review-primary" id="contact-send-button" type="button" onclick="sendContactViaGoogle()"><i class="ti ti-send" aria-hidden="true"></i><span>WYŚLIJ WIADOMOŚĆ</span></button>
+    </div>
+    <div id="contact-status" role="status" aria-live="polite"></div>
   </div>
 </div>
 
@@ -714,7 +873,7 @@ const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51
 // ==============================
 
 const APP_CONFIG = Object.freeze({
-  version: '2026.07.22',
+  version: '2026.07.24',
   excelUrl: 'https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx',
   repositoryBase: 'https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main',
   productName: 'Najlepsze Polskie Riffy',
@@ -731,7 +890,9 @@ const REVIEW_PRODUCT = APP_CONFIG.productName;
 const REVIEW_FORM_TOKEN = 'WSG_OPINIA_2026_V1';
 const REVIEW_ENDPOINT_STORAGE_KEY = 'wsg_review_apps_script_endpoint';
 const REVIEW_COOLDOWN_STORAGE_KEY = 'wsg_review_last_submission';
+const CONTACT_COOLDOWN_STORAGE_KEY = 'wsg_contact_last_submission';
 const REVIEW_MAX_PNG_BYTES = 4 * 1024 * 1024;
+let contactFormOpenedAt = Date.now();
 
 async function sha256(text) {
   const enc = new TextEncoder().encode(text);
@@ -790,7 +951,7 @@ let cardSizeAuto = !savedSize;
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
 const POPUP_FREQUENCY_MINUTES = [0, 1, 2, 3, 4];
-const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, autoHideToolbar:false, popupFrequency:2, popupPosition:'bottom', popupSettingsVersion:2 };
+const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, cardPreview:window.matchMedia('(max-width: 640px)').matches, newItemNotifications:true, autoHideToolbar:false, popupFrequency:2, popupPosition:'bottom', popupSettingsVersion:2 };
 let uiSettings = {...DEFAULT_UI_SETTINGS};
 let popupScheduleTimer;
 let firstPopupPending = true;
@@ -857,7 +1018,7 @@ function applyUiSettings() {
   document.body.classList.toggle('hide-stars', !uiSettings.stars);
   document.body.classList.toggle('hide-thumbnails', !uiSettings.thumbnails);
   const fields = {
-    descriptions:'opt-descriptions', tags:'opt-tags', stars:'opt-stars', thumbnails:'opt-thumbnails', autoHideToolbar:'opt-auto-hide-toolbar'
+    descriptions:'opt-descriptions', tags:'opt-tags', stars:'opt-stars', thumbnails:'opt-thumbnails', cardPreview:'opt-card-preview', newItemNotifications:'opt-new-item-notifications', autoHideToolbar:'opt-auto-hide-toolbar'
   };
   Object.entries(fields).forEach(([key, id]) => {
     const input = document.getElementById(id);
@@ -868,6 +1029,7 @@ function applyUiSettings() {
   updatePopupFrequencyPreview(uiSettings.popupFrequency);
   applyPopupPosition();
   if (popupFrequencyMinutes() === 0) closePopup();
+  if (!uiSettings.cardPreview && document.getElementById('card-preview-modal')?.classList.contains('open')) closeCardPreview();
 }
 
 function loadUiSettings() {
@@ -894,6 +1056,8 @@ function saveUiSettings() {
     tags: document.getElementById('opt-tags').checked,
     stars: document.getElementById('opt-stars').checked,
     thumbnails: document.getElementById('opt-thumbnails').checked,
+    cardPreview: document.getElementById('opt-card-preview').checked,
+    newItemNotifications: document.getElementById('opt-new-item-notifications').checked,
     autoHideToolbar: document.getElementById('opt-auto-hide-toolbar').checked,
     popupFrequency: Number(document.getElementById('opt-popup-frequency').value),
     popupPosition: normalizePopupPosition(uiSettings.popupPosition),
@@ -955,6 +1119,175 @@ function openCardSizeModal() {
 
 function closeCardSizeModal() {
   closeAccessibleDialog('card-size-modal');
+}
+
+let activePreviewEntryId = null;
+
+function handleCardClick(event, id) {
+  rememberCurrentPlace();
+  if (!uiSettings.cardPreview || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return true;
+  event.preventDefault();
+  openCardPreview(id);
+  return false;
+}
+
+function previewEntry() {
+  return exercises.find(entry => entry.id === activePreviewEntryId) || null;
+}
+
+function setPreviewFavoriteButton(id) {
+  const button = document.getElementById('card-preview-favorite');
+  const isFavorite = favorites.has(id);
+  button.dataset.favoriteId = String(id);
+  button.classList.toggle('is-favorite', isFavorite);
+  button.innerHTML = `<i class="ti ${isFavorite ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i>`;
+  button.setAttribute('aria-label', isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych');
+  button.setAttribute('aria-pressed', String(isFavorite));
+}
+
+function openCardPreview(id) {
+  const entry = exercises.find(item => item.id === id);
+  if (!entry) return;
+  activePreviewEntryId = id;
+  const coverName = entry.okladka || `${entry.nazwa} - ${entry.wykonawca}`;
+  const encodedCover = `${REPO_BASE}/okladki/${encodeURIComponent(coverName)}`;
+  const image = document.getElementById('card-preview-image');
+  const fallback = document.getElementById('card-preview-fallback');
+  image.style.display = 'block';
+  fallback.style.display = 'none';
+  image.alt = `Okładka: ${entry.nazwa}`;
+  image.dataset.fallbackSrc = `${encodedCover}.jpg`;
+  image.onerror = function() {
+    if (this.dataset.fallbackSrc && this.src !== this.dataset.fallbackSrc) {
+      this.src = this.dataset.fallbackSrc;
+      return;
+    }
+    this.style.display = 'none';
+    fallback.style.display = 'flex';
+  };
+  image.src = `${encodedCover}.png`;
+
+  document.getElementById('card-preview-stars').innerHTML = difficultyStars(entry.poziom);
+  document.getElementById('card-preview-title').textContent = entry.wykonawca ? `${entry.nazwa} - ${entry.wykonawca}` : entry.nazwa;
+  const description = document.getElementById('card-preview-description');
+  description.textContent = entry.opis || '';
+  description.style.display = entry.opis ? 'block' : 'none';
+  const tags = document.getElementById('card-preview-tags');
+  tags.innerHTML = `${isNewEntry(entry.data) ? '<span class="card-tag card-tag-new">NEW!</span>' : ''}${entry.tagi.map(tag => `<span class="card-tag">${tag}</span>`).join('')}`;
+  tags.style.display = tags.innerHTML ? 'flex' : 'none';
+  setPreviewFavoriteButton(id);
+
+  const youtube = document.getElementById('card-preview-youtube');
+  const hasYoutube = /^https?:\/\//i.test(entry.yt || '');
+  youtube.hidden = !hasYoutube;
+  youtube.dataset.url = hasYoutube ? entry.yt : '';
+  openAccessibleDialog('card-preview-modal', 'card-preview-panel');
+}
+
+function closeCardPreview() {
+  activePreviewEntryId = null;
+  closeAccessibleDialog('card-preview-modal');
+}
+
+function togglePreviewFavorite() {
+  if (activePreviewEntryId == null) return;
+  toggleFav(activePreviewEntryId, document.getElementById('card-preview-favorite'));
+}
+
+function openPreviewMaterial() {
+  const entry = previewEntry();
+  if (!entry || !entry.link) return;
+  rememberCurrentPlace();
+  const opened = window.open(entry.link, '_blank');
+  if (opened) opened.opener = null;
+}
+
+function openPreviewYoutube() {
+  const entry = previewEntry();
+  if (!entry || !/^https?:\/\//i.test(entry.yt || '')) return;
+  const opened = window.open(entry.yt, '_blank');
+  if (opened) opened.opener = null;
+}
+
+const NEW_ITEMS_INITIALIZED_KEY = 'npr_new_items_initialized_v1';
+const NEW_ITEMS_SEEN_KEY = 'npr_new_items_seen_v1';
+let pendingNewItems = [];
+
+function stableNewItemKey(entry) {
+  return `riff:${normalizeSearchText(entry.nazwa)}|${normalizeSearchText(entry.wykonawca)}|${normalizeSearchText(entry.okladka)}`;
+}
+
+function readSeenNewItemKeys() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(NEW_ITEMS_SEEN_KEY) || '[]');
+    return new Set(Array.isArray(stored) ? stored : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
+function writeSeenNewItemKeys(keys) {
+  localStorage.setItem(NEW_ITEMS_SEEN_KEY, JSON.stringify([...keys]));
+}
+
+function markPendingNewItemsAsSeen() {
+  if (!pendingNewItems.length) return;
+  const seen = readSeenNewItemKeys();
+  pendingNewItems.forEach(entry => seen.add(stableNewItemKey(entry)));
+  writeSeenNewItemKeys(seen);
+  pendingNewItems = [];
+}
+
+function newItemCoverHtml(entry) {
+  const coverName = entry.okladka || `${entry.nazwa} - ${entry.wykonawca}`;
+  const base = `${REPO_BASE}/okladki/${encodeURIComponent(coverName)}`;
+  return `<img src="${base}.png" alt="${escapeExportHtml(entry.nazwa)}" loading="lazy" data-fallback="${base}.jpg" onerror="if(!this.dataset.tried){this.dataset.tried='1';this.src=this.dataset.fallback}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><span class="thumb-icon" style="display:none">🎸</span>`;
+}
+
+function openNewItemsModal(items) {
+  if (!items.length) return;
+  pendingNewItems = [...items];
+  const list = document.getElementById('new-items-list');
+  list.innerHTML = items.map(entry => `
+    <button class="new-item-card" type="button" onclick="openCardPreviewFromNew(${entry.id})" aria-label="Pokaż podgląd: ${escapeExportHtml(entry.nazwa)}">
+      <div class="new-item-cover">${newItemCoverHtml(entry)}${difficultyStars(entry.poziom)}</div>
+      <div class="new-item-copy"><div class="new-item-title">${escapeExportHtml(entry.wykonawca ? `${entry.nazwa} - ${entry.wykonawca}` : entry.nazwa)}</div></div>
+    </button>`).join('');
+  document.getElementById('new-items-subtitle').textContent = `Dodano ${riffCountLabel(items.length)}. Kliknij kartę, aby zobaczyć jej podgląd.`;
+  openAccessibleDialog('new-items-modal', 'new-items-panel');
+}
+
+function openNewItemsWhenReady(items) {
+  if (!items.length || !uiSettings.newItemNotifications) return;
+  if (activeAccessibleDialog()) {
+    setTimeout(() => openNewItemsWhenReady(items), 600);
+    return;
+  }
+  openNewItemsModal(items);
+}
+
+function checkForNewItems() {
+  const allCurrentKeys = new Set(exercises.map(stableNewItemKey));
+  if (localStorage.getItem(NEW_ITEMS_INITIALIZED_KEY) !== '1') {
+    writeSeenNewItemKeys(allCurrentKeys);
+    localStorage.setItem(NEW_ITEMS_INITIALIZED_KEY, '1');
+    return;
+  }
+  const seen = readSeenNewItemKeys();
+  const unseen = exercises
+    .filter(entry => isNewEntry(entry.data) && !seen.has(stableNewItemKey(entry)))
+    .sort((a, b) => (parseExcelDate(b.data)?.getTime() || 0) - (parseExcelDate(a.data)?.getTime() || 0));
+  if (unseen.length && uiSettings.newItemNotifications) setTimeout(() => openNewItemsWhenReady(unseen), 450);
+}
+
+function closeNewItemsModal() {
+  markPendingNewItemsAsSeen();
+  closeAccessibleDialog('new-items-modal');
+}
+
+function openCardPreviewFromNew(id) {
+  closeNewItemsModal();
+  setTimeout(() => openCardPreview(id), 120);
 }
 
 function setAutoCardSize() {
@@ -1088,6 +1421,108 @@ function sendFeedback() {
   openAccessibleDialog('review-modal', 'review-panel');
   setReviewRating(5);
   requestAnimationFrame(()=>previewReviewPng(false));
+}
+
+function openContactForm() {
+  closeOptions();
+  contactFormOpenedAt = Date.now();
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-subject').value = '';
+  document.getElementById('contact-message').value = '';
+  document.getElementById('contact-data-consent').checked = false;
+  document.getElementById('contact-reply-requested').checked = true;
+  document.getElementById('contact-website').value = '';
+  toggleContactReply();
+  updateContactCharCounts();
+  setContactStatus('');
+  openAccessibleDialog('contact-modal', 'contact-panel');
+}
+
+function closeContactForm() {
+  closeAccessibleDialog('contact-modal');
+}
+
+function toggleContactReply() {
+  const replyRequested = document.getElementById('contact-reply-requested').checked;
+  const email = document.getElementById('contact-email');
+  const notice = document.getElementById('contact-email-required');
+  email.disabled = !replyRequested;
+  email.required = replyRequested;
+  if (!replyRequested) email.value = '';
+  notice.textContent = replyRequested
+    ? 'ADRES JEST POTRZEBNY, ŻEBYM MÓGŁ ODPOWIEDZIEĆ'
+    : 'Bez adresu e-mail nie będę mógł odpowiedzieć';
+}
+
+function updateContactCharCounts() {
+  document.getElementById('contact-subject-count').textContent = `${document.getElementById('contact-subject').value.length} / 100`;
+  document.getElementById('contact-message-count').textContent = `${document.getElementById('contact-message').value.length} / 1500`;
+}
+
+function setContactStatus(message, isError = false) {
+  const status = document.getElementById('contact-status');
+  status.textContent = message;
+  status.style.color = isError ? '#e87070' : '#8bc34a';
+}
+
+function validateContactForm() {
+  const name = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+  const subject = document.getElementById('contact-subject').value.trim();
+  const message = document.getElementById('contact-message').value.trim();
+  const replyRequested = document.getElementById('contact-reply-requested').checked;
+  if (!name) return 'Podaj swoje imię.';
+  if (name.length > 40) return 'Imię może mieć maksymalnie 40 znaków.';
+  if (replyRequested && !email) return 'Podaj adres e-mail — jest potrzebny, żebym mógł odpowiedzieć.';
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Podaj poprawny adres e-mail.';
+  if (!subject) return 'Wpisz tytuł wiadomości.';
+  if (subject.length > 100) return 'Tytuł może mieć maksymalnie 100 znaków.';
+  if (!message) return 'Wpisz treść wiadomości.';
+  if (message.length > 1500) return 'Wiadomość może mieć maksymalnie 1500 znaków.';
+  if (!document.getElementById('contact-data-consent').checked) return 'Zaznacz zgodę na obsługę wiadomości.';
+  return '';
+}
+
+async function sendContactViaGoogle() {
+  const error = validateContactForm();
+  if (error) return setContactStatus(error, true);
+  const url = getReviewAppsScriptUrl();
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/i.test(url)) return setContactStatus('Brakuje poprawnego adresu Google Apps Script.', true);
+  const last = Number(localStorage.getItem(CONTACT_COOLDOWN_STORAGE_KEY) || 0);
+  if (Date.now() - last < 60000) return setContactStatus('Wiadomość była przed chwilą wysyłana. Odczekaj minutę.', true);
+
+  const replyRequested = document.getElementById('contact-reply-requested').checked;
+  const payload = {
+    token: REVIEW_FORM_TOKEN,
+    formType: 'contact',
+    product: REVIEW_PRODUCT,
+    name: document.getElementById('contact-name').value.trim(),
+    email: replyRequested ? document.getElementById('contact-email').value.trim() : '',
+    replyRequested,
+    subject: document.getElementById('contact-subject').value.trim(),
+    message: document.getElementById('contact-message').value.trim(),
+    consentData: document.getElementById('contact-data-consent').checked,
+    openedAt: new Date(contactFormOpenedAt).toISOString(),
+    submittedAt: new Date().toISOString(),
+    sourceUrl: location.href,
+    website: document.getElementById('contact-website').value
+  };
+
+  const button = document.getElementById('contact-send-button');
+  button.disabled = true;
+  button.innerHTML = '<i class="ti ti-loader-2" aria-hidden="true"></i><span>WYSYŁANIE…</span>';
+  setContactStatus('Przekazuję wiadomość do wysłania…');
+  try {
+    await fetch(url, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload)});
+    localStorage.setItem(CONTACT_COOLDOWN_STORAGE_KEY, String(Date.now()));
+    setContactStatus('Wiadomość została przekazana do wysłania. Dziękuję!');
+  } catch (_) {
+    setContactStatus('Nie udało się połączyć z formularzem. Sprawdź połączenie z internetem.', true);
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i><span>WYŚLIJ WIADOMOŚĆ</span>';
+  }
 }
 
 async function copyContactEmail() {
@@ -1602,6 +2037,9 @@ initToolbarGestures();
 
 const ACCESSIBLE_DIALOGS = [
   {id:'guide-modal', close:closeUserGuide},
+  {id:'new-items-modal', close:closeNewItemsModal},
+  {id:'card-preview-modal', close:closeCardPreview},
+  {id:'contact-modal', close:closeContactForm},
   {id:'review-modal', close:closeReviewForm},
   {id:'export-modal', close:closeExportModal},
   {id:'card-size-modal', close:closeCardSizeModal},
@@ -1996,6 +2434,7 @@ function loadExcel() {
       render();
       changeSize(0);
       restoreSavedPlace();
+      checkForNewItems();
     })
     .catch(e => {
       excelLoaded = false;
@@ -2081,7 +2520,7 @@ function render() {
     const thumb = `<img src="${baseUrl}.png" alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="if(this.src.endsWith('.png')){this.src=this.src.replace('.png','.jpg')}else{this.style.display='none';this.nextElementSibling.style.display='block';}"><span class="thumb-icon" style="display:none">🎸</span>`;
 
     const isFav = favorites.has(e.id);
-    const favBtn = `<button class="card-icon-btn card-icon-favorite${isFav ? ' is-favorite' : ''}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" aria-label="${isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}" aria-pressed="${isFav}"><i class="ti ${isFav ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i></button>`;
+    const favBtn = `<button class="card-icon-btn card-icon-favorite${isFav ? ' is-favorite' : ''}" data-favorite-id="${e.id}" onclick="event.preventDefault();event.stopPropagation();toggleFav(${e.id},this);" aria-label="${isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}" aria-pressed="${isFav}"><i class="ti ${isFav ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i></button>`;
 
     const ytUrl = e.yt.startsWith('http') ? e.yt : '';
     const ytBtn = ytUrl ? `<button class="card-icon-btn card-icon-youtube" onclick="event.preventDefault();event.stopPropagation();window.open('${ytUrl}','_blank');" aria-label="Otwórz film na YouTube"><span class="youtube-play-triangle" aria-hidden="true"></span></button>` : '';
@@ -2095,7 +2534,7 @@ function render() {
     const tagsDiv = (newTag || regularTags) ? `<div class="card-tags">${newTag}${regularTags}</div>` : '';
 
     return `
-      <a class="card" data-nav-letter="${normalizeSearchText(e.nazwa).charAt(0)}" data-nav-name="${encodeURIComponent(e.nazwa)}" href="${e.link}" target="_blank" rel="noopener" onclick="rememberCurrentPlace()" style="position:relative;">
+      <a class="card" data-nav-letter="${normalizeSearchText(e.nazwa).charAt(0)}" data-nav-name="${encodeURIComponent(e.nazwa)}" href="${e.link}" target="_blank" rel="noopener" onclick="return handleCardClick(event,${e.id})" style="position:relative;">
         ${favBtn}${ytBtn}
         <div class="thumb ${starsHtml ? 'has-stars' : ''}" style="background:#1a1a2e;">${thumb}${starsHtml}</div>
         <div class="card-body">
@@ -2110,17 +2549,16 @@ function render() {
 function toggleFav(id, btn) {
   if (favorites.has(id)) {
     favorites.delete(id);
-    btn.classList.remove('is-favorite');
-    btn.innerHTML='<i class="ti ti-heart" aria-hidden="true"></i>';
-    btn.setAttribute('aria-label','Dodaj do ulubionych');
-    btn.setAttribute('aria-pressed','false');
   } else {
     favorites.add(id);
-    btn.classList.add('is-favorite');
-    btn.innerHTML='<i class="ti ti-heart-filled" aria-hidden="true"></i>';
-    btn.setAttribute('aria-label','Usuń z ulubionych');
-    btn.setAttribute('aria-pressed','true');
   }
+  const isFavorite = favorites.has(id);
+  document.querySelectorAll(`[data-favorite-id="${id}"]`).forEach(button => {
+    button.classList.toggle('is-favorite', isFavorite);
+    button.innerHTML = `<i class="ti ${isFavorite ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i>`;
+    button.setAttribute('aria-label', isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych');
+    button.setAttribute('aria-pressed', String(isFavorite));
+  });
   localStorage.setItem('npr_favorites', JSON.stringify([...favorites]));
 }
 
