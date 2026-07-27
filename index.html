@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f0f0f">
 <title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
+<link rel="manifest" href="./manifest-riffy.webmanifest">
+<link rel="apple-touch-icon" href="./pwa-riffy-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Oswald:wght@500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2e2e2e;--accent:#ffcc00;--accent2:#5adefa;--accent3:#003980;--text:#ffffff;--muted:#888;--card-icon-light:#d3d3d3;--radius:10px;}
+:root{--bg:#0f0f0f;--surface:#1a1a1a;--border:#2e2e2e;--accent:#ffcc00;--accent2:#5adefa;--accent3:#003980;--text:#ffffff;--muted:#888;--card-icon-light:#d3d3d3;--radius:10px;--ui-font-scale:1;--card-title-scale:1;--card-desc-scale:1;--card-tag-scale:1;--toolbar-icon-scale:1;}
 body{background:var(--bg);color:var(--text);font-family:'Open Sans',sans-serif;min-height:100vh;}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto !important;}*,*::before,*::after{scroll-behavior:auto !important;}}
@@ -31,7 +34,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;height:58px;background:var(--bg);position:sticky;top:0;z-index:10;}
 #header-logo{display:flex;align-items:center;gap:10px;overflow:hidden;cursor:pointer;text-decoration:none;}
 #header-logo img{height:38px;object-fit:contain;flex-shrink:0;}
-#header-logo span{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;color:#fff;line-height:1.2;white-space:nowrap;}
+#header-logo span{font-family:'Oswald',sans-serif;font-size:calc(16px * var(--ui-font-scale));font-weight:600;color:#fff;line-height:1.2;white-space:nowrap;}
 #header-logo>span{min-width:0;flex:1;}
 
 /* TOOLBAR */
@@ -39,20 +42,36 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 #toolbar-panel{overflow:hidden;opacity:1;transform:translateY(0);transition:max-height 450ms ease-in-out,opacity 350ms ease-in-out,transform 450ms ease-in-out;will-change:max-height,opacity,transform;}
 #toolbar-panel.hidden{max-height:0 !important;opacity:0;transform:translateY(-10px);pointer-events:none;}
 .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px;box-sizing:border-box;}
-.toolbar input,.toolbar select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 12px;font-size:13px;font-family:'Open Sans',sans-serif;outline:none;transition:border-color 0.15s;width:100%;box-sizing:border-box;}
+.toolbar input,.toolbar select{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 12px;font-size:calc(13px * var(--ui-font-scale));font-family:'Open Sans',sans-serif;outline:none;transition:border-color 0.15s;width:100%;box-sizing:border-box;}
 .toolbar input::placeholder{color:var(--muted);}
 .toolbar input:focus,.toolbar select:focus{border-color:var(--accent);}
 .toolbar select option{background:#1a1a1a;}
+.toolbar-select-button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 12px;font:calc(13px * var(--ui-font-scale)) 'Open Sans',sans-serif;cursor:pointer;text-align:left;}
+.toolbar-select-button:hover,.toolbar-select-button:focus-visible,.toolbar-select-button.active{border-color:var(--accent);outline:none;}
+.toolbar-select-button.active{color:var(--accent);background:rgba(255,204,0,.055);}
+.toolbar-select-button span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.toolbar-select-button i{flex:0 0 auto;color:var(--muted);font-size:15px;}
 #search{width:100% !important;}
 #sort,#kat,#lvl{width:100% !important;}
-.btn-toolbar{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 11px;font-size:12px;cursor:pointer;font-family:'Open Sans',sans-serif;transition:border-color 0.15s,color 0.15s;width:100%;}
+.btn-toolbar{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:7px 11px;font-size:calc(12px * var(--ui-font-scale));cursor:pointer;font-family:'Open Sans',sans-serif;transition:border-color 0.15s,color 0.15s;width:100%;}
 .btn-toolbar:hover{border-color:var(--accent);color:var(--accent);}
 .toolbar-btns{grid-column:1/-1;display:flex;gap:6px;}
-.toolbar-btns .btn-toolbar{flex:1;}
+.toolbar-btns .btn-toolbar{flex:1;min-width:0;padding:7px 4px;display:flex;align-items:center;justify-content:center;position:relative;}
+.toolbar-btns .btn-toolbar[data-tooltip]::after{content:attr(data-tooltip);position:absolute;z-index:45;left:50%;top:calc(100% + 8px);transform:translate(-50%,-3px);min-width:max-content;max-width:220px;padding:7px 9px;border:1px solid #494949;border-radius:7px;background:#0c0c0c;color:#eee;font:600 10px/1.3 'Open Sans',sans-serif;letter-spacing:0;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.65);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .14s ease,transform .14s ease,visibility .14s;}
+.toolbar-btns .btn-toolbar[data-tooltip]:hover::after,.toolbar-btns .btn-toolbar[data-tooltip]:focus-visible::after{opacity:1;visibility:visible;transform:translate(-50%,0);}
+.toolbar-btns .btn-toolbar:first-child::after{left:0;transform:translate(0,-3px)}.toolbar-btns .btn-toolbar:first-child:hover::after,.toolbar-btns .btn-toolbar:first-child:focus-visible::after{transform:translate(0,0)}
+.toolbar-btns .btn-toolbar:last-child::after{left:auto;right:0;transform:translate(0,-3px)}.toolbar-btns .btn-toolbar:last-child:hover::after,.toolbar-btns .btn-toolbar:last-child:focus-visible::after{transform:translate(0,0)}
+@media(max-width:640px),(hover:none){.toolbar-btns .btn-toolbar[data-tooltip]::after{display:none}}
+.toolbar-btns .btn-toolbar i{font-size:calc(19px * var(--toolbar-icon-scale));-webkit-text-stroke:.4px currentColor;}
 #export-btn{display:flex;align-items:center;justify-content:center;gap:5px;}
-#export-btn i{font-size:17px;}
-#toolbar-eye-close i,#options-btn i{font-size:18px;}
-#card-size-btn i{font-size:18px;}
+#export-btn i{font-size:calc(19px * var(--toolbar-icon-scale));}
+#toolbar-eye-close i,#options-btn i{font-size:calc(19px * var(--toolbar-icon-scale));}
+#card-size-btn i{font-size:calc(19px * var(--toolbar-icon-scale));}
+#tags-count-badge{position:absolute;top:2px;right:4px;min-width:15px;height:15px;line-height:15px;background:#ffcc00;color:#000;border-radius:99px;padding:0 3px;font-size:9px;font-weight:800;box-sizing:border-box;}
+#favorites-filter-btn{color:var(--muted);}
+#favorites-filter-btn.favorites-active{border-color:#ed1160;color:#ed1160;background:rgba(237,17,96,.12);box-shadow:0 0 9px rgba(237,17,96,.38),inset 0 0 6px rgba(237,17,96,.07);}
+#favorites-filter-btn.favorites-active i{filter:drop-shadow(0 0 5px rgba(237,17,96,.8));}
+#favorites-filter-btn:hover,#favorites-filter-btn:focus-visible{border-color:#ed1160;color:#ed1160;outline:none;}
 #options-btn{border-color:rgba(255,204,0,.8);color:var(--accent);background:rgba(255,204,0,.06);box-shadow:0 0 7px rgba(255,204,0,.22),inset 0 0 6px rgba(255,204,0,.04);}
 #options-btn:hover,#options-btn:focus-visible{border-color:var(--accent);color:#ffe36a;background:rgba(255,204,0,.11);box-shadow:0 0 11px rgba(255,204,0,.38),inset 0 0 7px rgba(255,204,0,.07);outline:none;}
 #reset-btn.filters-active{border-color:rgba(255,204,0,.8);color:var(--accent);background:rgba(255,204,0,.06);box-shadow:0 0 7px rgba(255,204,0,.22),inset 0 0 6px rgba(255,204,0,.04);animation:reset-filter-pulse 8s ease-in-out infinite;}
@@ -96,11 +115,11 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 #options-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.68);}
 #options-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:20px;max-height:86vh;overflow-y:auto;}
 .options-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.options-title{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;letter-spacing:.04em;}
+.options-title{font-family:'Oswald',sans-serif;font-size:calc(18px * var(--ui-font-scale));font-weight:600;letter-spacing:.04em;}
 .options-close{border:0;background:transparent;color:var(--muted);font-size:21px;cursor:pointer;padding:3px 6px;}
 .options-section{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
-.options-section-title{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
-.option-row{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #252525;font-size:13px;}
+.options-section-title{font-family:'Oswald',sans-serif;font-size:calc(11px * var(--ui-font-scale));letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;}
+.option-row{min-height:42px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #252525;font-size:calc(13px * var(--ui-font-scale));}
 .option-row:last-child{border-bottom:0;}
 .option-switch{position:relative;width:40px;height:22px;flex:0 0 40px;}
 .option-switch input{position:absolute;opacity:0;pointer-events:none;}
@@ -121,6 +140,23 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .option-action{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;padding:7px 10px;font:600 11px 'Open Sans',sans-serif;cursor:pointer;}
 .option-action:hover{border-color:var(--accent);color:var(--accent);}
 .option-action:disabled{opacity:.4;cursor:not-allowed;}
+.option-action-danger{border-color:#6f3030;color:#ff8b8b;background:rgba(180,35,35,.08);}
+.option-action-danger:hover:not(:disabled),.option-action-danger:focus-visible:not(:disabled){border-color:#ff5b5b;color:#fff;background:rgba(210,35,35,.18);box-shadow:0 0 10px rgba(255,55,55,.18);outline:none;}
+.favorites-settings-copy{display:flex;flex-direction:column;gap:2px;}
+.favorites-settings-count{color:#929292;font-size:10.5px;}
+#clear-favorites-modal{position:fixed;inset:0;z-index:265;display:none;}
+#clear-favorites-modal.open{display:block;}
+#clear-favorites-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(2px);}
+#clear-favorites-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(430px,calc(100vw - 28px));background:var(--surface);border:1px solid #5a3030;border-radius:12px;padding:18px;box-shadow:0 12px 45px rgba(0,0,0,.82);}
+.clear-favorites-icon{display:grid;place-items:center;width:46px;height:46px;margin-bottom:12px;border-radius:50%;background:rgba(237,17,96,.1);color:#ed1160;font-size:24px;box-shadow:0 0 16px rgba(237,17,96,.18);}
+.clear-favorites-title{font:700 19px 'Oswald',sans-serif;color:#fff;margin-bottom:7px;}
+.clear-favorites-copy{color:#bdbdbd;font-size:12px;line-height:1.55;}
+.clear-favorites-copy strong{color:#fff;}
+.clear-favorites-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:17px;}
+.clear-favorites-actions button{min-height:39px;border-radius:7px;font:700 11px 'Open Sans',sans-serif;cursor:pointer;}
+.clear-favorites-cancel{border:1px solid var(--border);background:transparent;color:#bbb;}
+.clear-favorites-confirm{border:1px solid #ff5b5b;background:#9f2020;color:#fff;}
+.clear-favorites-confirm:hover,.clear-favorites-confirm:focus-visible{background:#c42929;box-shadow:0 0 12px rgba(255,70,70,.28);outline:none;}
 .option-action-review{border-color:#ed1160;color:#ff4b88;background:rgba(237,17,96,.09);box-shadow:0 0 7px rgba(237,17,96,.28),inset 0 0 6px rgba(237,17,96,.06);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
 .option-action-review:hover,.option-action-review:focus-visible{border-color:#ff4b88;color:#fff;background:rgba(237,17,96,.18);box-shadow:0 0 13px rgba(237,17,96,.52),inset 0 0 8px rgba(237,17,96,.1);transform:translateY(-1px);outline:none;}
 #guide-modal{position:fixed;inset:0;z-index:245;display:none;}
@@ -146,6 +182,88 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 @media(min-width:641px){#guide-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 36px));max-height:88vh;border-radius:13px;box-shadow:0 10px 50px rgba(0,0,0,.8);padding:22px 24px;}}
 @media(max-width:640px){.guide-grid{grid-template-columns:1fr}.guide-section{padding:13px 0}.guide-section-title{font-size:17px}.guide-intro{font-size:12.5px;line-height:1.58}.guide-card,.guide-list,.guide-note{font-size:12px}#guide-panel{padding-bottom:calc(18px + env(safe-area-inset-bottom));}}
 @media print{#guide-modal{display:none!important;}}
+.guide-visual{color:#d0d0d0;}
+#guide-panel>.guide-intro,#guide-panel>.guide-section{display:none;}
+.guide-visual-hero{margin:2px 0 18px;padding:18px;border:1px solid rgba(255,204,0,.42);border-radius:13px;background:linear-gradient(135deg,rgba(255,204,0,.1),rgba(255,204,0,.025) 55%,rgba(0,191,230,.04));}
+.guide-visual-eyebrow{color:var(--accent);font:700 12px 'Open Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;}
+.guide-visual-hero h2{margin:5px 0 7px;color:#fff;font:700 clamp(25px,4vw,38px) 'Oswald',sans-serif;line-height:1.08;letter-spacing:.015em;}
+.guide-visual-hero p{margin:0;max-width:760px;font-size:13.5px;line-height:1.6;}
+.guide-visual-section{padding:21px 0;border-top:1px solid var(--border);}
+.guide-visual-heading{display:flex;align-items:center;gap:10px;margin:0 0 7px;color:#fff;font:700 22px 'Oswald',sans-serif;letter-spacing:.025em;}
+.guide-visual-heading>span{display:grid;place-items:center;width:29px;height:29px;flex:0 0 29px;border-radius:8px;background:var(--accent);color:#111;font:900 14px 'Open Sans',sans-serif;box-shadow:0 0 12px rgba(255,204,0,.24);}
+.guide-visual-copy{margin:0 0 14px;font-size:13px;line-height:1.58;color:#bdbdbd;}
+.guide-ui-shot{padding:13px;border:1px solid #454545;border-radius:13px;background:#121212;box-shadow:0 10px 24px rgba(0,0,0,.24);}
+.guide-toolbar-fields{display:grid;grid-template-columns:1.05fr .9fr 1.25fr 1.05fr;gap:8px;margin-bottom:8px;}
+.guide-ui-field{display:flex;align-items:center;gap:7px;min-height:38px;padding:0 10px;border:1px solid #353535;border-radius:7px;background:#1c1c1c;color:#aaa;font-size:11px;}
+.guide-ui-field i{color:#ddd;font-size:15px}.guide-ui-field i:last-child{margin-left:auto;}
+.guide-toolbar-actions{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.guide-ui-btn{display:flex;align-items:center;justify-content:center;gap:5px;min-height:34px;border:1px solid #363636;border-radius:7px;background:#181818;color:#eee;font-size:10px;font-weight:800;}
+.guide-ui-btn i{font-size:17px;-webkit-text-stroke:.4px currentColor}.guide-ui-btn.accent{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px rgba(255,204,0,.12);}
+.guide-icon-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:13px;}
+.guide-icon-card{min-height:112px;padding:12px;border:1px solid #383838;border-radius:10px;background:#171717;color:#c8c8c8;font-size:11.5px;line-height:1.48;}
+.guide-icon-card i{display:grid;place-items:center;width:33px;height:33px;margin-bottom:8px;border:1px solid #4b4b4b;border-radius:8px;color:#ddd;font-size:18px;}
+.guide-icon-card strong{display:block;margin-bottom:4px;color:#fff;font-size:13px}.guide-icon-card.pink i{color:#ed1160;border-color:rgba(237,17,96,.55);box-shadow:0 0 9px rgba(237,17,96,.16)}.guide-icon-card.accent i{color:var(--accent);border-color:rgba(255,204,0,.55)}
+.guide-step-grid,.guide-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:13px;}
+.guide-step-card,.guide-feature-card{position:relative;min-height:116px;padding:14px;border:1px solid #383838;border-radius:11px;background:#171717;font-size:12.5px;line-height:1.5;}
+.guide-step-card strong,.guide-feature-card strong{display:block;margin:0 0 5px;color:#fff;font-size:14px;}
+.guide-step-number{float:left;margin:0 10px 3px 0;color:var(--accent);font:800 20px 'Oswald',sans-serif;}
+.guide-feature-card i{display:grid;place-items:center;width:34px;height:34px;margin-bottom:9px;border-radius:9px;background:rgba(255,204,0,.1);color:var(--accent);font-size:21px;}
+.guide-feature-card.pink i{background:rgba(237,17,96,.1);color:#ed1160}.guide-feature-card.cyan i{background:rgba(0,191,230,.1);color:#00bfe6}.guide-feature-card.green i{background:rgba(139,195,74,.1);color:#8bc34a;}
+.guide-anatomy{display:grid;grid-template-columns:minmax(245px,.85fr) minmax(0,1.4fr);gap:16px;align-items:center;margin-top:14px;}
+.guide-demo-card{overflow:hidden;border:3px solid #353535;border-radius:13px;background:#1a1a1a;box-shadow:0 12px 28px rgba(0,0,0,.35);}
+.guide-live-card{width:100%;max-width:360px;margin:auto;pointer-events:none}.guide-live-card>.card{width:100%!important;max-width:none!important;margin:0!important;transform:none!important}.guide-live-card>.card:hover{transform:none!important}.guide-live-card .card-desc{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.guide-demo-cover{position:relative;display:grid;place-items:center;height:155px;background:radial-gradient(circle at 50% 18%,#3b3b3b,#121212 55%,#050505);color:#777;}
+.guide-demo-cover>.ti-guitar-pick{font-size:74px;color:#555;transform:rotate(-12deg);}
+.guide-demo-controls{position:absolute;left:12px;right:12px;bottom:10px;display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;}
+.guide-demo-controls>i{display:grid;place-items:center;width:34px;height:34px;border:1.5px solid currentColor;border-radius:50%;font-size:19px;filter:drop-shadow(0 0 5px currentColor);}
+.guide-demo-controls .ti-heart{color:#ed1160}.guide-demo-controls .ti-player-play-filled{color:var(--accent);}
+.guide-demo-stars{text-align:center;color:var(--accent);font-size:23px;letter-spacing:1px;text-shadow:0 0 7px rgba(255,204,0,.65);}
+.guide-demo-body{padding:13px;text-align:center}.guide-demo-title{color:#fff;font-weight:800;font-size:15px}.guide-demo-desc{margin:6px 0;color:#bbb;font-size:11px;line-height:1.45}.guide-demo-tags{padding-top:8px;border-top:1px solid #303030;color:#aaa;font-size:9px;}
+.guide-keyboard{margin-top:16px;padding:15px;border:1px solid rgba(255,204,0,.38);border-radius:12px;background:#171717;}
+.guide-keyboard h4{margin:0 0 12px;color:var(--accent);font:700 16px 'Oswald',sans-serif;letter-spacing:.035em;}
+.guide-keys-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.guide-key-item{padding:11px 7px;border:1px solid #343434;border-radius:9px;text-align:center;color:#ddd;font-size:10.5px;font-weight:700;}
+.guide-keycaps{display:flex;justify-content:center;align-items:center;gap:5px;min-height:34px;margin-bottom:5px;}
+.guide-keycaps kbd{min-width:35px;padding:7px 9px;border:1px solid #777;border-bottom-width:3px;border-radius:7px;background:#111;color:#fff;font:800 10px 'Open Sans',sans-serif;box-shadow:inset 0 -2px 0 #282828;}
+.guide-keycaps kbd.cyan{color:#00bfe6}.guide-keycaps kbd.pink{color:#ed1160}.guide-keycaps kbd.yellow{color:var(--accent);}
+.guide-save-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:13px;}
+.guide-save-card{padding:16px;border:1px solid #3a3a3a;border-radius:12px;background:#171717;}
+.guide-save-card h4{display:flex;align-items:center;gap:8px;margin:0 0 12px;color:#fff;font-size:15px}.guide-save-card h4 i{color:#00bfe6;font-size:23px}.guide-save-card.phone h4 i{color:#ed1160;}
+.guide-save-row{display:grid;grid-template-columns:28px 1fr;gap:9px;margin-top:11px;font-size:12px;line-height:1.45}.guide-save-row>i{color:#00bfe6;font-size:21px}.guide-save-card.phone .guide-save-row>i{color:#ed1160}.guide-save-row strong{display:block;color:#fff;}
+.guide-export-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0;}
+.guide-export-type{padding:12px 5px;border:1px solid #383838;border-radius:9px;background:#151515;text-align:center;color:#ddd;font-size:10px;font-weight:700}.guide-export-type i{display:block;margin-bottom:6px;color:var(--accent);font-size:24px;}
+.guide-browser-demo{margin-top:12px;padding:14px;border:1px solid #383838;border-radius:12px;background:#171717;}
+.guide-drag-animation{position:relative;height:172px;overflow:hidden;border:1px solid #353535;border-radius:11px;background:linear-gradient(145deg,#101010 0 66%,#10202a 66% 100%);}
+.guide-drag-browser{position:absolute;left:3%;top:18px;width:66%;height:86px;border:1px solid #555;border-radius:9px;background:#202020;box-shadow:0 8px 18px rgba(0,0,0,.35);}
+.guide-drag-browser-top{display:flex;gap:5px;padding:7px 8px 2px}.guide-drag-browser-top i{width:7px;height:7px;border-radius:50%;background:#555}
+.guide-address-bar{position:relative;display:flex;align-items:center;height:42px;margin:5px 9px;padding:0 11px 0 42px;border:1px solid #606060;border-radius:7px;background:#090909;color:#8e8e8e;font-size:10px;overflow:hidden;white-space:nowrap}.guide-address-icon{position:absolute;left:10px;display:grid;place-items:center;width:23px;height:23px;border-radius:50%;color:var(--accent);font-size:17px;box-shadow:0 0 0 0 rgba(255,204,0,0);animation:guideGrabTarget 6s ease-in-out infinite}
+.guide-drag-desktop{position:absolute;right:3%;top:24px;display:grid;place-items:center;width:23%;height:96px;border:1px solid #00bfe6;border-radius:10px;background:rgba(0,191,230,.08);color:#fff;font-size:9px;text-align:center}.guide-drag-desktop i{color:var(--accent);font-size:27px;margin-bottom:3px}
+.guide-drag-path{position:absolute;left:9%;right:14%;top:91px;height:2px;border-top:2px dashed rgba(255,204,0,.28);transform:rotate(4deg);transform-origin:left}
+.guide-drag-cursor{position:absolute;z-index:5;left:42%;top:126px;color:#fff;font-size:31px;filter:drop-shadow(0 2px 3px #000);animation:guideCursorDrag 6s ease-in-out infinite}.guide-drag-cursor:after{content:"";position:absolute;left:-6px;top:-6px;width:20px;height:20px;border:2px solid var(--accent);border-radius:50%;opacity:0;animation:guideClickPulse 6s ease-out infinite}
+.guide-drag-object{position:absolute;z-index:4;left:7.3%;top:54px;display:grid;place-items:center;width:26px;height:29px;border:1px solid var(--accent);border-radius:5px;background:#111;color:var(--accent);font-size:17px;opacity:0;box-shadow:0 0 10px rgba(255,204,0,.35);animation:guideDraggedFile 6s ease-in-out infinite}
+.guide-drag-status{position:absolute;left:3%;bottom:10px;width:66%;height:26px;color:#ddd;font-size:10px;text-align:center}.guide-drag-status span{position:absolute;inset:0;opacity:0}.guide-drag-status span:nth-child(1){animation:guideStatusOne 6s linear infinite}.guide-drag-status span:nth-child(2){animation:guideStatusTwo 6s linear infinite}.guide-drag-status span:nth-child(3){animation:guideStatusThree 6s linear infinite}
+@keyframes guideGrabTarget{0%,14%,100%{box-shadow:0 0 0 0 rgba(255,204,0,0);transform:scale(1)}20%,28%{box-shadow:0 0 0 7px rgba(255,204,0,.18);transform:scale(1.12)}}
+@keyframes guideCursorDrag{0%{left:42%;top:126px;opacity:0}8%{opacity:1}18%,28%{left:7%;top:51px;opacity:1;transform:scale(1)}33%{transform:scale(.82)}65%,76%{left:76%;top:64px;opacity:1;transform:scale(.92)}82%{left:80%;top:70px;opacity:0}100%{opacity:0}}
+@keyframes guideClickPulse{0%,20%,100%{opacity:0;transform:scale(.3)}24%,31%{opacity:1;transform:scale(1.35)}36%{opacity:0;transform:scale(1.8)}}
+@keyframes guideDraggedFile{0%,25%{left:7.3%;top:54px;opacity:0;transform:scale(.75)}30%{opacity:1}65%{left:76%;top:54px;opacity:1;transform:scale(1)}76%{left:80%;top:48px;opacity:0;transform:scale(.8)}100%{opacity:0}}
+@keyframes guideStatusOne{0%,5%{opacity:0}8%,28%{opacity:1}32%,100%{opacity:0}}@keyframes guideStatusTwo{0%,29%{opacity:0}33%,65%{opacity:1}69%,100%{opacity:0}}@keyframes guideStatusThree{0%,66%{opacity:0}70%,93%{opacity:1}97%,100%{opacity:0}}
+.guide-drag-caption{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:3px}.guide-drag-caption span{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #303030;border-radius:8px;background:#121212;color:#bbb;font-size:10px;line-height:1.35}.guide-drag-caption b{display:grid;place-items:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--accent);color:#111;font-size:10px}
+@media(prefers-reduced-motion:reduce){.guide-address-icon,.guide-drag-cursor,.guide-drag-cursor:after,.guide-drag-object,.guide-drag-status span{animation:none}.guide-drag-cursor{left:76%;top:64px;opacity:1}.guide-drag-object{left:80%;top:48px;opacity:1}.guide-drag-status span:nth-child(3){opacity:1}}
+.guide-offline{display:flex;gap:13px;align-items:flex-start;margin-top:13px;padding:14px 16px;border:1px solid rgba(255,204,0,.42);border-radius:12px;background:rgba(255,204,0,.05);font-size:12px;line-height:1.5}.guide-offline>i{color:var(--accent);font-size:27px}.guide-offline strong{display:block;color:var(--accent);font-size:14px;}
+.guide-options-demo{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(0,.9fr);gap:15px;margin-top:13px;}
+.guide-install-box{display:flex;gap:13px;align-items:flex-start;margin-top:13px;padding:14px 16px;border:1px solid rgba(90,222,250,.42);border-radius:12px;background:rgba(90,222,250,.055);font-size:12px;line-height:1.5}.guide-install-box>i{flex:0 0 auto;color:var(--accent2);font-size:27px}.guide-install-box strong{display:block;color:var(--accent2);font-size:14px;}
+.guide-options-window,.guide-size-window{padding:15px;border:1px solid rgba(255,204,0,.45);border-radius:12px;background:#171717;}
+.guide-options-window h4,.guide-size-window h4{margin:0 0 12px;color:var(--accent);font:700 18px 'Oswald',sans-serif;}
+.guide-setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d2d2d;color:#ddd;font-size:11px}.guide-setting-row:last-child{border-bottom:0}
+.guide-toggle{position:relative;width:38px;height:20px;flex:0 0 38px;border-radius:20px;background:#555}.guide-toggle.on{background:var(--accent)}.guide-toggle:after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#bbb}.guide-toggle.on:after{left:21px;background:#111}
+.guide-slider{height:7px;margin:24px 4px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent) 0 60%,#555 60%)}.guide-slider:after{content:"";display:block;width:20px;height:20px;border:2px solid #111;border-radius:50%;background:var(--accent);transform:translate(58%,-7px)}
+.guide-size-labels{display:flex;justify-content:space-between;color:#aaa;font-size:10px}.guide-auto{display:block;margin:14px auto 0;padding:7px 25px;border:1px solid var(--accent);border-radius:7px;color:var(--accent);text-align:center;font-size:10px;font-weight:800;}
+.guide-size-preview-mini{display:grid;place-items:end center;height:76px;margin-bottom:11px;border:1px solid #303030;border-radius:8px;background:linear-gradient(#222,#090909);overflow:hidden}.guide-size-preview-mini:before{content:"PODGLĄD KARTY";width:62%;padding:7px 5px;border:2px solid #454545;border-radius:7px 7px 0 0;background:#181818;color:#fff;text-align:center;font-size:9px;font-weight:800}
+.guide-size-control{display:grid;grid-template-columns:98px 1fr 34px;gap:7px;align-items:center;margin-top:9px;color:#c8c8c8;font-size:10px}.guide-size-control span:last-child{color:var(--accent);font-weight:800;text-align:right}.guide-size-control .guide-slider{height:5px;margin:0}.guide-size-control .guide-slider:after{width:14px;height:14px;transform:translate(58%,-5px)}
+.guide-new-features{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.guide-new-feature{padding:12px;border-radius:10px;background:#141414;border:1px solid #343434;font-size:11.5px;line-height:1.45}.guide-new-feature i{color:var(--accent);font-size:21px}.guide-new-feature strong{display:block;color:#fff;margin:6px 0 3px;}
+@media(min-width:641px){#guide-panel{width:min(960px,calc(100% - 36px));}}
+@media(max-width:700px){.guide-toolbar-fields{grid-template-columns:1fr 1fr}.guide-toolbar-actions{grid-template-columns:repeat(3,1fr)}.guide-step-grid,.guide-feature-grid{grid-template-columns:1fr 1fr}.guide-icon-grid{grid-template-columns:1fr 1fr}.guide-anatomy,.guide-options-demo{grid-template-columns:1fr}.guide-demo-card{max-width:360px;margin:auto}.guide-keys-grid{grid-template-columns:1fr 1fr}.guide-new-features{grid-template-columns:1fr}}
+@media(max-width:480px){.guide-visual-hero{padding:15px}.guide-visual-hero h2{font-size:27px}.guide-visual-heading{font-size:19px}.guide-step-grid,.guide-feature-grid,.guide-save-grid,.guide-icon-grid{grid-template-columns:1fr}.guide-export-strip{grid-template-columns:1fr 1fr}.guide-ui-field{font-size:10px;padding:0 7px}.guide-ui-btn{font-size:9px}.guide-drag-caption{grid-template-columns:1fr}.guide-size-control{grid-template-columns:88px 1fr 32px}.guide-browser-demo{padding:9px}.guide-drag-animation{height:164px}.guide-drag-browser{width:64%}.guide-address-bar{padding-left:35px;font-size:8px}.guide-drag-desktop{width:25%;font-size:8px}.guide-drag-status{width:64%;font-size:9px}}
 .options-contact{display:block;color:var(--accent);font-size:12px;margin-top:9px;text-decoration:none;}
 .option-contact-details{display:flex;align-items:center;gap:8px;min-width:0;flex:1;}
 .option-contact-label{color:#fff;white-space:nowrap;}
@@ -171,7 +289,7 @@ body.cards-mini .card-desc,body.cards-mini .card-tags,body.cards-mini .difficult
 body.cards-mini .thumb.has-stars::after{display:none;}
 body.cards-mini .card>button{display:none !important;}
 body.cards-mini .card-body{padding:8px 7px 9px;}
-body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
+body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margin-bottom:0;line-height:1.25;}
 @media(min-width:641px){#options-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:520px;max-height:82vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
 
 /* EXPORT */
@@ -186,6 +304,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .export-choice-text{min-width:0;}
 .export-choice-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
 .export-choice-desc{font-size:10.5px;line-height:1.45;color:#888;}
+.export-install-choice{margin-top:10px;padding:12px;border:1px solid rgba(90,222,250,.4);border-radius:9px;background:linear-gradient(135deg,rgba(90,222,250,.09),rgba(255,204,0,.035));}
+.export-install-choice .export-choice-title{display:flex;align-items:center;gap:7px}.export-install-choice .export-choice-title i{color:var(--accent2);font-size:19px;}
+.pwa-install-note{margin-top:5px;color:#9a9a9a;font-size:9.5px;line-height:1.35}.pwa-install-note.ready{color:#8bddea}.pwa-install-note.done{color:#8bc34a}
+.pwa-install-button.install-ready{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px rgba(255,204,0,.16)}.pwa-install-button:disabled{opacity:.62;cursor:default;}
 .export-guide-box{display:flex;align-items:center;justify-content:space-between;gap:12px;}
 .export-guide-copy{min-width:0;}
 .export-guide-box .option-action{flex:0 0 auto;white-space:nowrap;}
@@ -196,17 +318,36 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 #card-size-modal{position:fixed;inset:0;z-index:234;display:none;}
 #card-size-modal.open{display:block;}
 #card-size-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.65);}
-#card-size-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,calc(100vw - 28px));background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;box-shadow:0 8px 40px rgba(0,0,0,.75);}
-.card-size-actions{display:flex;flex-direction:column;gap:12px;}
+#card-size-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(390px,calc(100vw - 22px));max-height:calc(100dvh - 18px);overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px;box-shadow:0 8px 40px rgba(0,0,0,.75);}
+#card-size-panel .options-header{margin-bottom:9px;}
+.card-size-actions{display:flex;flex-direction:column;gap:8px;}
+.card-size-preview-wrap{display:flex;justify-content:center;min-height:92px;padding:6px;border:1px solid #303030;border-radius:9px;background:#101010;overflow:hidden;}
+.card-size-preview{width:220px;max-width:100%;transition:width .16s ease;}
+.card-size-preview .card{width:100%;pointer-events:none;box-shadow:0 5px 18px rgba(0,0,0,.45);}
+.card-size-preview .card:hover{transform:none;border-width:3px;border-color:var(--border);}
+.card-size-preview-empty{align-self:center;color:#777;font-size:10px;text-align:center;}
+.card-size-main{padding:8px 0 9px;border-bottom:1px solid var(--border);}
+.card-size-main-head{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:7px;margin-bottom:3px;}
+.card-size-main-title{color:#ccc;font-size:10.5px;font-weight:700;}
+.visual-size-section{display:flex;flex-direction:column;gap:5px;}
+.visual-size-row{display:grid;grid-template-columns:96px minmax(120px,1fr) 39px;align-items:center;gap:7px;min-height:27px;}
+.visual-size-row label{color:#bbb;font-size:9.5px;font-weight:700;}
+.visual-size-row output{color:var(--accent);font-size:10px;font-weight:800;text-align:right;}
+.visual-size-row label,.visual-size-row input{touch-action:manipulation;}
+.visual-size-row label{cursor:pointer;}
+.visual-size-row .card-size-range{height:18px;}
+.visual-size-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:7px;border-top:1px solid var(--border);}
+.visual-size-reset{flex:0 0 auto;min-height:30px;padding:5px 9px;}
+.visual-size-hint{color:#777;font-size:8.8px;line-height:1.35;}
+@media(max-width:380px){.visual-size-row{grid-template-columns:86px minmax(105px,1fr) 36px;gap:5px}.card-size-preview{width:205px}.visual-size-hint{font-size:8px}}
 .card-size-slider-labels{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;}
 .card-size-range{-webkit-appearance:none;appearance:none;width:100%;height:24px;margin:0;background:transparent;cursor:pointer;accent-color:var(--accent);}
 .card-size-range::-webkit-slider-runnable-track{height:5px;background:linear-gradient(90deg,#555,var(--accent));border-radius:999px;}
 .card-size-range::-webkit-slider-thumb{-webkit-appearance:none;width:19px;height:19px;margin-top:-7px;border:2px solid #111;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(255,204,0,.5);}
 .card-size-range::-moz-range-track{height:5px;background:linear-gradient(90deg,#555,var(--accent));border-radius:999px;}
 .card-size-range::-moz-range-thumb{width:17px;height:17px;border:2px solid #111;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(255,204,0,.5);}
-.card-size-current{text-align:center;color:#bbb;font-size:11px;min-height:16px;}
-.card-size-actions .option-action{min-height:42px;}
-.card-size-actions .card-size-auto{width:100%;font-size:11px;color:var(--accent);}
+.card-size-current{text-align:right;color:#aaa;font-size:9.5px;min-width:68px;}
+.card-size-actions .card-size-auto{width:auto;min-height:28px;padding:4px 11px;font-size:9.5px;color:var(--accent);}
 .card-size-actions .card-size-auto.active{background:var(--accent);border-color:var(--accent);color:#111;}
 
 /* REVIEW FORM */
@@ -260,17 +401,20 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .contact-field input[type="text"]:focus,.contact-field input[type="email"]:focus,.contact-field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,204,0,.08);}
 .contact-field input[type="email"]:disabled{opacity:.45;cursor:not-allowed;}
 .contact-field textarea{min-height:160px;resize:vertical;line-height:1.5;}
-.contact-email-required{color:var(--accent);font-size:11px;font-weight:800;line-height:1.4;text-transform:uppercase;margin:0 0 7px;}
-.contact-reply-choice{display:flex;gap:8px;align-items:flex-start;margin:2px 0 11px;color:#ddd;font-size:11px;line-height:1.45;}
-.contact-reply-choice input{width:auto;margin-top:2px;accent-color:var(--accent);flex:0 0 auto;}
+.contact-identity-fields{display:grid;gap:12px;}
 .contact-hint{margin:4px 0 8px;color:#999;font-size:11px;line-height:1.45;}
+.contact-subject-presets{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 9px;}
+.contact-subject-preset{display:flex;align-items:center;gap:5px;border:1px solid #3a3a3a;border-radius:999px;background:#161616;color:#bbb;padding:7px 10px;font:700 10px 'Open Sans',sans-serif;cursor:pointer;transition:.16s ease;}
+.contact-subject-preset i{font-size:15px;}
+.contact-subject-preset:hover,.contact-subject-preset:focus-visible{border-color:#777;color:#fff;outline:none;}
+.contact-subject-preset.active{border-color:var(--accent);background:rgba(255,204,0,.12);color:var(--accent);box-shadow:0 0 9px rgba(255,204,0,.2);}
 .contact-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
 .contact-privacy{font-size:10px;color:#888;line-height:1.5;padding:10px;background:#121212;border-radius:7px;margin-top:10px;}
 .contact-privacy a{color:var(--accent);}
 .contact-honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;}
 #contact-status{min-height:18px;margin-top:9px;font-size:11px;color:#8bc34a;}
 @media(min-width:641px){#contact-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:min(610px,calc(100% - 36px));max-height:88vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.contact-grid{grid-template-columns:1fr 1fr}.contact-wide{grid-column:1/-1;}}
-@media(max-width:640px){#contact-panel{padding:17px 16px calc(17px + env(safe-area-inset-bottom));}.contact-field textarea{min-height:135px;}}
+@media(max-width:640px){#contact-panel{padding:17px 16px calc(17px + env(safe-area-inset-bottom));}.contact-field textarea{min-height:135px;}.contact-subject-preset{flex:1 1 calc(50% - 7px);justify-content:center;min-height:36px}}
 
 /* TAGS DROPDOWN */
 #tags-dropdown{position:fixed;inset:0;z-index:200;display:none;}
@@ -286,9 +430,36 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 #tags-apply{background:#ffcc00;color:#000;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:16px;font-family:'Oswald',sans-serif;letter-spacing:0.04em;}
 #tags-clear{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;}
 
+/* ARTISTS MULTISELECT */
+#artists-dropdown{position:fixed;inset:0;z-index:201;display:none;}
+#artists-dropdown.open{display:block;}
+#artists-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.64);}
+#artists-panel{position:absolute;bottom:0;left:0;right:0;background:var(--surface);border-radius:16px 16px 0 0;padding:18px;max-height:78vh;overflow-y:auto;}
+@media(min-width:641px){#artists-panel{bottom:auto;left:50%;top:50%;right:auto;transform:translate(-50%,-50%);width:460px;max-height:82vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.72);}}
+.artists-panel-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;}
+.artists-panel-title{font:600 19px 'Oswald',sans-serif;color:#fff;}
+.artists-search{width:100%;margin-bottom:10px;background:#111;border:1px solid var(--border);border-radius:7px;color:#fff;padding:10px 12px;font:13px 'Open Sans',sans-serif;outline:none;}
+.artists-search:focus{border-color:var(--accent);}
+.artists-single-toggle{margin-bottom:11px;padding:8px 0;border-top:1px solid #292929;border-bottom:1px solid #292929;}
+.artists-single-toggle .option-row{min-height:36px;border:0;font-size:12px;}
+.artists-help{margin-top:5px;color:#888;font-size:10.5px;line-height:1.45;}
+#artists-choices{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.artist-choice{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;border:1px solid #333;border-radius:7px;background:#151515;color:#ccc;padding:9px 10px;font:600 12px 'Open Sans',sans-serif;cursor:pointer;text-align:left;}
+.artist-choice:hover,.artist-choice:focus-visible{border-color:#777;color:#fff;outline:none;}
+.artist-choice.active{border-color:var(--accent);color:var(--accent);background:rgba(255,204,0,.09);}
+.artist-choice-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.artist-choice-count{flex:0 0 auto;color:#888;font-size:10px;font-weight:700;}
+.artist-choice.active .artist-choice-count{color:#d7b300;}
+.artists-empty{grid-column:1/-1;color:#888;font-size:12px;text-align:center;padding:18px 8px;}
+.artists-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;margin-top:13px;}
+.artists-actions button{min-height:40px;border-radius:7px;font:700 12px 'Open Sans',sans-serif;cursor:pointer;}
+.artists-clear{border:1px solid var(--border);background:transparent;color:#aaa;}
+.artists-apply{border:0;background:var(--accent);color:#111;}
+@media(max-width:420px){#artists-choices{grid-template-columns:1fr}.artists-panel-title{font-size:18px}}
+
 /* GRID */
 .grid-wrap{padding:1.5rem 1.5rem 3rem;}
-.section-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.section-label{font-family:'Oswald',sans-serif;font-size:calc(11px * var(--ui-font-scale));letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';order:2;flex:1;height:1px;background:var(--border);}
 .section-label::before{content:attr(data-count);order:1;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;white-space:nowrap;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
@@ -321,10 +492,10 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .card-preview-material{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 17px;border:2px solid var(--accent);border-radius:999px;background:rgba(255,204,0,.1);color:var(--accent);font:800 11px 'Open Sans',sans-serif;cursor:pointer;box-shadow:0 0 11px rgba(255,204,0,.3),inset 0 0 8px rgba(255,204,0,.05);}
 .card-preview-material i{font-size:21px;}
 .card-preview-content{padding:16px 18px 20px;text-align:center;}
-.card-preview-title{color:#fff;font-size:20px;font-weight:700;line-height:1.35;}
-.card-preview-description{margin-top:9px;color:#bbb;font-size:13px;line-height:1.5;}
+.card-preview-title{color:#fff;font-size:calc(20px * var(--card-title-scale));font-weight:700;line-height:1.35;}
+.card-preview-description{margin-top:9px;color:#bbb;font-size:calc(13px * var(--card-desc-scale));line-height:1.5;}
 .card-preview-tags{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);}
-@media(max-width:480px){#card-preview-modal{padding:10px}.card-preview-actions{padding:10px 13px;gap:8px}.card-preview-round{width:42px;height:42px;font-size:23px}.card-preview-material{min-height:42px;padding:0 13px;font-size:10px}.card-preview-content{padding:14px 15px 18px}.card-preview-title{font-size:18px}}
+@media(max-width:480px){#card-preview-modal{padding:10px}.card-preview-actions{padding:10px 13px;gap:8px}.card-preview-round{width:42px;height:42px;font-size:23px}.card-preview-material{min-height:42px;padding:0 13px;font-size:10px}.card-preview-content{padding:14px 15px 18px}.card-preview-title{font-size:calc(18px * var(--card-title-scale))}}
 @media(prefers-reduced-motion:reduce){#card-preview-panel{animation:none}}
 
 /* NEW ITEMS */
@@ -361,12 +532,12 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 .thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;display:block;z-index:0;}
 .thumb-icon{position:relative;z-index:1;}
 .card-body{padding:10px 12px 13px;}
-.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px;line-height:1.35;text-align:center;}
+.card-title{font-size:calc(15px * var(--card-title-scale));font-weight:600;color:#fff;margin-bottom:6px;line-height:1.35;text-align:center;}
 .card.keyboard-selected{outline:3px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 1px rgba(255,204,0,.55),0 0 22px rgba(255,204,0,.48);}
-.card-desc{font-size:11.5px;color:#b3b3b3;margin-bottom:8px;line-height:1.4;text-align:center;}
+.card-desc{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:calc(11.5px * var(--card-desc-scale));color:#b3b3b3;margin-bottom:8px;line-height:1.4;text-align:center;}
 .card-badges{display:block;text-align:center;padding-top:10px;border-top:1px solid var(--border);margin-top:4px;margin-bottom:0;}
 .card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border);justify-content:center;}
-.card-tag{font-size:9px;padding:1px 6px;border-radius:99px;background:#222;color:#aaa;border:1px solid #333;}
+.card-tag{font-size:calc(9px * var(--card-tag-scale));padding:1px 6px;border-radius:99px;background:#222;color:#aaa;border:1px solid #333;}
 .card-tag-new{background:#d71920;color:#fff;border-color:#ff5a5f;font-weight:800;letter-spacing:.06em;box-shadow:0 0 8px rgba(215,25,32,.45);}
 .card-icon-btn{position:absolute;z-index:3;width:35px;width:8.61cqw;height:35px;height:8.61cqw;display:flex;align-items:center;justify-content:center;padding:0;border:2.5px solid currentColor;border-width:.64cqw;border-radius:50%;background:rgba(5,5,5,.72);color:var(--card-icon-light);cursor:pointer;box-shadow:0 0 5.25px rgba(211,211,211,.23),inset 0 0 6px rgba(211,211,211,.045);transition:transform .16s ease,box-shadow .16s ease,background .16s ease,color .16s ease;}
 .card-icon-btn i{font-size:21px;font-size:5.67cqw;filter:drop-shadow(0 .45cqw .45cqw rgba(0,0,0,.95)) drop-shadow(0 0 .375cqw rgba(211,211,211,.72));}
@@ -423,7 +594,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
 /* PRINT */
 @media print{
-  #login-screen,header,#toolbar-wrap,#tags-dropdown,#tip-popup,#scroll-top-btn,#export-modal,#card-size-modal{display:none !important;}
+  #login-screen,header,#toolbar-wrap,#tags-dropdown,#artists-dropdown,#tip-popup,#scroll-top-btn,#export-modal,#card-size-modal{display:none !important;}
   body{background:white !important;color:black !important;}
   .card{border:1px solid #ccc !important;break-inside:avoid;background:#f9f9f9 !important;}
   .card-title{color:black !important;}
@@ -493,10 +664,8 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <option value="lvl_desc">Trudne → Łatwe</option>
       <option value="fav">♥ Ulubione</option>
     </select>
-    <select id="kat" aria-label="Wybierz wykonawcę" onchange="render()">
-      <option value="">Wybierz wykonawcę</option>
-      <option value="" disabled>ℹ️ Tylko wykonawcy z dwoma Riffami oraz powyżej</option>
-    </select>
+    <button class="toolbar-select-button" id="artists-btn" type="button" onclick="openArtistsPanel()" aria-label="Wybierz jednego lub kilku wykonawców" aria-expanded="false" aria-controls="artists-dropdown"><span id="artists-btn-label">Wybierz wykonawcę</span><i class="ti ti-chevron-down" aria-hidden="true"></i></button>
+    <input id="kat" type="hidden" value="">
     <select id="lvl" aria-label="Poziom trudności" onchange="render()">
       <option value="">Poziom trudności</option>
       <option value="POCZĄTKUJĄCY">POCZĄTKUJĄCY — ★</option>
@@ -506,12 +675,13 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <option value="EXPERT">EXPERT — ★★★★★</option>
     </select>
     <div class="toolbar-btns">
-      <button class="btn-toolbar" id="card-size-btn" onclick="openCardSizeModal()" aria-label="Ustaw wielkość kart" title="Ustaw wielkość kart"><i class="ti ti-zoom-in"></i></button>
-      <button class="btn-toolbar" id="toolbar-eye-close" type="button" onclick="setToolbarCollapsed(true)" aria-label="Schowaj wyszukiwanie i sortowanie" title="Schowaj wyszukiwanie i sortowanie"><i class="ti ti-eye-off"></i></button>
-      <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()" aria-expanded="false" aria-controls="tags-dropdown">TAGI<span id="tags-count-badge" style="display:none;background:#ffcc00;color:#000;border-radius:99px;padding:1px 5px;font-size:10px;font-weight:700;margin-left:3px;"></span></button>
-      <button class="btn-toolbar" id="export-btn" onclick="openExportModal()" aria-label="PDF i eksport list" title="PDF i eksport list"><i class="ti ti-device-floppy"></i><span>PDF</span></button>
-      <button class="btn-toolbar" id="reset-btn" onclick="resetFilters()">RESET</button>
-      <button class="btn-toolbar" id="options-btn" onclick="openOptions()" aria-label="Opcje" title="Opcje"><i class="ti ti-settings"></i></button>
+      <button class="btn-toolbar" id="favorites-filter-btn" type="button" onclick="toggleFavoritesFilter()" aria-label="Pokaż tylko ulubione riffy" aria-pressed="false" title="Pokaż tylko ulubione riffy" data-tooltip="Pokaż tylko ulubione riffy"><i class="ti ti-heart" aria-hidden="true"></i></button>
+      <button class="btn-toolbar" id="card-size-btn" onclick="openCardSizeModal()" aria-label="Dostosuj wielkość kart i tekstu" title="Dostosuj wielkość kart i tekstu" data-tooltip="Dostosuj wielkość kart i tekstu"><i class="ti ti-zoom-in"></i></button>
+      <button class="btn-toolbar" id="toolbar-eye-close" type="button" onclick="setToolbarCollapsed(true)" aria-label="Zwiń pasek sterowania konspektem" title="Zwiń pasek sterowania konspektem" data-tooltip="Zwiń pasek sterowania konspektem"><i class="ti ti-eye-off"></i></button>
+      <button class="btn-toolbar" id="tags-btn" onclick="openTagsPanel()" aria-label="Wybierz tagi" title="Wybierz tagi" data-tooltip="Wybierz tagi" aria-expanded="false" aria-controls="tags-dropdown"><i class="ti ti-tag" aria-hidden="true"></i><span id="tags-count-badge" style="display:none"></span></button>
+      <button class="btn-toolbar" id="export-btn" onclick="openExportModal()" aria-label="Pobierz lub wyeksportuj materiały" title="Pobierz lub wyeksportuj materiały" data-tooltip="Pobierz lub wyeksportuj materiały"><i class="ti ti-download" aria-hidden="true"></i></button>
+      <button class="btn-toolbar" id="reset-btn" onclick="resetFilters()" aria-label="Wyczyść filtry i sortowanie" title="Wyczyść filtry i sortowanie" data-tooltip="Wyczyść filtry i sortowanie"><i class="ti ti-restore" aria-hidden="true"></i></button>
+      <button class="btn-toolbar" id="options-btn" onclick="openOptions()" aria-label="Otwórz opcje" title="Otwórz opcje" data-tooltip="Otwórz opcje"><i class="ti ti-settings"></i></button>
     </div>
    </div>
   </div>
@@ -540,6 +710,23 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     </div>
     <div id="tags-chips"></div>
     <button id="tags-apply" onclick="closeTagsPanel()">Zastosuj filtry</button>
+  </div>
+</div>
+
+<div id="artists-dropdown" role="dialog" aria-modal="true" aria-labelledby="artists-panel-title" aria-hidden="true">
+  <div id="artists-backdrop" onclick="closeArtistsPanel()"></div>
+  <div id="artists-panel" tabindex="-1">
+    <div class="artists-panel-header">
+      <span class="artists-panel-title" id="artists-panel-title">Wybierz wykonawców</span>
+      <button class="options-close" type="button" onclick="closeArtistsPanel()" aria-label="Zamknij wybór wykonawców">✕</button>
+    </div>
+    <input class="artists-search" id="artists-search" type="search" placeholder="Szukaj wykonawcy…" aria-label="Szukaj wykonawcy" oninput="renderArtistChoices()">
+    <div class="artists-single-toggle">
+      <div class="option-row"><span>Pokazuj także wykonawców z jednym riffem</span><label class="option-switch"><input id="artists-show-single" type="checkbox" onchange="setShowSinglePerformers(this.checked)"><span class="option-slider"></span></label></div>
+      <div class="artists-help">Domyślnie lista zawiera wykonawców mających co najmniej dwa riffy.</div>
+    </div>
+    <div id="artists-choices"></div>
+    <div class="artists-actions"><button class="artists-clear" type="button" onclick="clearPerformers()">WYCZYŚĆ</button><button class="artists-apply" type="button" onclick="closeArtistsPanel()">ZASTOSUJ</button></div>
   </div>
 </div>
 
@@ -593,12 +780,12 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="options-section-title">Kontakt i opinia o produkcie</div>
       <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" onclick="sendFeedback()">DODAJ OPINIĘ</button></div>
       <div class="option-row"><span>Napisz do mnie</span><button class="option-action" onclick="openContactForm()">NAPISZ</button></div>
-      <div class="option-row option-contact-row"><div class="option-contact-details"><span class="option-contact-label">Adres mailowy</span><span class="option-contact-address">tomaszczerniuk@gmail.com</span></div><button class="option-action" onclick="copyContactEmail()">KOPIUJ</button></div>
     </div>
 
     <div class="options-section">
       <div class="options-section-title">Pomoc</div>
       <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">OTWÓRZ</button></div>
+      <div class="option-row"><span>Zainstaluj konspekt na komputerze</span><button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
     </div>
 
     <div class="options-section">
@@ -608,7 +795,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <div class="option-row"><span>Pokazuj gwiazdki trudności</span><label class="option-switch"><input id="opt-stars" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Pokazuj miniatury</span><label class="option-switch"><input id="opt-thumbnails" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Otwieraj karty w oknie podglądu</span><label class="option-switch"><input id="opt-card-preview" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
-      <div class="option-row"><span>Automatycznie chowaj panel podczas przewijania (telefon)</span><label class="option-switch"><input id="opt-auto-hide-toolbar" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
+      <div class="option-row"><span>Automatycznie chowaj i pokazuj panel podczas przewijania (telefon)</span><label class="option-switch"><input id="opt-auto-hide-toolbar" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row"><span>Powiadamiaj o nowych opracowaniach</span><label class="option-switch"><input id="opt-new-item-notifications" type="checkbox" onchange="saveUiSettings()"><span class="option-slider"></span></label></div>
       <div class="option-row popup-frequency-row">
         <div class="popup-frequency-copy"><span>Powiadomienia pop-up</span><span class="popup-frequency-value" id="opt-popup-frequency-label">Co 2 minuty</span></div>
@@ -626,8 +813,12 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
     <div class="options-section">
       <div class="options-section-title">Ustawienia</div>
-      <div class="option-row"><span>Wyeksportuj ustawienia do pliku TXT</span><button class="option-action" onclick="exportSettings()">EKSPORTUJ</button></div>
-      <div class="option-row"><span>Wczytaj ustawienia z pliku TXT</span><button class="option-action" onclick="document.getElementById('settings-file').click()">WCZYTAJ</button></div>
+      <div class="option-row"><span>Wyeksportuj ustawienia i ulubione do pliku TXT</span><button class="option-action" onclick="exportSettings()">EKSPORTUJ</button></div>
+      <div class="option-row"><span>Wczytaj ustawienia i ulubione z pliku TXT</span><button class="option-action" onclick="document.getElementById('settings-file').click()">WCZYTAJ</button></div>
+      <div class="option-row">
+        <span class="favorites-settings-copy">Wyczyść wszystkie ulubione<span class="favorites-settings-count" id="favorites-settings-count">0 riffów</span></span>
+        <button class="option-action option-action-danger" id="clear-all-favorites-btn" type="button" onclick="openClearFavoritesConfirm()">USUŃ WSZYSTKIE</button>
+      </div>
       <input id="settings-file" type="file" accept=".txt,text/plain,application/json" hidden onchange="importSettings(event)">
     </div>
 
@@ -641,6 +832,19 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   </div>
 </div>
 
+<div id="clear-favorites-modal" role="dialog" aria-modal="true" aria-labelledby="clear-favorites-title" aria-describedby="clear-favorites-copy" aria-hidden="true">
+  <div id="clear-favorites-backdrop" onclick="closeClearFavoritesConfirm()"></div>
+  <div id="clear-favorites-panel" tabindex="-1">
+    <div class="clear-favorites-icon" aria-hidden="true"><i class="ti ti-heart-off"></i></div>
+    <div class="clear-favorites-title" id="clear-favorites-title">Usunąć wszystkie ulubione?</div>
+    <div class="clear-favorites-copy" id="clear-favorites-copy"></div>
+    <div class="clear-favorites-actions">
+      <button class="clear-favorites-cancel" type="button" onclick="closeClearFavoritesConfirm()">ANULUJ</button>
+      <button class="clear-favorites-confirm" type="button" onclick="confirmClearAllFavorites()">USUŃ ULUBIONE</button>
+    </div>
+  </div>
+</div>
+
 <div id="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-hidden="true">
   <div id="guide-backdrop" onclick="closeUserGuide()"></div>
   <div id="guide-panel" tabindex="-1">
@@ -650,13 +854,166 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
     </div>
     <div class="guide-intro"><strong>Witaj w konspekcie „Najlepsze Polskie Riffy”!</strong> Ta strona pomaga szybko znaleźć odpowiedni utwór, dopasować poziom trudności i otworzyć materiały do nauki. Cały konspekt możesz dostosować do swoich potrzeb i upodobań — wystarczy otworzyć <strong>Opcje</strong>. Tę instrukcję znajdziesz tam ponownie w dowolnym momencie.</div>
 
+    <div class="guide-visual">
+      <div class="guide-visual-hero">
+        <div class="guide-visual-eyebrow">NAJLEPSZE POLSKIE RIFFY</div>
+        <h2>Jak korzystać z konspektu?</h2>
+        <p>Wyszukuj, filtruj i otwieraj materiały bez przekopywania się przez całą bibliotekę. Poniższe makiety pokazują dokładnie, gdzie znajdują się najważniejsze funkcje. Tę instrukcję zawsze otworzysz ponownie przez <b>Opcje → Instrukcja obsługi</b>.</p>
+      </div>
+
+      <section class="guide-visual-section">
+        <h3 class="guide-visual-heading"><span>1</span> Pasek sterowania konspektem</h3>
+        <p class="guide-visual-copy">W tym miejscu wyszukujesz riffy, zmieniasz ich kolejność, łączysz filtry i otwierasz najważniejsze narzędzia. Ustawione filtry wpływają również na zawartość eksportu.</p>
+        <div class="guide-ui-shot" aria-label="Makieta paska sterowania konspektem">
+          <div class="guide-toolbar-fields">
+            <div class="guide-ui-field"><i class="ti ti-search"></i> Szukaj</div>
+            <div class="guide-ui-field">Sortowanie <i class="ti ti-chevron-down"></i></div>
+            <div class="guide-ui-field">Wybierz wykonawców <i class="ti ti-chevron-down"></i></div>
+            <div class="guide-ui-field">Poziom trudności <i class="ti ti-chevron-down"></i></div>
+          </div>
+          <div class="guide-toolbar-actions">
+            <div class="guide-ui-btn"><i class="ti ti-heart"></i></div>
+            <div class="guide-ui-btn"><i class="ti ti-zoom-in"></i></div>
+            <div class="guide-ui-btn"><i class="ti ti-eye-off"></i></div>
+            <div class="guide-ui-btn"><i class="ti ti-tag"></i></div>
+            <div class="guide-ui-btn"><i class="ti ti-download"></i></div>
+            <div class="guide-ui-btn"><i class="ti ti-restore"></i></div>
+            <div class="guide-ui-btn accent"><i class="ti ti-settings"></i></div>
+          </div>
+        </div>
+        <div class="guide-step-grid">
+          <div class="guide-step-card"><span class="guide-step-number">1</span><strong>Szukaj</strong>Wpisz tytuł riffu albo wykonawcę. Wyszukiwarka działa również bez polskich znaków. <b>Shift + Spacja</b> ustawia kursor w polu.</div>
+          <div class="guide-step-card"><span class="guide-step-number">2</span><strong>Sortowanie</strong>Ułóż riffy alfabetycznie, według wykonawcy lub trudności. Możesz też pokazać tylko nowości albo ulubione. Domyślnie nowe riffy znajdują się na początku.</div>
+          <div class="guide-step-card"><span class="guide-step-number">3</span><strong>Filtry</strong>Zaznacz jednego lub kilku wykonawców, wybierz poziom trudności oraz tagi. Wszystkie wybrane warunki działają jednocześnie.</div>
+        </div>
+        <div class="guide-icon-grid" aria-label="Opis przycisków paska sterowania">
+          <div class="guide-icon-card pink"><i class="ti ti-heart"></i><strong>Ulubione</strong>Pokazuje wyłącznie riffy zapisane sercem w tej przeglądarce.</div>
+          <div class="guide-icon-card"><i class="ti ti-zoom-in"></i><strong>Wielkość elementów</strong>Reguluje rozmiar kart, tekstu, tytułów, opisów, tagów oraz ikon panelu.</div>
+          <div class="guide-icon-card"><i class="ti ti-eye-off"></i><strong>Zwiń panel</strong>Chowa pasek sterowania, aby przeznaczyć więcej ekranu na karty.</div>
+          <div class="guide-icon-card"><i class="ti ti-tag"></i><strong>Tagi</strong>Otwiera listę technik i cech, którymi możesz dodatkowo filtrować riffy.</div>
+          <div class="guide-icon-card"><i class="ti ti-download"></i><strong>Eksport</strong>Otwiera katalog graficzny, listę PDF, dokument Word oraz listę TXT.</div>
+          <div class="guide-icon-card"><i class="ti ti-restore"></i><strong>Reset</strong>Usuwa wyszukiwanie, sortowanie i aktywne filtry. Podświetla się, gdy jest coś do wyczyszczenia.</div>
+          <div class="guide-icon-card accent"><i class="ti ti-settings"></i><strong>Opcje</strong>Otwiera instrukcję, ustawienia wyglądu, kontakt, zapis konfiguracji i kontrolę danych.</div>
+        </div>
+        <div class="guide-keyboard">
+          <h4>SKRÓTY KLAWIATUROWE</h4>
+          <div class="guide-keys-grid">
+            <div class="guide-key-item"><div class="guide-keycaps"><kbd class="cyan">SHIFT</kbd> + <kbd class="cyan">SPACJA</kbd></div>Wyszukiwarka</div>
+            <div class="guide-key-item"><div class="guide-keycaps"><kbd class="yellow">+</kbd> / <kbd class="yellow">−</kbd></div>Wielkość kart</div>
+            <div class="guide-key-item"><div class="guide-keycaps"><kbd>A–Z</kbd></div>Kolejny tytuł</div>
+            <div class="guide-key-item"><div class="guide-keycaps"><kbd class="pink">ENTER</kbd></div>Otwórz kartę</div>
+          </div>
+          <p class="guide-visual-copy" style="margin:11px 0 0">Litera działa tylko wtedy, gdy naciskasz ją samodzielnie. Standardowe skróty przeglądarki, np. <b>Ctrl + S</b> i <b>Ctrl + D</b>, pozostają dostępne.</p>
+        </div>
+      </section>
+
+      <section class="guide-visual-section">
+        <h3 class="guide-visual-heading"><span>2</span> Co znajduje się na karcie riffu?</h3>
+        <p class="guide-visual-copy">Kliknięcie karty otwiera materiały bezpośrednio albo pokazuje większy podgląd - zależnie od ustawienia urządzenia.</p>
+        <div class="guide-anatomy">
+          <div class="guide-live-card" id="guide-live-card" aria-label="Rzeczywista karta riffu z aktualnego konspektu"><div class="card-size-preview-empty">Karta pojawi się po wczytaniu materiałów.</div></div>
+          <div class="guide-feature-grid">
+            <div class="guide-feature-card"><i class="ti ti-photo"></i><strong>Okładka i tytuł</strong>Rozpoznaj materiał i kliknij kartę, aby przejść dalej.</div>
+            <div class="guide-feature-card pink"><i class="ti ti-heart"></i><strong>Ulubione</strong>Serce zapisuje riff na liście ulubionych w tej przeglądarce.</div>
+            <div class="guide-feature-card green"><i class="ti ti-stars"></i><strong>Trudność</strong>Od jednej do pięciu gwiazdek - od początkującego do eksperta.</div>
+            <div class="guide-feature-card"><i class="ti ti-brand-youtube"></i><strong>YouTube</strong>Przycisk pojawia się tylko wtedy, gdy riff ma przypisany film.</div>
+            <div class="guide-feature-card cyan"><i class="ti ti-folder-open"></i><strong>Podgląd karty</strong>W większym oknie folder otwiera komplet materiałów. Na telefonie podgląd jest domyślnie włączony.</div>
+            <div class="guide-feature-card"><i class="ti ti-tags"></i><strong>Tagi i NEW!</strong>Tagi opisują techniki, a NEW! oznacza materiał dodany w ostatnich 30 dniach.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="guide-visual-section">
+        <h3 class="guide-visual-heading"><span>3</span> Zapis i szybki dostęp</h3>
+        <p class="guide-visual-copy">Możesz utworzyć osobny plik z aktualnie widocznych materiałów albo zapisać skrót prowadzący do strony.</p>
+        <div class="guide-export-strip">
+          <div class="guide-export-type"><i class="ti ti-layout-grid"></i>Pełny katalog graficzny</div>
+          <div class="guide-export-type"><i class="ti ti-file-type-pdf"></i>Zwykła lista PDF</div>
+          <div class="guide-export-type"><i class="ti ti-file-text"></i>Lista do Worda</div>
+          <div class="guide-export-type"><i class="ti ti-file-text"></i>Lista TXT</div>
+        </div>
+        <div class="guide-offline"><i class="ti ti-alert-circle"></i><div><strong>Filtry wpływają na eksport</strong>Przed zapisaniem ustaw wyszukiwanie, filtry i sortowanie dokładnie tak, jak chcesz je zachować.</div></div>
+        <div class="guide-save-grid">
+          <div class="guide-save-card">
+            <h4><i class="ti ti-device-desktop"></i> KOMPUTER</h4>
+            <div class="guide-save-row"><i class="ti ti-bookmark"></i><div><strong>Zapisz zakładkę</strong>Naciśnij Ctrl + D albo kliknij gwiazdkę przy pasku adresu.</div></div>
+            <div class="guide-save-row"><i class="ti ti-copy"></i><div><strong>Skopiuj adres</strong>Kliknij pasek adresu, użyj Ctrl + C i zachowaj link.</div></div>
+            <div class="guide-save-row"><i class="ti ti-app-window"></i><div><strong>Utwórz skrót</strong>Przeciągnij ikonę strony z paska adresu na pulpit.</div></div>
+          </div>
+          <div class="guide-save-card phone">
+            <h4><i class="ti ti-device-mobile"></i> TELEFON</h4>
+            <div class="guide-save-row"><i class="ti ti-bookmark"></i><div><strong>Zapisz zakładkę</strong>Dodaj stronę do zakładek lub ulubionych swojej przeglądarki.</div></div>
+            <div class="guide-save-row"><i class="ti ti-brand-android"></i><div><strong>Android / Chrome</strong>Menu z trzema kropkami → Dodaj do ekranu głównego.</div></div>
+            <div class="guide-save-row"><i class="ti ti-brand-apple"></i><div><strong>iPhone / Safari</strong>Udostępnij → Do ekranu początkowego.</div></div>
+          </div>
+        </div>
+        <div class="guide-browser-demo">
+          <div class="guide-drag-animation" role="img" aria-label="Animacja pokazująca najechanie kursorem na ikonę strony, przytrzymanie lewego przycisku myszy, przeciągnięcie ikony na pulpit i jej upuszczenie">
+            <div class="guide-drag-browser">
+              <div class="guide-drag-browser-top"><i></i><i></i><i></i></div>
+              <div class="guide-address-bar"><span class="guide-address-icon"><i class="ti ti-world"></i></span>Najlepsze Polskie Riffy</div>
+            </div>
+            <div class="guide-drag-path" aria-hidden="true"></div>
+            <div class="guide-drag-desktop"><div><i class="ti ti-file-music"></i><br>Konspekt<br>na pulpicie</div></div>
+            <div class="guide-drag-object" aria-hidden="true"><i class="ti ti-file-music"></i></div>
+            <div class="guide-drag-cursor" aria-hidden="true"><i class="ti ti-hand-click"></i></div>
+            <div class="guide-drag-status" aria-hidden="true"><span>Najedź na ikonę strony</span><span>Przytrzymaj i przeciągnij</span><span>Puść na pulpicie — gotowe!</span></div>
+          </div>
+          <div class="guide-drag-caption">
+            <span><b>1</b>Najedź myszką na ikonę po lewej stronie adresu.</span>
+            <span><b>2</b>Przytrzymaj lewy przycisk myszy i przeciągnij ikonę.</span>
+            <span><b>3</b>Puść przycisk na pulpicie, aby utworzyć skrót.</span>
+          </div>
+        </div>
+        <div class="guide-install-box" id="guide-install-help"><i class="ti ti-device-laptop"></i><div><strong>Zainstaluj konspekt jak aplikację</strong>Kliknij <b>Zainstaluj konspekt</b> w eksporcie lub w Opcjach i potwierdź komunikat przeglądarki. Jeśli przycisk instalacji nie jest dostępny, otwórz menu przeglądarki i poszukaj opcji „Zainstaluj aplikację”.</div></div>
+        <div class="guide-offline"><i class="ti ti-device-floppy"></i><div><strong>Pamiętaj o materiałach offline</strong>Skrót wymaga internetu. Eksport strony nie pobiera automatycznie plików spod linków. Materiały z Dysku Google, których potrzebujesz bez połączenia, pobierz osobno.</div></div>
+      </section>
+
+      <section class="guide-visual-section">
+        <h3 class="guide-visual-heading"><span>4</span> Dopasuj konspekt do siebie</h3>
+        <p class="guide-visual-copy">Koło zębate otwiera centrum ustawień, a lupa odpowiada za wielkość kart.</p>
+        <div class="guide-options-demo">
+          <div class="guide-options-window">
+            <h4><i class="ti ti-settings"></i> OPCJE</h4>
+            <div class="guide-setting-row"><span>Pokazuj opisy</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Pokazuj tagi</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Pokazuj gwiazdki trudności</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Pokazuj miniatury</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Podgląd kart po kliknięciu</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Powiadomienia o nowych riffach</span><span class="guide-toggle on"></span></div>
+            <div class="guide-setting-row"><span>Automatycznie chowaj panel</span><span class="guide-toggle"></span></div>
+          </div>
+          <div>
+            <div class="guide-size-window">
+              <h4><i class="ti ti-zoom-in"></i> Wielkość elementów</h4>
+              <div class="guide-size-preview-mini"></div>
+              <div class="guide-size-labels"><span>MNIEJSZE KARTY</span><span>WIĘKSZE KARTY</span></div>
+              <div class="guide-slider"></div>
+              <span class="guide-auto">AUTO</span>
+              <div class="guide-size-control"><span>Tekst interfejsu</span><div class="guide-slider"></div><span>100%</span></div>
+              <div class="guide-size-control"><span>Tytuły kart</span><div class="guide-slider"></div><span>100%</span></div>
+              <div class="guide-size-control"><span>Opisy</span><div class="guide-slider"></div><span>100%</span></div>
+              <div class="guide-size-control"><span>Tagi</span><div class="guide-slider"></div><span>100%</span></div>
+              <div class="guide-size-control"><span>Ikony panelu</span><div class="guide-slider"></div><span>100%</span></div>
+              <p class="guide-visual-copy" style="margin:11px 0 0;font-size:10px">Podgląd zmienia się na żywo. Dwukrotne kliknięcie nazwy lub suwaka przywraca wartość domyślną.</p>
+            </div>
+            <div class="guide-new-features">
+              <div class="guide-new-feature"><i class="ti ti-bell-ringing"></i><strong>Nowe riffy</strong>Jednorazowe okno pokazuje okładkę, tytuł i trudność nowych materiałów.</div>
+              <div class="guide-new-feature"><i class="ti ti-file-download"></i><strong>Ustawienia i ulubione</strong>Eksport TXT zapisuje konfigurację oraz listę serc do późniejszego przywrócenia.</div>
+              <div class="guide-new-feature"><i class="ti ti-message-circle"></i><strong>Kontakt i opinia</strong>W Opcjach możesz napisać wiadomość lub przesłać graficzną opinię o produkcie.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <section class="guide-section">
       <div class="guide-section-title">1. Górny panel — wyszukiwanie, sortowanie i filtry</div>
       <p class="guide-section-copy">Panel na górze strony służy do zawężania listy. Kilka filtrów może działać jednocześnie, a ich ustawienie wpływa również na eksport.</p>
       <div class="guide-grid">
         <div class="guide-card"><strong>🔍 Szukaj</strong>Wpisz tytuł utworu lub nazwę wykonawcy. Wyszukiwarka rozpoznaje również zapytania wpisane bez polskich znaków. Skrót <b>Shift + Spacja</b> przenosi kursor od razu do wyszukiwarki.</div>
         <div class="guide-card"><strong>Sortowanie</strong>Ułóż utwory według tytułu, wykonawcy, poziomu trudności albo pokaż ulubione. Domyślnie nowe opracowania są przez 30 dni wyświetlane najpierw, a obie grupy są ułożone alfabetycznie.</div>
-        <div class="guide-card"><strong>Wykonawca i poziom trudności</strong>Wybierz wykonawcę albo poziom od początkującego do eksperta. Lista wykonawców pokazuje tylko tych, dla których znajdują się co najmniej dwa riffy.</div>
+        <div class="guide-card"><strong>Wykonawcy i poziom trudności</strong>Możesz wybrać kilku wykonawców jednocześnie oraz poziom od początkującego do eksperta. Domyślnie lista pokazuje wykonawców z co najmniej dwoma riffami, ale w oknie wyboru możesz włączyć również wykonawców posiadających jeden riff.</div>
         <div class="guide-card"><strong>TAGI</strong>Połącz kilka cech, np. technikę gry lub rodzaj akordów. Licznik przy przycisku pokazuje liczbę aktywnych tagów.</div>
         <div class="guide-card"><strong>Lupa i oko</strong>Lupa reguluje wielkość kart lub przywraca tryb automatyczny. Przekreślone oko chowa panel; po zwinięciu użyj paska „KLIKNIJ, ABY ROZWINĄĆ”.</div>
         <div class="guide-card"><strong>PDF, RESET i Opcje</strong>PDF otwiera sposoby eksportu. RESET czyści aktywne filtry i sortowanie. Koło zębate otwiera ustawienia wyglądu, powiadomień, kontaktu i kontroli danych.</div>
@@ -704,7 +1061,7 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
 
     <section class="guide-section">
       <div class="guide-section-title">4. Dostosuj konspekt do siebie</div>
-      <p class="guide-section-copy">W <b>Opcjach</b> możesz włączać lub wyłączać opisy, tagi, gwiazdki, miniatury, okno podglądu kart oraz jednorazowe powiadomienia o nowych riffach. Możesz także ustawić częstotliwość i położenie zwykłych powiadomień, zdecydować o automatycznym chowaniu panelu na telefonie, wyeksportować ustawienia, skontaktować się ze mną albo dodać opinię o produkcie. Podgląd kart jest domyślnie włączony na telefonie i wyłączony na komputerze. Wielkość kart ustawisz przyciskiem lupy.</p>
+      <p class="guide-section-copy">W <b>Opcjach</b> możesz włączać lub wyłączać opisy, tagi, gwiazdki, miniatury, okno podglądu kart oraz jednorazowe powiadomienia o nowych riffach. Możesz także ustawić częstotliwość i położenie zwykłych powiadomień, zdecydować o automatycznym chowaniu panelu na telefonie, wyeksportować ustawienia razem z ulubionymi, skontaktować się ze mną albo dodać opinię o produkcie. Podgląd kart jest domyślnie włączony na telefonie i wyłączony na komputerze. Wielkość kart ustawisz przyciskiem lupy.</p>
       <div class="guide-note">Nie musisz niczego konfigurować od razu. Zacznij od wyszukania utworu, a wygląd i zachowanie strony dopasuj wtedy, gdy będzie Ci to potrzebne. Instrukcję zawsze otworzysz ponownie przez <b>Opcje → Instrukcja obsługi</b>.</div>
     </section>
 
@@ -716,10 +1073,14 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   <div id="export-backdrop" onclick="closeExportModal()"></div>
   <div id="export-panel" tabindex="-1">
     <div class="options-header">
-      <span class="options-title" id="export-title"><i class="ti ti-device-floppy"></i> EKSPORT</span>
+      <span class="options-title" id="export-title"><i class="ti ti-download"></i> EKSPORT</span>
       <button class="options-close" onclick="closeExportModal()" aria-label="Zamknij">✕</button>
     </div>
     <div class="export-intro"><strong>Warto zapisać materiały dla siebie</strong> na wypadek, gdyby strona internetowa przestała być dostępna. Pamiętaj, że aktualnie ustawione filtry oraz sortowanie mają wpływ na zawartość i kolejność finalnego eksportu.</div>
+    <div class="export-choice export-install-choice">
+      <div class="export-choice-text"><div class="export-choice-title"><i class="ti ti-device-laptop"></i> Zainstaluj konspekt</div><div class="export-choice-desc">Dodaj konspekt do komputera i otwieraj go w osobnym oknie jak aplikację.</div><div class="pwa-install-note" data-pwa-install-note>Sprawdzam możliwość instalacji…</div></div>
+      <button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button>
+    </div>
     <div class="export-choice">
       <div class="export-choice-text"><div class="export-choice-title">Pełny eksport graficzny</div><div class="export-choice-desc">Długi katalog z czterema kartami w rzędzie, okładkami, opisami, tagami i gwiazdkami.</div></div>
       <button class="option-action" onclick="exportCatalogPreview()">EKSPORTUJ</button>
@@ -744,14 +1105,27 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
   <div id="card-size-backdrop" onclick="closeCardSizeModal()"></div>
   <div id="card-size-panel" tabindex="-1">
     <div class="options-header">
-      <span class="options-title" id="card-size-title"><i class="ti ti-zoom-in"></i> WIELKOŚĆ KART</span>
+      <span class="options-title" id="card-size-title"><i class="ti ti-zoom-in"></i> WIELKOŚĆ ELEMENTÓW</span>
       <button class="options-close" onclick="closeCardSizeModal()" aria-label="Zamknij">✕</button>
     </div>
     <div class="card-size-actions">
-      <div class="card-size-slider-labels" aria-hidden="true"><span>Więcej małych kart</span><span>Większe karty</span></div>
-      <input class="card-size-range" id="card-size-range" type="range" min="140" max="550" step="5" value="440" oninput="setCardSizeFromSlider(this.value)" aria-label="Wielkość kart">
-      <div class="card-size-current" id="card-size-current" aria-live="polite">Tryb automatyczny</div>
-      <button class="option-action card-size-auto active" id="card-size-auto" type="button" onclick="setAutoCardSize()" aria-pressed="true">AUTO</button>
+      <div class="card-size-preview-wrap"><div class="card-size-preview" id="card-size-preview" aria-label="Podgląd regulowanej karty"></div></div>
+      <div class="card-size-main">
+        <div class="card-size-main-head">
+          <span class="card-size-main-title" ondblclick="setAutoCardSize()" title="Kliknij dwukrotnie, aby przywrócić tryb Auto">Wielkość kart</span>
+          <div class="card-size-current" id="card-size-current" aria-live="polite">Auto</div>
+          <button class="option-action card-size-auto active" id="card-size-auto" type="button" onclick="setAutoCardSize()" aria-pressed="true">AUTO</button>
+        </div>
+        <input class="card-size-range" id="card-size-range" type="range" min="140" max="550" step="5" value="440" oninput="setCardSizeFromSlider(this.value)" ondblclick="setAutoCardSize()" aria-label="Wielkość kart" title="Kliknij dwukrotnie, aby przywrócić tryb Auto">
+      </div>
+      <div class="visual-size-section">
+        <div class="visual-size-row"><label for="visual-interface-scale" ondblclick="resetVisualScale('interfaceScale')" title="Kliknij dwukrotnie, aby przywrócić 100%">Tekst interfejsu</label><input class="card-size-range" id="visual-interface-scale" type="range" min="80" max="130" step="5" value="100" oninput="setVisualScale('interfaceScale',this.value)" ondblclick="resetVisualScale('interfaceScale')" title="Kliknij dwukrotnie, aby przywrócić 100%"><output id="visual-interface-scale-value">100%</output></div>
+        <div class="visual-size-row"><label for="visual-title-scale" ondblclick="resetVisualScale('titleScale')" title="Kliknij dwukrotnie, aby przywrócić 100%">Tytuły kart</label><input class="card-size-range" id="visual-title-scale" type="range" min="80" max="140" step="5" value="100" oninput="setVisualScale('titleScale',this.value)" ondblclick="resetVisualScale('titleScale')" title="Kliknij dwukrotnie, aby przywrócić 100%"><output id="visual-title-scale-value">100%</output></div>
+        <div class="visual-size-row"><label for="visual-description-scale" ondblclick="resetVisualScale('descriptionScale')" title="Kliknij dwukrotnie, aby przywrócić 100%">Opisy</label><input class="card-size-range" id="visual-description-scale" type="range" min="80" max="140" step="5" value="100" oninput="setVisualScale('descriptionScale',this.value)" ondblclick="resetVisualScale('descriptionScale')" title="Kliknij dwukrotnie, aby przywrócić 100%"><output id="visual-description-scale-value">100%</output></div>
+        <div class="visual-size-row"><label for="visual-tag-scale" ondblclick="resetVisualScale('tagScale')" title="Kliknij dwukrotnie, aby przywrócić 100%">Tagi</label><input class="card-size-range" id="visual-tag-scale" type="range" min="80" max="150" step="5" value="100" oninput="setVisualScale('tagScale',this.value)" ondblclick="resetVisualScale('tagScale')" title="Kliknij dwukrotnie, aby przywrócić 100%"><output id="visual-tag-scale-value">100%</output></div>
+        <div class="visual-size-row"><label for="visual-toolbar-icon-scale" ondblclick="resetVisualScale('toolbarIconScale')" title="Kliknij dwukrotnie, aby przywrócić 100%">Ikony panelu</label><input class="card-size-range" id="visual-toolbar-icon-scale" type="range" min="80" max="140" step="5" value="100" oninput="setVisualScale('toolbarIconScale',this.value)" ondblclick="resetVisualScale('toolbarIconScale')" title="Kliknij dwukrotnie, aby przywrócić 100%"><output id="visual-toolbar-icon-scale-value">100%</output></div>
+        <div class="visual-size-footer"><span class="visual-size-hint">Dwuklik resetuje wybrany suwak.</span><button class="option-action visual-size-reset" type="button" onclick="resetVisualScaleSettings()"><i class="ti ti-restore" aria-hidden="true"></i> RESETUJ WSZYSTKO</button></div>
+      </div>
     </div>
   </div>
 </div>
@@ -763,21 +1137,27 @@ body.cards-mini .card-title{font-size:12px;margin-bottom:0;line-height:1.25;}
       <span class="review-title" id="contact-title"><i class="ti ti-mail" aria-hidden="true"></i> NAPISZ DO MNIE</span>
       <button class="options-close" onclick="closeContactForm()" aria-label="Zamknij formularz kontaktowy">✕</button>
     </div>
-    <div class="contact-hint">Masz pytanie dotyczące produktu albo potrzebujesz pomocy? Napisz wiadomość bezpośrednio z tego formularza.</div>
+    <div class="contact-hint">Masz pytanie dotyczące produktu albo potrzebujesz pomocy? Napisz wiadomość bezpośrednio z tego formularza. Wiadomość trafi prosto na mój adres e-mail.</div>
     <div class="contact-grid">
-      <div class="contact-field">
-        <label for="contact-name">Imię</label>
-        <input id="contact-name" type="text" maxlength="40" autocomplete="given-name" placeholder="np. Jan">
-      </div>
-      <div class="contact-field">
-        <label for="contact-email">Adres e-mail</label>
-        <div class="contact-email-required" id="contact-email-required">Adres jest potrzebny, żebym mógł odpowiedzieć</div>
-        <label class="contact-reply-choice"><input id="contact-reply-requested" type="checkbox" checked onchange="toggleContactReply()"><span>Chcę otrzymać odpowiedź na podany adres e-mail.</span></label>
-        <input id="contact-email" type="email" maxlength="120" autocomplete="email" placeholder="twoj@email.pl" required>
+      <div class="contact-field contact-wide contact-identity-fields">
+        <div>
+          <label for="contact-name">Imię</label>
+          <input id="contact-name" type="text" maxlength="40" autocomplete="given-name" placeholder="np. Jan">
+        </div>
+        <div>
+          <label for="contact-email">Adres e-mail, na który dostaniesz odpowiedź</label>
+          <input id="contact-email" type="email" maxlength="120" autocomplete="email" placeholder="twój@email.pl" required>
+        </div>
       </div>
       <div class="contact-field contact-wide">
         <label for="contact-subject">Tytuł wiadomości</label>
-        <input id="contact-subject" type="text" maxlength="100" placeholder="Wpisz krótki temat wiadomości" oninput="updateContactCharCounts()">
+        <div class="contact-subject-presets" id="contact-subject-presets" aria-label="Gotowe tytuły wiadomości">
+          <button class="contact-subject-preset" type="button" data-value="Propozycja riffu" onclick="setContactSubjectPreset('Propozycja riffu',this)"><i class="ti ti-guitar-pick" aria-hidden="true"></i>Propozycja riffu</button>
+          <button class="contact-subject-preset" type="button" data-value="Zgłoś problem" onclick="setContactSubjectPreset('Zgłoś problem',this)"><i class="ti ti-alert-triangle" aria-hidden="true"></i>Zgłoś problem</button>
+          <button class="contact-subject-preset" type="button" data-value="Pytanie o produkt" onclick="setContactSubjectPreset('Pytanie o produkt',this)"><i class="ti ti-help-circle" aria-hidden="true"></i>Pytanie o produkt</button>
+          <button class="contact-subject-preset" type="button" data-value="" onclick="setContactSubjectPreset('',this)"><i class="ti ti-pencil" aria-hidden="true"></i>Własny temat</button>
+        </div>
+        <input id="contact-subject" type="text" maxlength="100" placeholder="Wpisz krótki temat wiadomości" oninput="handleContactSubjectInput()">
         <div class="contact-char-count" id="contact-subject-count">0 / 100</div>
       </div>
       <div class="contact-field contact-wide">
@@ -945,16 +1325,75 @@ let rawExcelRows = [];
 let dataValidationIssues = [];
 let excelLoaded = false;
 let activeTags = new Set();
+let activePerformers = new Set();
+let performerCounts = new Map();
+let showSinglePerformers = localStorage.getItem('npr_show_single_performers') === '1';
 const savedSize = localStorage.getItem('npr_cardsize');
 let cardSize = savedSize ? parseInt(savedSize) : (window.innerWidth <= 640 ? 280 : 440);
 let cardSizeAuto = !savedSize;
 let favorites = new Set(JSON.parse(localStorage.getItem('npr_favorites') || '[]'));
 
 const POPUP_FREQUENCY_MINUTES = [0, 1, 2, 3, 4];
-const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, cardPreview:window.matchMedia('(max-width: 640px)').matches, newItemNotifications:true, autoHideToolbar:false, popupFrequency:2, popupPosition:'bottom', popupSettingsVersion:2 };
+const DEFAULT_UI_SETTINGS = { descriptions:true, tags:true, stars:true, thumbnails:true, cardPreview:window.matchMedia('(max-width: 640px)').matches, newItemNotifications:true, autoHideToolbar:false, popupFrequency:2, popupPosition:'bottom', popupSettingsVersion:2, interfaceScale:100, titleScale:100, descriptionScale:100, tagScale:100, toolbarIconScale:100 };
 let uiSettings = {...DEFAULT_UI_SETTINGS};
 let popupScheduleTimer;
 let firstPopupPending = true;
+
+const VISUAL_SCALE_CONTROLS = Object.freeze({
+  interfaceScale:'visual-interface-scale',
+  titleScale:'visual-title-scale',
+  descriptionScale:'visual-description-scale',
+  tagScale:'visual-tag-scale',
+  toolbarIconScale:'visual-toolbar-icon-scale'
+});
+
+function normalizeVisualScale(value, fallback = 100) {
+  const number = Number(value);
+  return Number.isFinite(number) ? Math.min(150, Math.max(80, Math.round(number / 5) * 5)) : fallback;
+}
+
+function updateVisualScaleUI() {
+  Object.entries(VISUAL_SCALE_CONTROLS).forEach(([key, id]) => {
+    const input = document.getElementById(id);
+    const output = document.getElementById(`${id}-value`);
+    const value = normalizeVisualScale(uiSettings[key], DEFAULT_UI_SETTINGS[key]);
+    if (input) input.value = String(value);
+    if (output) output.textContent = `${value}%`;
+  });
+}
+
+function applyVisualScaleSettings() {
+  const root = document.documentElement || document.body;
+  if (!root?.style?.setProperty) {
+    updateVisualScaleUI();
+    return;
+  }
+  root.style.setProperty('--ui-font-scale', normalizeVisualScale(uiSettings.interfaceScale) / 100);
+  root.style.setProperty('--card-title-scale', normalizeVisualScale(uiSettings.titleScale) / 100);
+  root.style.setProperty('--card-desc-scale', normalizeVisualScale(uiSettings.descriptionScale) / 100);
+  root.style.setProperty('--card-tag-scale', normalizeVisualScale(uiSettings.tagScale) / 100);
+  root.style.setProperty('--toolbar-icon-scale', normalizeVisualScale(uiSettings.toolbarIconScale) / 100);
+  updateVisualScaleUI();
+  if (typeof fitMobileHeaderTitle === 'function') fitMobileHeaderTitle();
+}
+
+function setVisualScale(key, value) {
+  if (!Object.prototype.hasOwnProperty.call(VISUAL_SCALE_CONTROLS, key)) return;
+  uiSettings[key] = normalizeVisualScale(value, DEFAULT_UI_SETTINGS[key]);
+  localStorage.setItem('npr_ui_settings', JSON.stringify(uiSettings));
+  applyVisualScaleSettings();
+}
+
+function resetVisualScale(key) {
+  if (!Object.prototype.hasOwnProperty.call(VISUAL_SCALE_CONTROLS, key)) return;
+  setVisualScale(key, DEFAULT_UI_SETTINGS[key]);
+}
+
+function resetVisualScaleSettings() {
+  Object.keys(VISUAL_SCALE_CONTROLS).forEach(key => { uiSettings[key] = DEFAULT_UI_SETTINGS[key]; });
+  localStorage.setItem('npr_ui_settings', JSON.stringify(uiSettings));
+  applyVisualScaleSettings();
+}
 
 function popupFrequencyLabel(index) {
   const minutes = POPUP_FREQUENCY_MINUTES[Math.max(0, Math.min(4, Number(index) || 0))];
@@ -1028,6 +1467,7 @@ function applyUiSettings() {
   if (frequency) frequency.value = uiSettings.popupFrequency;
   updatePopupFrequencyPreview(uiSettings.popupFrequency);
   applyPopupPosition();
+  applyVisualScaleSettings();
   if (popupFrequencyMinutes() === 0) closePopup();
   if (!uiSettings.cardPreview && document.getElementById('card-preview-modal')?.classList.contains('open')) closeCardPreview();
 }
@@ -1061,7 +1501,12 @@ function saveUiSettings() {
     autoHideToolbar: document.getElementById('opt-auto-hide-toolbar').checked,
     popupFrequency: Number(document.getElementById('opt-popup-frequency').value),
     popupPosition: normalizePopupPosition(uiSettings.popupPosition),
-    popupSettingsVersion:2
+    popupSettingsVersion:2,
+    interfaceScale: normalizeVisualScale(uiSettings.interfaceScale),
+    titleScale: normalizeVisualScale(uiSettings.titleScale),
+    descriptionScale: normalizeVisualScale(uiSettings.descriptionScale),
+    tagScale: normalizeVisualScale(uiSettings.tagScale),
+    toolbarIconScale: normalizeVisualScale(uiSettings.toolbarIconScale)
   };
   localStorage.setItem('npr_ui_settings', JSON.stringify(uiSettings));
   applyUiSettings();
@@ -1091,6 +1536,8 @@ function closeAccessibleDialog(modalId) {
 
 function openOptions() {
   applyUiSettings();
+  updateFavoritesSettingsUI();
+  updatePwaInstallUi();
   document.getElementById('app-version').textContent = `Wersja ${APP_CONFIG.version}`;
   openAccessibleDialog('options-modal', 'options-panel');
 }
@@ -1099,7 +1546,72 @@ function closeOptions() {
   closeAccessibleDialog('options-modal');
 }
 
+let deferredInstallPrompt = null;
+let pwaInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator?.standalone === true;
+
+function updatePwaInstallUi() {
+  const buttons = document.querySelectorAll('[data-pwa-install-button]');
+  const notes = document.querySelectorAll('[data-pwa-install-note]');
+  buttons.forEach(button => {
+    button.classList.toggle('install-ready', Boolean(deferredInstallPrompt) && !pwaInstalled);
+    button.disabled = pwaInstalled;
+    button.textContent = pwaInstalled ? 'ZAINSTALOWANO' : (deferredInstallPrompt ? 'ZAINSTALUJ' : 'JAK ZAINSTALOWAĆ');
+  });
+  notes.forEach(note => {
+    note.classList.toggle('ready', Boolean(deferredInstallPrompt) && !pwaInstalled);
+    note.classList.toggle('done', pwaInstalled);
+    note.textContent = pwaInstalled
+      ? 'Konspekt jest już zainstalowany na tym urządzeniu.'
+      : (deferredInstallPrompt
+        ? 'Instalacja jest dostępna — kliknij przycisk i potwierdź.'
+        : 'Jeśli przeglądarka nie obsługuje automatycznej instalacji, pokażemy krótką instrukcję.');
+  });
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  pwaInstalled = false;
+  updatePwaInstallUi();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  pwaInstalled = true;
+  updatePwaInstallUi();
+  showOptionsStatus('Konspekt został zainstalowany.');
+});
+
+async function requestPwaInstall() {
+  if (pwaInstalled) return;
+  if (!deferredInstallPrompt) {
+    openPwaInstallInstructions();
+    return;
+  }
+  const promptEvent = deferredInstallPrompt;
+  deferredInstallPrompt = null;
+  await promptEvent.prompt();
+  const choice = await promptEvent.userChoice;
+  if (choice.outcome === 'accepted') {
+    pwaInstalled = true;
+    showOptionsStatus('Konspekt został zainstalowany.');
+  } else {
+    showOptionsStatus('Instalacja została anulowana.', true);
+  }
+  updatePwaInstallUi();
+}
+
+function openPwaInstallInstructions() {
+  if (document.getElementById('export-modal')?.getAttribute('aria-hidden') === 'false') closeExportModal();
+  if (document.getElementById('options-modal')?.getAttribute('aria-hidden') === 'false') closeOptions();
+  setTimeout(() => {
+    openUserGuide(false);
+    setTimeout(() => document.getElementById('guide-install-help')?.scrollIntoView({behavior:'smooth', block:'center'}), 160);
+  }, 100);
+}
+
 function openExportModal() {
+  updatePwaInstallUi();
   openAccessibleDialog('export-modal', 'export-panel');
 }
 
@@ -1114,6 +1626,8 @@ function openGuideFromExport() {
 
 function openCardSizeModal() {
   updateCardSizeModeUI();
+  updateVisualScaleUI();
+  updateCardSizePreview();
   openAccessibleDialog('card-size-modal', 'card-size-panel');
 }
 
@@ -1308,6 +1822,43 @@ function setCardSizeFromSlider(value) {
   changeSize(0);
 }
 
+function updateCardSizePreviewWidth() {
+  const preview = document.getElementById('card-size-preview');
+  if (!preview) return;
+  const progress = (Math.min(550, Math.max(140, cardSize)) - 140) / 410;
+  preview.style.width = `${Math.round(170 + progress * 100)}px`;
+}
+
+function updateCardSizePreview() {
+  const preview = document.getElementById('card-size-preview');
+  if (!preview) return;
+  const cards = Array.from(document.querySelectorAll('#grid .card'));
+  const source = cards.find(card => {
+    const rect = card.getBoundingClientRect();
+    return rect.bottom > 58 && rect.top < window.innerHeight;
+  }) || cards[0];
+  if (!source) {
+    preview.innerHTML = '<div class="card-size-preview-empty">Brak karty do podglądu przy obecnych filtrach.</div>';
+    updateCardSizePreviewWidth();
+    return;
+  }
+  const clone = source.cloneNode(true);
+  clone.removeAttribute('href');
+  clone.removeAttribute('target');
+  clone.removeAttribute('onclick');
+  clone.classList.remove('keyboard-selected');
+  clone.setAttribute('aria-hidden', 'true');
+  clone.querySelectorAll('button').forEach(button => {
+    button.disabled = true;
+    button.removeAttribute('onclick');
+  });
+  clone.querySelectorAll('img').forEach(image => {
+    image.loading = 'eager';
+  });
+  preview.replaceChildren(clone);
+  updateCardSizePreviewWidth();
+}
+
 function updateCardSizeModeUI() {
   const autoButton = document.getElementById('card-size-auto');
   const slider = document.getElementById('card-size-range');
@@ -1316,7 +1867,8 @@ function updateCardSizeModeUI() {
   autoButton.classList.toggle('active', cardSizeAuto);
   autoButton.setAttribute('aria-pressed', String(cardSizeAuto));
   slider.value = String(cardSize);
-  current.textContent = cardSizeAuto ? 'Tryb automatyczny' : `Rozmiar kart: ${cardSize} px`;
+  current.textContent = cardSizeAuto ? 'Auto' : `${cardSize} px`;
+  updateCardSizePreviewWidth();
 }
 
 function toggleInstructions() {
@@ -1328,7 +1880,24 @@ const USER_GUIDE_STORAGE_KEY = 'npr_user_guide_seen_v1';
 
 function openUserGuide(markAsSeen = true) {
   if (markAsSeen) localStorage.setItem(USER_GUIDE_STORAGE_KEY, '1');
+  updateGuideExampleCard();
   openAccessibleDialog('guide-modal', 'guide-panel');
+}
+
+function updateGuideExampleCard() {
+  const host = document.getElementById('guide-live-card');
+  const source = document.querySelector('#grid .card');
+  if (!host || !source) return;
+  const clone = source.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+  clone.querySelectorAll('a,button').forEach(element => {
+    element.removeAttribute('href');
+    element.removeAttribute('onclick');
+    element.setAttribute('tabindex', '-1');
+  });
+  clone.setAttribute('aria-hidden', 'true');
+  host.replaceChildren(clone);
 }
 
 function closeUserGuide() {
@@ -1346,8 +1915,95 @@ function showOptionsStatus(message, isError = false) {
   status.style.color = isError ? '#e87070' : '#8bc34a';
 }
 
+function updateFavoritesSettingsUI() {
+  const count = document.getElementById('favorites-settings-count');
+  const button = document.getElementById('clear-all-favorites-btn');
+  if (count) count.textContent = riffCountLabel(favorites.size);
+  if (button) {
+    button.disabled = favorites.size === 0;
+    button.setAttribute('aria-disabled', String(favorites.size === 0));
+  }
+}
+
+function openClearFavoritesConfirm() {
+  if (favorites.size === 0) return;
+  const copy = document.getElementById('clear-favorites-copy');
+  if (copy) copy.innerHTML = `Z listy zostanie usunięte <strong>${riffCountLabel(favorites.size)}</strong>. Tej operacji nie można cofnąć, chyba że wcześniej wyeksportowano ustawienia i ulubione do pliku TXT.`;
+  openAccessibleDialog('clear-favorites-modal', 'clear-favorites-panel');
+}
+
+function closeClearFavoritesConfirm() {
+  closeAccessibleDialog('clear-favorites-modal');
+}
+
+function confirmClearAllFavorites() {
+  const removedCount = favorites.size;
+  if (removedCount === 0) {
+    closeClearFavoritesConfirm();
+    return;
+  }
+  favorites.clear();
+  localStorage.setItem('npr_favorites', '[]');
+  closeClearFavoritesConfirm();
+  updateFavoritesSettingsUI();
+  render();
+  showOptionsStatus(`Usunięto wszystkie ulubione (${riffCountLabel(removedCount)}).`);
+}
+
+function getFavoriteExportItems() {
+  return [...favorites].map(id => {
+    const entry = exercises.find(item => item.id === id);
+    return entry ? {
+      id: entry.id,
+      title: entry.nazwa,
+      performer: entry.wykonawca || ''
+    } : null;
+  }).filter(Boolean);
+}
+
+function restoreFavoritesFromSettings(data) {
+  if (!Array.isArray(data.favoriteItems) && !Array.isArray(data.favorites)) return null;
+
+  const restoredIds = new Set();
+  const normalize = value => normalizeSearchText(String(value || '').trim());
+
+  if (Array.isArray(data.favoriteItems)) {
+    data.favoriteItems.forEach(saved => {
+      if (!saved || typeof saved !== 'object') return;
+      const savedTitle = normalize(saved.title);
+      const savedPerformer = normalize(saved.performer);
+      const match = exercises.find(entry =>
+        normalize(entry.nazwa) === savedTitle &&
+        (!savedPerformer || normalize(entry.wykonawca) === savedPerformer)
+      );
+      if (match) restoredIds.add(match.id);
+    });
+  }
+
+  if (restoredIds.size === 0 && Array.isArray(data.favorites)) {
+    data.favorites.forEach(id => {
+      const numericId = Number(id);
+      if (Number.isInteger(numericId) && exercises.some(entry => entry.id === numericId)) {
+        restoredIds.add(numericId);
+      }
+    });
+  }
+
+  favorites = restoredIds;
+  localStorage.setItem('npr_favorites', JSON.stringify([...favorites]));
+  return restoredIds.size;
+}
+
 function exportSettings() {
-  const data = { version:1, uiSettings, cardSize };
+  const data = {
+    version: 2,
+    product: 'Najlepsze Polskie Riffy',
+    exportedAt: new Date().toISOString(),
+    uiSettings,
+    cardSize,
+    favorites: [...favorites],
+    favoriteItems: getFavoriteExportItems()
+  };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'text/plain;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -1355,7 +2011,7 @@ function exportSettings() {
   link.download = 'ustawienia-najlepsze-polskie-riffy.txt';
   link.click();
   URL.revokeObjectURL(url);
-  showOptionsStatus('Plik ustawień został przygotowany.');
+  showOptionsStatus(`Plik ustawień i ulubionych został przygotowany (${favorites.size}).`);
 }
 
 function importSettings(event) {
@@ -1380,9 +2036,16 @@ function importSettings(event) {
         localStorage.setItem('npr_cardsize', cardSize);
         changeSize(0);
       }
+      const restoredFavoritesCount = restoreFavoritesFromSettings(data);
       applyUiSettings();
       schedulePopupNotifications();
-      showOptionsStatus('Ustawienia zostały wczytane.');
+      render();
+      updateFavoritesSettingsUI();
+      if (restoredFavoritesCount !== null) {
+        showOptionsStatus(`Przywrócono ustawienia oraz ulubione (${restoredFavoritesCount}).`);
+      } else {
+        showOptionsStatus('Ustawienia zostały wczytane. Ten starszy plik nie zawiera ulubionych.');
+      }
     } catch (_) {
       showOptionsStatus('Nie udało się wczytać tego pliku ustawień.', true);
     }
@@ -1431,9 +2094,8 @@ function openContactForm() {
   document.getElementById('contact-subject').value = '';
   document.getElementById('contact-message').value = '';
   document.getElementById('contact-data-consent').checked = false;
-  document.getElementById('contact-reply-requested').checked = true;
   document.getElementById('contact-website').value = '';
-  toggleContactReply();
+  document.querySelectorAll('.contact-subject-preset').forEach(button => button.classList.remove('active'));
   updateContactCharCounts();
   setContactStatus('');
   openAccessibleDialog('contact-modal', 'contact-panel');
@@ -1443,16 +2105,20 @@ function closeContactForm() {
   closeAccessibleDialog('contact-modal');
 }
 
-function toggleContactReply() {
-  const replyRequested = document.getElementById('contact-reply-requested').checked;
-  const email = document.getElementById('contact-email');
-  const notice = document.getElementById('contact-email-required');
-  email.disabled = !replyRequested;
-  email.required = replyRequested;
-  if (!replyRequested) email.value = '';
-  notice.textContent = replyRequested
-    ? 'ADRES JEST POTRZEBNY, ŻEBYM MÓGŁ ODPOWIEDZIEĆ'
-    : 'Bez adresu e-mail nie będę mógł odpowiedzieć';
+function setContactSubjectPreset(subject, button) {
+  const input = document.getElementById('contact-subject');
+  input.value = subject;
+  updateContactCharCounts();
+  document.querySelectorAll('.contact-subject-preset').forEach(item => item.classList.toggle('active', item === button));
+  if (!subject) input.focus();
+}
+
+function handleContactSubjectInput() {
+  updateContactCharCounts();
+  const value = document.getElementById('contact-subject').value;
+  document.querySelectorAll('.contact-subject-preset').forEach(button => {
+    button.classList.toggle('active', value !== '' && button.dataset.value === value);
+  });
 }
 
 function updateContactCharCounts() {
@@ -1471,10 +2137,9 @@ function validateContactForm() {
   const email = document.getElementById('contact-email').value.trim();
   const subject = document.getElementById('contact-subject').value.trim();
   const message = document.getElementById('contact-message').value.trim();
-  const replyRequested = document.getElementById('contact-reply-requested').checked;
   if (!name) return 'Podaj swoje imię.';
   if (name.length > 40) return 'Imię może mieć maksymalnie 40 znaków.';
-  if (replyRequested && !email) return 'Podaj adres e-mail — jest potrzebny, żebym mógł odpowiedzieć.';
+  if (!email) return 'Podaj adres e-mail — jest potrzebny, żebym mógł odpowiedzieć.';
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Podaj poprawny adres e-mail.';
   if (!subject) return 'Wpisz tytuł wiadomości.';
   if (subject.length > 100) return 'Tytuł może mieć maksymalnie 100 znaków.';
@@ -1492,14 +2157,13 @@ async function sendContactViaGoogle() {
   const last = Number(localStorage.getItem(CONTACT_COOLDOWN_STORAGE_KEY) || 0);
   if (Date.now() - last < 60000) return setContactStatus('Wiadomość była przed chwilą wysyłana. Odczekaj minutę.', true);
 
-  const replyRequested = document.getElementById('contact-reply-requested').checked;
   const payload = {
     token: REVIEW_FORM_TOKEN,
     formType: 'contact',
     product: REVIEW_PRODUCT,
     name: document.getElementById('contact-name').value.trim(),
-    email: replyRequested ? document.getElementById('contact-email').value.trim() : '',
-    replyRequested,
+    email: document.getElementById('contact-email').value.trim(),
+    replyRequested: true,
     subject: document.getElementById('contact-subject').value.trim(),
     message: document.getElementById('contact-message').value.trim(),
     consentData: document.getElementById('contact-data-consent').checked,
@@ -1523,18 +2187,6 @@ async function sendContactViaGoogle() {
     button.disabled = false;
     button.innerHTML = '<i class="ti ti-send" aria-hidden="true"></i><span>WYŚLIJ WIADOMOŚĆ</span>';
   }
-}
-
-async function copyContactEmail() {
-  const address = APP_CONFIG.contactEmail;
-  try {
-    await navigator.clipboard.writeText(address);
-  } catch (error) {
-    legacyCopyReviewEmail();
-  }
-  const status = document.getElementById('options-status');
-  status.textContent = 'Adres e-mail został skopiowany do schowka.';
-  setTimeout(() => { if (status.textContent.includes('skopiowany')) status.textContent = ''; }, 3000);
 }
 
 function closeReviewForm() {
@@ -1914,6 +2566,9 @@ loadUiSettings();
 
 let toolbarTouchStart = null;
 let toolbarAutoHideStartY = window.scrollY;
+let toolbarLastScrollY = window.scrollY;
+let toolbarUpwardTravel = 0;
+let toolbarCollapsedByAutoScroll = false;
 let toolbarRestorePulseTimer;
 let toolbarPanelAnimationTimer;
 
@@ -1944,10 +2599,12 @@ function animateToolbarPanel(panel, collapsed, animate) {
   }, 470);
 }
 
-function setToolbarCollapsed(collapsed, remember = true, animate = true) {
+function setToolbarCollapsed(collapsed, remember = true, animate = true, reason = 'manual') {
   const wrap = document.getElementById('toolbar-wrap');
   const panel = document.getElementById('toolbar-panel');
   const restore = document.getElementById('toolbar-restore');
+  toolbarCollapsedByAutoScroll = collapsed && reason === 'auto-scroll';
+  toolbarUpwardTravel = 0;
   wrap.classList.toggle('collapsed', collapsed);
   animateToolbarPanel(panel, collapsed, animate);
   clearTimeout(toolbarRestorePulseTimer);
@@ -1990,14 +2647,32 @@ function initToolbarGestures() {
 }
 
 function autoHideToolbarOnMobile() {
-  if (!window.matchMedia('(max-width: 640px)').matches) return;
-  if (!uiSettings.autoHideToolbar) return;
+  const currentY = Math.max(0, window.scrollY);
+  const scrollDelta = currentY - toolbarLastScrollY;
+  toolbarLastScrollY = currentY;
+  if (!window.matchMedia('(max-width: 640px)').matches || !uiSettings.autoHideToolbar) {
+    toolbarUpwardTravel = 0;
+    return;
+  }
   const wrap = document.getElementById('toolbar-wrap');
-  if (wrap.classList.contains('collapsed')) return;
+  if (wrap.classList.contains('collapsed')) {
+    if (!toolbarCollapsedByAutoScroll) return;
+    if (scrollDelta < -1) toolbarUpwardTravel += Math.abs(scrollDelta);
+    else if (scrollDelta > 2) toolbarUpwardTravel = 0;
+    if (toolbarUpwardTravel >= 72) {
+      setToolbarCollapsed(false, false, true, 'auto-scroll-reveal');
+      toolbarAutoHideStartY = currentY;
+    }
+    return;
+  }
+  if (scrollDelta < 0) {
+    toolbarAutoHideStartY = currentY;
+    return;
+  }
   const firstCard = document.querySelector('#grid .card');
   const threeCardsHeight = firstCard ? firstCard.getBoundingClientRect().height * 3 : window.innerHeight * 1.15;
   const hideDistance = Math.max(520, threeCardsHeight);
-  if (window.scrollY - toolbarAutoHideStartY >= hideDistance) setToolbarCollapsed(true);
+  if (currentY - toolbarAutoHideStartY >= hideDistance) setToolbarCollapsed(true, false, true, 'auto-scroll');
 }
 
 function scrollToTopAndShowToolbar() {
@@ -2009,9 +2684,10 @@ function scrollToTopAndShowToolbar() {
 function fitMobileHeaderTitle() {
   const title = document.querySelector('#header-logo > span');
   if (!title) return;
-  title.style.fontSize = '16px';
+  const baseSize = 16 * (normalizeVisualScale(uiSettings.interfaceScale) / 100);
+  title.style.fontSize = `${baseSize}px`;
   if (!window.matchMedia('(max-width: 640px)').matches) return;
-  let size = 16;
+  let size = baseSize;
   while (title.scrollWidth > title.clientWidth && size > 10) {
     size -= 0.25;
     title.style.fontSize = `${size}px`;
@@ -2036,6 +2712,7 @@ else requestAnimationFrame(fitMobileHeaderTitle);
 initToolbarGestures();
 
 const ACCESSIBLE_DIALOGS = [
+  {id:'clear-favorites-modal', close:closeClearFavoritesConfirm},
   {id:'guide-modal', close:closeUserGuide},
   {id:'new-items-modal', close:closeNewItemsModal},
   {id:'card-preview-modal', close:closeCardPreview},
@@ -2044,6 +2721,7 @@ const ACCESSIBLE_DIALOGS = [
   {id:'export-modal', close:closeExportModal},
   {id:'card-size-modal', close:closeCardSizeModal},
   {id:'options-modal', close:closeOptions},
+  {id:'artists-dropdown', close:closeArtistsPanel},
   {id:'tags-dropdown', close:closeTagsPanel}
 ];
 
@@ -2398,22 +3076,15 @@ function loadExcel() {
       })).filter(e => e.nazwa);
 
       // Populate wykonawcy
-      const performerCounts = exercises.reduce((counts, exercise) => {
+      performerCounts = exercises.reduce((counts, exercise) => {
         if (exercise.wykonawca) counts.set(exercise.wykonawca, (counts.get(exercise.wykonawca) || 0) + 1);
         return counts;
       }, new Map());
-      const wyk = [...performerCounts.entries()]
-        .filter(([, count]) => count >= 2)
-        .map(([performer]) => performer)
-        .sort((a, b) => a.localeCompare(b, 'pl'));
-      const sel = document.getElementById('kat');
-      while (sel.options.length > 2) sel.remove(2);
-      wyk.forEach(w => {
-        const o = document.createElement('option');
-        o.value = w;
-        o.textContent = `${w} - ${performerRiffCountLabel(performerCounts.get(w))}`;
-        sel.appendChild(o);
+      activePerformers.forEach(performer => {
+        if (!performerCounts.has(performer)) activePerformers.delete(performer);
       });
+      syncArtistFilterValue();
+      updateArtistsButtonState();
 
       // Populate tagi
       const allTags = [...new Set(exercises.flatMap(e => e.tagi))].sort();
@@ -2450,31 +3121,50 @@ function normalizeSearchText(value) {
     .replace(/ł/g, 'l');
 }
 
+function updateFavoritesFilterButtonState() {
+  const button = document.getElementById('favorites-filter-btn');
+  if (!button) return;
+  const active = document.getElementById('sort').value === 'fav';
+  button.classList.toggle('favorites-active', active);
+  button.setAttribute('aria-pressed', String(active));
+  button.setAttribute('aria-label', active ? 'Wyłącz filtr ulubionych riffów' : 'Pokaż tylko ulubione riffy');
+  button.title = active ? 'Wyłącz filtr ulubionych riffów' : 'Pokaż tylko ulubione riffy';
+  button.dataset.tooltip = button.title;
+  button.innerHTML = `<i class="ti ${active ? 'ti-heart-filled' : 'ti-heart'}" aria-hidden="true"></i>`;
+}
+
+function toggleFavoritesFilter() {
+  const sort = document.getElementById('sort');
+  sort.value = sort.value === 'fav' ? '' : 'fav';
+  render();
+}
+
 function updateResetButtonState() {
   const button = document.getElementById('reset-btn');
   if (!button) return;
   const filtersActive = Boolean(
     document.getElementById('search').value.trim() ||
     document.getElementById('sort').value ||
-    document.getElementById('kat').value ||
+    activePerformers.size ||
     document.getElementById('lvl').value ||
     activeTags.size
   );
   button.classList.toggle('filters-active', filtersActive);
   button.title = filtersActive ? 'Wyczyść aktywne filtry i sortowanie' : 'Brak aktywnych filtrów';
+  button.dataset.tooltip = button.title;
 }
 
 function render() {
   const q  = normalizeSearchText(document.getElementById('search').value);
-  const kt = document.getElementById('kat').value;
   const lv = document.getElementById('lvl').value;
   const sv = document.getElementById('sort').value;
+  updateFavoritesFilterButtonState();
   updateResetButtonState();
   resetAlphabetNavigation();
 
   let filtered = exercises.filter(e =>
     (!q  || normalizeSearchText(e.nazwa).includes(q) || normalizeSearchText(e.wykonawca).includes(q) || normalizeSearchText(e.opis).includes(q)) &&
-    (!kt || e.wykonawca === kt) &&
+    (activePerformers.size === 0 || activePerformers.has(e.wykonawca)) &&
     (!lv || e.poziom === lv) &&
     (activeTags.size === 0 || [...activeTags].every(t => e.tagi.includes(t))) &&
     (sv !== 'fav' || favorites.has(e.id))
@@ -2490,7 +3180,10 @@ function render() {
   else if (sv === 'lvl_desc') filtered.sort((a,b) => (lvlOrder[b.poziom]??99)-(lvlOrder[a.poziom]??99));
 
   const parts = [];
-  if (kt) parts.push(kt);
+  const selectedPerformers = [...activePerformers].sort((a, b) => a.localeCompare(b, 'pl'));
+  if (selectedPerformers.length === 1) parts.push(selectedPerformers[0]);
+  else if (selectedPerformers.length > 1 && selectedPerformers.length <= 3) parts.push(selectedPerformers.join(', '));
+  else if (selectedPerformers.length > 3) parts.push(`${selectedPerformers.length} wykonawców`);
   if (lv) parts.push(lv);
   activeTags.forEach(t => parts.push('#'+t));
   const sectionLabel = document.getElementById('section-label');
@@ -2544,6 +3237,7 @@ function render() {
         </div>
       </a>`;
   }).join('');
+  if (document.getElementById('guide-modal')?.classList.contains('open')) updateGuideExampleCard();
 }
 
 function toggleFav(id, btn) {
@@ -2560,6 +3254,7 @@ function toggleFav(id, btn) {
     button.setAttribute('aria-pressed', String(isFavorite));
   });
   localStorage.setItem('npr_favorites', JSON.stringify([...favorites]));
+  updateFavoritesSettingsUI();
 }
 
 function toggleTag(tag, btn) {
@@ -2567,6 +3262,109 @@ function toggleTag(tag, btn) {
   else { activeTags.add(tag); btn.classList.add('active'); }
   btn.setAttribute('aria-pressed', String(activeTags.has(tag)));
   updateTagsBadge();
+}
+
+function syncArtistFilterValue() {
+  const legacyInput = document.getElementById('kat');
+  if (legacyInput) legacyInput.value = [...activePerformers].join('||');
+}
+
+function updateArtistsButtonState() {
+  const button = document.getElementById('artists-btn');
+  const label = document.getElementById('artists-btn-label');
+  if (!button || !label) return;
+  const selected = [...activePerformers].sort((a, b) => a.localeCompare(b, 'pl'));
+  label.textContent = selected.length === 0 ? 'Wybierz wykonawcę' : selected.length === 1 ? selected[0] : `${selected.length} wykonawców`;
+  button.classList.toggle('active', selected.length > 0);
+  button.title = selected.length ? `Wybrano: ${selected.join(', ')}` : 'Wybierz jednego lub kilku wykonawców';
+}
+
+function renderArtistChoices() {
+  const container = document.getElementById('artists-choices');
+  if (!container) return;
+  const query = normalizeSearchText(document.getElementById('artists-search')?.value || '');
+  const available = [...performerCounts.entries()]
+    .filter(([, count]) => showSinglePerformers || count >= 2)
+    .filter(([performer]) => !query || normalizeSearchText(performer).includes(query))
+    .sort(([a], [b]) => a.localeCompare(b, 'pl'));
+  container.innerHTML = '';
+  if (!available.length) {
+    const empty = document.createElement('div');
+    empty.className = 'artists-empty';
+    empty.textContent = 'Nie znaleziono wykonawców.';
+    container.appendChild(empty);
+    return;
+  }
+  available.forEach(([performer, count]) => {
+    const button = document.createElement('button');
+    const selected = activePerformers.has(performer);
+    button.type = 'button';
+    button.className = `artist-choice${selected ? ' active' : ''}`;
+    button.setAttribute('aria-pressed', String(selected));
+    const name = document.createElement('span');
+    name.className = 'artist-choice-name';
+    name.textContent = performer;
+    const amount = document.createElement('span');
+    amount.className = 'artist-choice-count';
+    amount.textContent = performerRiffCountLabel(count);
+    button.append(name, amount);
+    button.addEventListener('click', () => togglePerformer(performer, button));
+    container.appendChild(button);
+  });
+}
+
+function togglePerformer(performer, button) {
+  if (activePerformers.has(performer)) activePerformers.delete(performer);
+  else activePerformers.add(performer);
+  const selected = activePerformers.has(performer);
+  button.classList.toggle('active', selected);
+  button.setAttribute('aria-pressed', String(selected));
+  syncArtistFilterValue();
+  updateArtistsButtonState();
+}
+
+function setShowSinglePerformers(checked) {
+  showSinglePerformers = Boolean(checked);
+  localStorage.setItem('npr_show_single_performers', showSinglePerformers ? '1' : '0');
+  if (!showSinglePerformers) {
+    activePerformers.forEach(performer => {
+      if ((performerCounts.get(performer) || 0) < 2) activePerformers.delete(performer);
+    });
+    syncArtistFilterValue();
+    updateArtistsButtonState();
+  }
+  renderArtistChoices();
+}
+
+function openArtistsPanel() {
+  const dialog = document.getElementById('artists-dropdown');
+  dialogReturnFocus.set('artists-dropdown', document.activeElement);
+  document.getElementById('artists-search').value = '';
+  document.getElementById('artists-show-single').checked = showSinglePerformers;
+  renderArtistChoices();
+  dialog.classList.add('open');
+  dialog.setAttribute('aria-hidden', 'false');
+  document.getElementById('artists-btn').setAttribute('aria-expanded', 'true');
+  requestAnimationFrame(() => document.getElementById('artists-panel').focus({preventScroll:true}));
+}
+
+function closeArtistsPanel() {
+  const dialog = document.getElementById('artists-dropdown');
+  dialog.classList.remove('open');
+  dialog.setAttribute('aria-hidden', 'true');
+  document.getElementById('artists-btn').setAttribute('aria-expanded', 'false');
+  const returnTarget = dialogReturnFocus.get('artists-dropdown');
+  dialogReturnFocus.delete('artists-dropdown');
+  if (returnTarget && typeof returnTarget.focus === 'function') returnTarget.focus({preventScroll:true});
+  render();
+}
+
+function clearPerformers() {
+  activePerformers.clear();
+  syncArtistFilterValue();
+  updateArtistsButtonState();
+  renderArtistChoices();
+  render();
 }
 
 function openTagsPanel() {
@@ -2611,6 +3409,9 @@ function resetFilters() {
   document.getElementById('kat').value = '';
   document.getElementById('lvl').value = '';
   document.getElementById('sort').value = '';
+  activePerformers.clear();
+  syncArtistFilterValue();
+  updateArtistsButtonState();
   activeTags.clear();
   document.querySelectorAll('.tag-chip').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
   updateTagsBadge();
@@ -2863,6 +3664,10 @@ window.addEventListener('scroll',()=>{
   scheduleRememberCurrentPlace();
 });
 window.addEventListener('pagehide', rememberCurrentPlace);
+if (typeof navigator !== 'undefined' && typeof location !== 'undefined' && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw-riffy.js').catch(() => {}));
+}
+document.addEventListener('DOMContentLoaded', updatePwaInstallUi);
 </script>
 </body>
 </html>
