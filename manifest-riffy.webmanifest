@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "Najlepsze Polskie Riffy",
+  "short_name": "Polskie Riffy",
+  "description": "Interaktywny konspekt Najlepsze Polskie Riffy.",
+  "lang": "pl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "icons": [
+    {
+      "src": "./pwa-riffy-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./pwa-riffy-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
