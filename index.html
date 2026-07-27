@@ -230,8 +230,9 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .guide-save-card{padding:16px;border:1px solid #3a3a3a;border-radius:12px;background:#171717;}
 .guide-save-card h4{display:flex;align-items:center;gap:8px;margin:0 0 12px;color:#fff;font-size:15px}.guide-save-card h4 i{color:#00bfe6;font-size:23px}.guide-save-card.phone h4 i{color:#ed1160;}
 .guide-save-row{display:grid;grid-template-columns:28px 1fr;gap:9px;margin-top:11px;font-size:12px;line-height:1.45}.guide-save-row>i{color:#00bfe6;font-size:21px}.guide-save-card.phone .guide-save-row>i{color:#ed1160}.guide-save-row strong{display:block;color:#fff;}
-.guide-export-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0;}
-.guide-export-type{padding:12px 5px;border:1px solid #383838;border-radius:9px;background:#151515;text-align:center;color:#ddd;font-size:10px;font-weight:700}.guide-export-type i{display:block;margin-bottom:6px;color:var(--accent);font-size:24px;}
+.guide-export-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0;}
+.guide-export-type{padding:12px 9px;border:1px solid #383838;border-radius:9px;background:#151515;text-align:center;color:#ddd;font-size:10px}.guide-export-type i{display:block;margin-bottom:6px;color:var(--accent);font-size:24px}.guide-export-type strong{display:block;color:#fff;font-size:11px}.guide-export-type span{display:block;margin-top:5px;color:#999;font-size:9px;line-height:1.4}
+@media(max-width:480px){.guide-export-strip{grid-template-columns:1fr}}
 .guide-browser-demo{margin-top:12px;padding:14px;border:1px solid #383838;border-radius:12px;background:#171717;}
 .guide-drag-animation{position:relative;height:172px;overflow:hidden;border:1px solid #353535;border-radius:11px;background:linear-gradient(145deg,#101010 0 66%,#10202a 66% 100%);}
 .guide-drag-browser{position:absolute;left:3%;top:18px;width:66%;height:86px;border:1px solid #555;border-radius:9px;background:#202020;box-shadow:0 8px 18px rgba(0,0,0,.35);}
@@ -250,20 +251,21 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .guide-drag-caption{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:3px}.guide-drag-caption span{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid #303030;border-radius:8px;background:#121212;color:#bbb;font-size:10px;line-height:1.35}.guide-drag-caption b{display:grid;place-items:center;width:20px;height:20px;flex:0 0 20px;border-radius:50%;background:var(--accent);color:#111;font-size:10px}
 @media(prefers-reduced-motion:reduce){.guide-address-icon,.guide-drag-cursor,.guide-drag-cursor:after,.guide-drag-object,.guide-drag-status span{animation:none}.guide-drag-cursor{left:76%;top:64px;opacity:1}.guide-drag-object{left:80%;top:48px;opacity:1}.guide-drag-status span:nth-child(3){opacity:1}}
 .guide-offline{display:flex;gap:13px;align-items:flex-start;margin-top:13px;padding:14px 16px;border:1px solid rgba(255,204,0,.42);border-radius:12px;background:rgba(255,204,0,.05);font-size:12px;line-height:1.5}.guide-offline>i{color:var(--accent);font-size:27px}.guide-offline strong{display:block;color:var(--accent);font-size:14px;}
-.guide-options-demo{display:grid;grid-template-columns:minmax(260px,1.1fr) minmax(0,.9fr);gap:15px;margin-top:13px;}
+.guide-options-demo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:13px;}
 .guide-install-box{display:flex;gap:13px;align-items:flex-start;margin-top:13px;padding:14px 16px;border:1px solid rgba(90,222,250,.42);border-radius:12px;background:rgba(90,222,250,.055);font-size:12px;line-height:1.5}.guide-install-box>i{flex:0 0 auto;color:var(--accent2);font-size:27px}.guide-install-box strong{display:block;color:var(--accent2);font-size:14px;}
 .guide-options-window,.guide-size-window{padding:15px;border:1px solid rgba(255,204,0,.45);border-radius:12px;background:#171717;}
 .guide-options-window h4,.guide-size-window h4{margin:0 0 12px;color:var(--accent);font:700 18px 'Oswald',sans-serif;}
 .guide-setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d2d2d;color:#ddd;font-size:11px}.guide-setting-row:last-child{border-bottom:0}
 .guide-toggle{position:relative;width:38px;height:20px;flex:0 0 38px;border-radius:20px;background:#555}.guide-toggle.on{background:var(--accent)}.guide-toggle:after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#bbb}.guide-toggle.on:after{left:21px;background:#111}
-.guide-slider{height:7px;margin:24px 4px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent) 0 60%,#555 60%)}.guide-slider:after{content:"";display:block;width:20px;height:20px;border:2px solid #111;border-radius:50%;background:var(--accent);transform:translate(58%,-7px)}
+.guide-slider{position:relative;height:7px;margin:24px 4px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent) 0 50%,#555 50%)}.guide-slider:after{content:"";position:absolute;left:50%;top:50%;width:20px;height:20px;border:2px solid #111;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
 .guide-size-labels{display:flex;justify-content:space-between;color:#aaa;font-size:10px}.guide-auto{display:block;margin:14px auto 0;padding:7px 25px;border:1px solid var(--accent);border-radius:7px;color:var(--accent);text-align:center;font-size:10px;font-weight:800;}
-.guide-size-preview-mini{display:grid;place-items:end center;height:76px;margin-bottom:11px;border:1px solid #303030;border-radius:8px;background:linear-gradient(#222,#090909);overflow:hidden}.guide-size-preview-mini:before{content:"PODGLĄD KARTY";width:62%;padding:7px 5px;border:2px solid #454545;border-radius:7px 7px 0 0;background:#181818;color:#fff;text-align:center;font-size:9px;font-weight:800}
-.guide-size-control{display:grid;grid-template-columns:98px 1fr 34px;gap:7px;align-items:center;margin-top:9px;color:#c8c8c8;font-size:10px}.guide-size-control span:last-child{color:var(--accent);font-weight:800;text-align:right}.guide-size-control .guide-slider{height:5px;margin:0}.guide-size-control .guide-slider:after{width:14px;height:14px;transform:translate(58%,-5px)}
-.guide-new-features{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}.guide-new-feature{padding:12px;border-radius:10px;background:#141414;border:1px solid #343434;font-size:11.5px;line-height:1.45}.guide-new-feature i{color:var(--accent);font-size:21px}.guide-new-feature strong{display:block;color:#fff;margin:6px 0 3px;}
+.guide-size-window .guide-live-card{margin-bottom:12px}
+.guide-size-control{display:grid;grid-template-columns:98px 1fr 34px;gap:7px;align-items:center;margin-top:9px;color:#c8c8c8;font-size:10px}.guide-size-control span:last-child{color:var(--accent);font-weight:800;text-align:right}.guide-size-control .guide-slider{height:5px;margin:0}.guide-size-control .guide-slider:after{width:14px;height:14px;transform:translate(-50%,-50%)}
+.guide-new-features{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-width:820px;margin:15px auto 0}.guide-new-feature{padding:12px;border-radius:10px;background:#141414;border:1px solid #343434;font-size:11.5px;line-height:1.45;text-align:center}.guide-new-feature i{color:var(--accent);font-size:21px}.guide-new-feature strong{display:block;color:#fff;margin:6px 0 3px;}
 @media(min-width:641px){#guide-panel{width:min(960px,calc(100% - 36px));}}
 @media(max-width:700px){.guide-toolbar-fields{grid-template-columns:1fr 1fr}.guide-toolbar-actions{grid-template-columns:repeat(3,1fr)}.guide-step-grid,.guide-feature-grid{grid-template-columns:1fr 1fr}.guide-icon-grid{grid-template-columns:1fr 1fr}.guide-anatomy,.guide-options-demo{grid-template-columns:1fr}.guide-demo-card{max-width:360px;margin:auto}.guide-keys-grid{grid-template-columns:1fr 1fr}.guide-new-features{grid-template-columns:1fr}}
 @media(max-width:480px){.guide-visual-hero{padding:15px}.guide-visual-hero h2{font-size:27px}.guide-visual-heading{font-size:19px}.guide-step-grid,.guide-feature-grid,.guide-save-grid,.guide-icon-grid{grid-template-columns:1fr}.guide-export-strip{grid-template-columns:1fr 1fr}.guide-ui-field{font-size:10px;padding:0 7px}.guide-ui-btn{font-size:9px}.guide-drag-caption{grid-template-columns:1fr}.guide-size-control{grid-template-columns:88px 1fr 32px}.guide-browser-demo{padding:9px}.guide-drag-animation{height:164px}.guide-drag-browser{width:64%}.guide-address-bar{padding-left:35px;font-size:8px}.guide-drag-desktop{width:25%;font-size:8px}.guide-drag-status{width:64%;font-size:9px}}
+@media(max-width:480px){.guide-export-strip{grid-template-columns:1fr}}
 .options-contact{display:block;color:var(--accent);font-size:12px;margin-top:9px;text-decoration:none;}
 .option-contact-details{display:flex;align-items:center;gap:8px;min-width:0;flex:1;}
 .option-contact-label{color:#fff;white-space:nowrap;}
@@ -306,12 +308,8 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .export-choice-desc{font-size:10.5px;line-height:1.45;color:#888;}
 .export-install-choice{margin-top:10px;padding:12px;border:1px solid rgba(90,222,250,.4);border-radius:9px;background:linear-gradient(135deg,rgba(90,222,250,.09),rgba(255,204,0,.035));}
 .export-install-choice .export-choice-title{display:flex;align-items:center;gap:7px}.export-install-choice .export-choice-title i{color:var(--accent2);font-size:19px;}
-.pwa-install-note{margin-top:5px;color:#9a9a9a;font-size:9.5px;line-height:1.35}.pwa-install-note.ready{color:#8bddea}.pwa-install-note.done{color:#8bc34a}
 .pwa-install-button.install-ready{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px rgba(255,204,0,.16)}.pwa-install-button:disabled{opacity:.62;cursor:default;}
-.export-guide-box{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-.export-guide-copy{min-width:0;}
-.export-guide-box .option-action{flex:0 0 auto;white-space:nowrap;}
-@media(max-width:640px){#export-panel{max-height:calc(100dvh - 10px);padding:15px 16px calc(15px + env(safe-area-inset-bottom));}.export-intro{font-size:9.5px;line-height:1.4;padding:8px 9px}.export-choice{gap:10px;padding:9px 0}.export-choice-title{font-size:12.5px}.export-choice-desc{font-size:9.5px;line-height:1.35}.export-choice .option-action{flex:0 0 auto;padding:7px 8px;font-size:10px}.export-guide-box{align-items:stretch;flex-direction:column}.export-guide-box .option-action{width:100%;padding:9px}}
+@media(max-width:640px){#export-panel{max-height:calc(100dvh - 10px);padding:15px 16px calc(15px + env(safe-area-inset-bottom));}.export-intro{font-size:9.5px;line-height:1.4;padding:8px 9px}.export-choice{gap:10px;padding:9px 0}.export-choice-title{font-size:12.5px}.export-choice-desc{font-size:9.5px;line-height:1.35}.export-choice .option-action{flex:0 0 auto;padding:7px 8px;font-size:10px}}
 @media(min-width:641px){#export-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:540px;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.75);}}
 
 /* CARD SIZE */
@@ -891,7 +889,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
           <div class="guide-icon-card"><i class="ti ti-zoom-in"></i><strong>Wielkość elementów</strong>Reguluje rozmiar kart, tekstu, tytułów, opisów, tagów oraz ikon panelu.</div>
           <div class="guide-icon-card"><i class="ti ti-eye-off"></i><strong>Zwiń panel</strong>Chowa pasek sterowania, aby przeznaczyć więcej ekranu na karty.</div>
           <div class="guide-icon-card"><i class="ti ti-tag"></i><strong>Tagi</strong>Otwiera listę technik i cech, którymi możesz dodatkowo filtrować riffy.</div>
-          <div class="guide-icon-card"><i class="ti ti-download"></i><strong>Eksport</strong>Otwiera katalog graficzny, listę PDF, dokument Word oraz listę TXT.</div>
+          <div class="guide-icon-card"><i class="ti ti-download"></i><strong>Zapis i eksport</strong>Otwiera instalację konspektu, pełny katalog graficzny PDF, zwykłą listę PDF oraz listę TXT.</div>
           <div class="guide-icon-card"><i class="ti ti-restore"></i><strong>Reset</strong>Usuwa wyszukiwanie, sortowanie i aktywne filtry. Podświetla się, gdy jest coś do wyczyszczenia.</div>
           <div class="guide-icon-card accent"><i class="ti ti-settings"></i><strong>Opcje</strong>Otwiera instrukcję, ustawienia wyglądu, kontakt, zapis konfiguracji i kontrolę danych.</div>
         </div>
@@ -925,28 +923,8 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 
       <section class="guide-visual-section">
         <h3 class="guide-visual-heading"><span>3</span> Zapis i szybki dostęp</h3>
-        <p class="guide-visual-copy">Możesz utworzyć osobny plik z aktualnie widocznych materiałów albo zapisać skrót prowadzący do strony.</p>
-        <div class="guide-export-strip">
-          <div class="guide-export-type"><i class="ti ti-layout-grid"></i>Pełny katalog graficzny</div>
-          <div class="guide-export-type"><i class="ti ti-file-type-pdf"></i>Zwykła lista PDF</div>
-          <div class="guide-export-type"><i class="ti ti-file-text"></i>Lista do Worda</div>
-          <div class="guide-export-type"><i class="ti ti-file-text"></i>Lista TXT</div>
-        </div>
-        <div class="guide-offline"><i class="ti ti-alert-circle"></i><div><strong>Filtry wpływają na eksport</strong>Przed zapisaniem ustaw wyszukiwanie, filtry i sortowanie dokładnie tak, jak chcesz je zachować.</div></div>
-        <div class="guide-save-grid">
-          <div class="guide-save-card">
-            <h4><i class="ti ti-device-desktop"></i> KOMPUTER</h4>
-            <div class="guide-save-row"><i class="ti ti-bookmark"></i><div><strong>Zapisz zakładkę</strong>Naciśnij Ctrl + D albo kliknij gwiazdkę przy pasku adresu.</div></div>
-            <div class="guide-save-row"><i class="ti ti-copy"></i><div><strong>Skopiuj adres</strong>Kliknij pasek adresu, użyj Ctrl + C i zachowaj link.</div></div>
-            <div class="guide-save-row"><i class="ti ti-app-window"></i><div><strong>Utwórz skrót</strong>Przeciągnij ikonę strony z paska adresu na pulpit.</div></div>
-          </div>
-          <div class="guide-save-card phone">
-            <h4><i class="ti ti-device-mobile"></i> TELEFON</h4>
-            <div class="guide-save-row"><i class="ti ti-bookmark"></i><div><strong>Zapisz zakładkę</strong>Dodaj stronę do zakładek lub ulubionych swojej przeglądarki.</div></div>
-            <div class="guide-save-row"><i class="ti ti-brand-android"></i><div><strong>Android / Chrome</strong>Menu z trzema kropkami → Dodaj do ekranu głównego.</div></div>
-            <div class="guide-save-row"><i class="ti ti-brand-apple"></i><div><strong>iPhone / Safari</strong>Udostępnij → Do ekranu początkowego.</div></div>
-          </div>
-        </div>
+        <p class="guide-visual-copy"><b>Na głównej stronie kliknij ikonę zapisu — strzałkę pobierania w górnym panelu.</b> Otworzy się okno zawierające instalację oraz wszystkie dostępne rodzaje eksportu.</p>
+        <div class="guide-install-box"><i class="ti ti-app-window"></i><div><strong>1. Zapisz skrót na pulpicie</strong>Przeciągnij ikonę strony znajdującą się po lewej stronie paska adresu przeglądarki bezpośrednio na pulpit.</div></div>
         <div class="guide-browser-demo">
           <div class="guide-drag-animation" role="img" aria-label="Animacja pokazująca najechanie kursorem na ikonę strony, przytrzymanie lewego przycisku myszy, przeciągnięcie ikony na pulpit i jej upuszczenie">
             <div class="guide-drag-browser">
@@ -965,8 +943,14 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
             <span><b>3</b>Puść przycisk na pulpicie, aby utworzyć skrót.</span>
           </div>
         </div>
-        <div class="guide-install-box" id="guide-install-help"><i class="ti ti-device-laptop"></i><div><strong>Zainstaluj konspekt jak aplikację</strong>Kliknij <b>Zainstaluj konspekt</b> w eksporcie lub w Opcjach i potwierdź komunikat przeglądarki. Jeśli przycisk instalacji nie jest dostępny, otwórz menu przeglądarki i poszukaj opcji „Zainstaluj aplikację”.</div></div>
-        <div class="guide-offline"><i class="ti ti-device-floppy"></i><div><strong>Pamiętaj o materiałach offline</strong>Skrót wymaga internetu. Eksport strony nie pobiera automatycznie plików spod linków. Materiały z Dysku Google, których potrzebujesz bez połączenia, pobierz osobno.</div></div>
+        <div class="guide-install-box" id="guide-install-help"><i class="ti ti-device-laptop"></i><div><strong>2. Zainstaluj konspekt jak aplikację</strong>W oknie zapisu kliknij <b>Zainstaluj konspekt</b> i potwierdź komunikat przeglądarki. Jeśli automatyczna instalacja nie jest dostępna, otwórz menu przeglądarki i poszukaj opcji „Zainstaluj aplikację”. Gdy widzisz <b>ZAINSTALOWANO</b> i chcesz powtórzyć instalację, najpierw usuń dotychczasową aplikację, odśwież stronę i kliknij przycisk ponownie.</div></div>
+        <div class="guide-install-box"><i class="ti ti-file-type-pdf"></i><div><strong>3. Wyeksportuj katalog do PDF</strong>W oknie zapisu wybierz pełny katalog graficzny PDF albo zwykłą listę PDF. Możesz również zapisać prostą listę TXT.</div></div>
+        <div class="guide-export-strip">
+          <div class="guide-export-type"><i class="ti ti-layout-grid"></i><strong>Pełny katalog graficzny PDF</strong><span>Zapisuje aktualnie widoczne karty wraz z okładkami, opisami, tagami i gwiazdkami.</span></div>
+          <div class="guide-export-type"><i class="ti ti-file-type-pdf"></i><strong>Zwykła lista PDF</strong><span>Tworzy lekką listę aktualnie widocznych utworów z aktywnymi linkami.</span></div>
+          <div class="guide-export-type"><i class="ti ti-file-text"></i><strong>Lista TXT</strong><span>Tworzy prostą, numerowaną listę utworów do zapisania w Notatniku.</span></div>
+        </div>
+        <div class="guide-offline"><i class="ti ti-alert-circle"></i><div><strong>Filtry wpływają na eksport</strong>Przed zapisaniem ustaw wyszukiwanie, filtry i sortowanie dokładnie tak, jak chcesz je zachować.</div></div>
       </section>
 
       <section class="guide-visual-section">
@@ -983,10 +967,9 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
             <div class="guide-setting-row"><span>Powiadomienia o nowych riffach</span><span class="guide-toggle on"></span></div>
             <div class="guide-setting-row"><span>Automatycznie chowaj panel</span><span class="guide-toggle"></span></div>
           </div>
-          <div>
-            <div class="guide-size-window">
+          <div class="guide-size-window">
               <h4><i class="ti ti-zoom-in"></i> Wielkość elementów</h4>
-              <div class="guide-size-preview-mini"></div>
+              <div class="guide-live-card" id="guide-size-live-card" aria-label="Druga rzeczywista karta riffu z aktualnego konspektu"><div class="card-size-preview-empty">Karta pojawi się po wczytaniu materiałów.</div></div>
               <div class="guide-size-labels"><span>MNIEJSZE KARTY</span><span>WIĘKSZE KARTY</span></div>
               <div class="guide-slider"></div>
               <span class="guide-auto">AUTO</span>
@@ -996,13 +979,12 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
               <div class="guide-size-control"><span>Tagi</span><div class="guide-slider"></div><span>100%</span></div>
               <div class="guide-size-control"><span>Ikony panelu</span><div class="guide-slider"></div><span>100%</span></div>
               <p class="guide-visual-copy" style="margin:11px 0 0;font-size:10px">Podgląd zmienia się na żywo. Dwukrotne kliknięcie nazwy lub suwaka przywraca wartość domyślną.</p>
-            </div>
-            <div class="guide-new-features">
-              <div class="guide-new-feature"><i class="ti ti-bell-ringing"></i><strong>Nowe riffy</strong>Jednorazowe okno pokazuje okładkę, tytuł i trudność nowych materiałów.</div>
-              <div class="guide-new-feature"><i class="ti ti-file-download"></i><strong>Ustawienia i ulubione</strong>Eksport TXT zapisuje konfigurację oraz listę serc do późniejszego przywrócenia.</div>
-              <div class="guide-new-feature"><i class="ti ti-message-circle"></i><strong>Kontakt i opinia</strong>W Opcjach możesz napisać wiadomość lub przesłać graficzną opinię o produkcie.</div>
-            </div>
           </div>
+        </div>
+        <div class="guide-new-features">
+          <div class="guide-new-feature"><i class="ti ti-bell-ringing"></i><strong>Nowe riffy</strong>Jednorazowe okno pokazuje okładkę, tytuł i trudność nowych materiałów.</div>
+          <div class="guide-new-feature"><i class="ti ti-file-download"></i><strong>Ustawienia i ulubione</strong>Eksport TXT zapisuje konfigurację oraz listę serc do późniejszego przywrócenia.</div>
+          <div class="guide-new-feature"><i class="ti ti-message-circle"></i><strong>Kontakt i opinia</strong>W Opcjach możesz napisać wiadomość lub przesłać graficzną opinię o produkcie.</div>
         </div>
       </section>
     </div>
@@ -1035,28 +1017,29 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 
     <section class="guide-section">
       <div class="guide-section-title">3. Jak zapisać konspekt i listę materiałów?</div>
+      <p class="guide-section-copy"><b>Na głównej stronie kliknij ikonę zapisu — strzałkę pobierania w górnym panelu.</b> Wszystkie dalsze możliwości znajdziesz w otwartym oknie zapisu i eksportu.</p>
       <div class="guide-subsection">
-        <div class="guide-subsection-title">A. Zapis do osobnego pliku</div>
-        <p class="guide-section-copy">Ta metoda tworzy plik, który możesz przechowywać, kopiować i otwierać później. Najwygodniej użyć przycisku <b>PDF</b> w górnym panelu. Ustawione filtry, wyszukiwanie i sortowanie wpływają na zawartość eksportu.</p>
+        <div class="guide-subsection-title">1. Zapisz skrót na pulpicie</div>
+        <p class="guide-section-copy">Skrót jest wygodną ikoną prowadzącą do aktualnej strony konspektu.</p>
         <ul class="guide-list">
-          <li><b>Pełny eksport graficzny</b> — katalog z kartami, okładkami, opisami, tagami i gwiazdkami.</li>
-          <li><b>Zwykła lista PDF</b> — lekka lista aktualnie widocznych utworów z aktywnymi linkami.</li>
-          <li><b>Lista do Worda</b> — edytowalny dokument z widocznymi utworami.</li>
-          <li><b>Lista do Notatnika</b> — prosty plik TXT z numerowaną listą.</li>
-          <li><b>Zapis całej strony na komputerze</b> — użyj <b>Ctrl + S</b> w Windowsie albo <b>Cmd + S</b> na Macu i wybierz zapis kompletnej strony.</li>
-          <li><b>PDF z przeglądarki</b> — użyj <b>Ctrl/Cmd + P</b>, a następnie wybierz „Zapisz jako PDF”. Na telefonie znajdziesz podobną funkcję w poleceniu „Udostępnij” lub „Drukuj”.</li>
+          <li>Najedź myszką na ikonę znajdującą się po lewej stronie adresu.</li>
+          <li>Przytrzymaj lewy przycisk myszy i przeciągnij ikonę na pulpit.</li>
+          <li>Puść przycisk, aby utworzyć skrót do konspektu.</li>
         </ul>
       </div>
       <div class="guide-subsection">
-        <div class="guide-subsection-title">B. Zapisanie skrótu na komputerze lub telefonie</div>
-        <p class="guide-section-copy">Skrót nie tworzy kopii konspektu. Jest wygodną ikoną, która pozwala szybko ponownie otworzyć aktualną stronę.</p>
+        <div class="guide-subsection-title">2. Zainstaluj stronę jako aplikację</div>
+        <p class="guide-section-copy">W oknie zapisu wybierz <b>Zainstaluj konspekt</b> i potwierdź komunikat przeglądarki. Jeśli polecenie nie jest dostępne, poszukaj w menu przeglądarki opcji „Zainstaluj aplikację”.</p>
+      </div>
+      <div class="guide-subsection">
+        <div class="guide-subsection-title">3–5. Wyeksportuj materiały</div>
         <ul class="guide-list">
-          <li><b>Komputer</b> — przeciągnij ikonę strony znajdującą się przy pasku adresu na pulpit albo wybierz w menu przeglądarki „Utwórz skrót”, „Zainstaluj aplikację” lub podobne polecenie.</li>
-          <li><b>Android</b> — otwórz menu przeglądarki i wybierz „Dodaj do ekranu głównego” albo „Zainstaluj aplikację”.</li>
-          <li><b>iPhone/iPad</b> — w Safari wybierz przycisk „Udostępnij”, a następnie „Do ekranu początkowego”.</li>
+          <li><b>3. Pełny katalog graficzny PDF</b> — karty z okładkami, opisami, tagami i gwiazdkami.</li>
+          <li><b>4. Zwykła lista PDF</b> — lekka lista aktualnie widocznych utworów z aktywnymi linkami.</li>
+          <li><b>5. Lista TXT</b> — prosta, numerowana lista utworów do zapisania w Notatniku.</li>
         </ul>
       </div>
-      <div class="guide-note"><b>Ważne:</b> skrót do strony nadal wymaga dostępu do internetu. Zapis strony lub eksport konspektu nie pobiera automatycznie plików znajdujących się pod linkami. Jeśli chcesz korzystać całkowicie bez internetu, pobierz potrzebne materiały z Dysku Google osobno. Nazwy poleceń mogą nieznacznie różnić się zależnie od przeglądarki.</div>
+      <div class="guide-note"><b>Ważne:</b> ustawione filtry, wyszukiwanie i sortowanie wpływają na zawartość eksportu. Skrót nadal wymaga internetu, a eksport nie pobiera automatycznie materiałów znajdujących się pod linkami.</div>
     </section>
 
     <section class="guide-section">
@@ -1078,7 +1061,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
     </div>
     <div class="export-intro"><strong>Warto zapisać materiały dla siebie</strong> na wypadek, gdyby strona internetowa przestała być dostępna. Pamiętaj, że aktualnie ustawione filtry oraz sortowanie mają wpływ na zawartość i kolejność finalnego eksportu.</div>
     <div class="export-choice export-install-choice">
-      <div class="export-choice-text"><div class="export-choice-title"><i class="ti ti-device-laptop"></i> Zainstaluj konspekt</div><div class="export-choice-desc">Dodaj konspekt do komputera i otwieraj go w osobnym oknie jak aplikację.</div><div class="pwa-install-note" data-pwa-install-note>Sprawdzam możliwość instalacji…</div></div>
+      <div class="export-choice-text"><div class="export-choice-title"><i class="ti ti-device-laptop"></i> Zainstaluj konspekt</div><div class="export-choice-desc">Dodaj konspekt do komputera i otwieraj go w osobnym oknie jak aplikację.</div></div>
       <button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button>
     </div>
     <div class="export-choice">
@@ -1090,14 +1073,9 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       <button class="option-action" onclick="closeExportModal();exportPDF()">EKSPORTUJ</button>
     </div>
     <div class="export-choice">
-      <div class="export-choice-text"><div class="export-choice-title">Lista utworów do Worda</div><div class="export-choice-desc">Edytowalna lista aktualnie widocznych utworów w pliku otwieranym przez Microsoft Word.</div></div>
-      <button class="option-action" onclick="exportWordList()">EKSPORTUJ</button>
-    </div>
-    <div class="export-choice">
       <div class="export-choice-text"><div class="export-choice-title">Lista utworów do Notatnika</div><div class="export-choice-desc">Prosty plik TXT z numerowaną listą aktualnie widocznych utworów.</div></div>
       <button class="option-action" onclick="exportTextList()">EKSPORTUJ</button>
     </div>
-    <div class="export-intro export-guide-box" style="margin-top:12px;"><div class="export-guide-copy"><strong>Chcesz mieć szybki dostęp do konspektu?</strong> W instrukcji obsługi znajdziesz opis zapisywania strony oraz tworzenia skrótu na komputerze i telefonie.</div><button class="option-action" type="button" onclick="openGuideFromExport()">OTWÓRZ INSTRUKCJĘ</button></div>
   </div>
 </div>
 
@@ -1546,25 +1524,19 @@ function closeOptions() {
   closeAccessibleDialog('options-modal');
 }
 
+const PWA_INSTALL_STORAGE_KEY = 'npr_pwa_installed_v1';
 let deferredInstallPrompt = null;
-let pwaInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator?.standalone === true;
+const pwaRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator?.standalone === true;
+let pwaInstalled = pwaRunningStandalone || localStorage.getItem(PWA_INSTALL_STORAGE_KEY) === '1';
+if (pwaRunningStandalone) localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
 
 function updatePwaInstallUi() {
   const buttons = document.querySelectorAll('[data-pwa-install-button]');
-  const notes = document.querySelectorAll('[data-pwa-install-note]');
   buttons.forEach(button => {
     button.classList.toggle('install-ready', Boolean(deferredInstallPrompt) && !pwaInstalled);
-    button.disabled = pwaInstalled;
+    button.disabled = false;
+    button.title = pwaInstalled ? 'Kliknij, aby sprawdzić możliwość ponownej instalacji' : '';
     button.textContent = pwaInstalled ? 'ZAINSTALOWANO' : (deferredInstallPrompt ? 'ZAINSTALUJ' : 'JAK ZAINSTALOWAĆ');
-  });
-  notes.forEach(note => {
-    note.classList.toggle('ready', Boolean(deferredInstallPrompt) && !pwaInstalled);
-    note.classList.toggle('done', pwaInstalled);
-    note.textContent = pwaInstalled
-      ? 'Konspekt jest już zainstalowany na tym urządzeniu.'
-      : (deferredInstallPrompt
-        ? 'Instalacja jest dostępna — kliknij przycisk i potwierdź.'
-        : 'Jeśli przeglądarka nie obsługuje automatycznej instalacji, pokażemy krótką instrukcję.');
   });
 }
 
@@ -1572,18 +1544,19 @@ window.addEventListener('beforeinstallprompt', event => {
   event.preventDefault();
   deferredInstallPrompt = event;
   pwaInstalled = false;
+  localStorage.removeItem(PWA_INSTALL_STORAGE_KEY);
   updatePwaInstallUi();
 });
 
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
   pwaInstalled = true;
+  localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
   updatePwaInstallUi();
   showOptionsStatus('Konspekt został zainstalowany.');
 });
 
 async function requestPwaInstall() {
-  if (pwaInstalled) return;
   if (!deferredInstallPrompt) {
     openPwaInstallInstructions();
     return;
@@ -1594,6 +1567,7 @@ async function requestPwaInstall() {
   const choice = await promptEvent.userChoice;
   if (choice.outcome === 'accepted') {
     pwaInstalled = true;
+    localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
     showOptionsStatus('Konspekt został zainstalowany.');
   } else {
     showOptionsStatus('Instalacja została anulowana.', true);
@@ -1617,11 +1591,6 @@ function openExportModal() {
 
 function closeExportModal() {
   closeAccessibleDialog('export-modal');
-}
-
-function openGuideFromExport() {
-  closeExportModal();
-  setTimeout(() => openUserGuide(false), 100);
 }
 
 function openCardSizeModal() {
@@ -1885,19 +1854,25 @@ function openUserGuide(markAsSeen = true) {
 }
 
 function updateGuideExampleCard() {
-  const host = document.getElementById('guide-live-card');
-  const source = document.querySelector('#grid .card');
-  if (!host || !source) return;
-  const clone = source.cloneNode(true);
-  clone.removeAttribute('id');
-  clone.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
-  clone.querySelectorAll('a,button').forEach(element => {
-    element.removeAttribute('href');
-    element.removeAttribute('onclick');
-    element.setAttribute('tabindex', '-1');
+  const sources = [...document.querySelectorAll('#grid .card')];
+  if (!sources.length) return;
+  [
+    ['guide-live-card', sources[0]],
+    ['guide-size-live-card', sources[1] || sources[0]]
+  ].forEach(([hostId, source]) => {
+    const host = document.getElementById(hostId);
+    if (!host || !source) return;
+    const clone = source.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    clone.querySelectorAll('a,button').forEach(element => {
+      element.removeAttribute('href');
+      element.removeAttribute('onclick');
+      element.setAttribute('tabindex', '-1');
+    });
+    clone.setAttribute('aria-hidden', 'true');
+    host.replaceChildren(clone);
   });
-  clone.setAttribute('aria-hidden', 'true');
-  host.replaceChildren(clone);
 }
 
 function closeUserGuide() {
@@ -3474,27 +3449,6 @@ function exportPDF() {
 
 function escapeExportHtml(value) {
   return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-}
-
-function exportWordList() {
-  const cards = [...document.querySelectorAll('#grid .card')];
-  const section = document.getElementById('section-label').textContent.trim();
-  const items = cards.map((card, index) => {
-    const title = card.querySelector('.card-title')?.textContent || '';
-    const href = card.getAttribute('href') || '';
-    const safeTitle = escapeExportHtml(title);
-    const content = href && href !== '#' ? `<a href="${escapeExportHtml(href)}">${safeTitle}</a>` : safeTitle;
-    return `<li>${content}</li>`;
-  }).join('');
-  const html = `<!DOCTYPE html><html lang="pl"><head><meta charset="UTF-8"><title>Najlepsze Polskie Riffy</title><style>body{font-family:Arial,sans-serif;margin:36px;color:#111}h1{font-size:24px;margin-bottom:6px}p{color:#666;margin-top:0}li{margin:0 0 8px;line-height:1.35}a{color:#9a7400}</style></head><body><h1>Najlepsze Polskie Riffy</h1><p>${escapeExportHtml(section)} • ${riffCountLabel(cards.length)} • ${formatPolishDate(new Date())}</p><ol>${items}</ol></body></html>`;
-  const blob = new Blob(['\ufeff', html], {type:'application/msword;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'najlepsze-polskie-riffy-lista.doc';
-  link.click();
-  URL.revokeObjectURL(url);
-  closeExportModal();
 }
 
 function exportTextList() {
