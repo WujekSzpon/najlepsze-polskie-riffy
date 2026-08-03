@@ -604,6 +604,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .promotion-action:hover,.promotion-action:focus-visible{transform:scale(1.015);box-shadow:0 0 22px rgba(255,204,0,.58);outline:none;}
 .promotion-close{position:absolute;top:4px;right:6px;z-index:3;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:0;border-radius:50%;background:rgba(10,10,10,.72);color:#fff;font:400 42px/1 Arial,sans-serif;cursor:pointer;text-shadow:0 2px 8px #000;transition:background .15s ease,color .15s ease;}
 .promotion-close:hover,.promotion-close:focus-visible{background:#2b2b2b;color:var(--accent);outline:2px solid var(--accent);outline-offset:-3px;}
+.promotion-progress{position:absolute;bottom:0;left:0;z-index:4;width:100%;height:3px;background:var(--accent);border-radius:0 0 18px 18px;transform:scaleX(1);transform-origin:left;box-shadow:0 0 8px rgba(255,204,0,.55);}
 @media(max-width:560px){#promotion-popup{width:min(360px,100%);padding:14px}.promotion-copy{padding:18px 4px 4px}.promotion-heading{font-size:22px}.promotion-description{font-size:13px}.promotion-close{width:50px;height:50px;font-size:40px}}
 
 
@@ -1270,6 +1271,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       <div class="promotion-divider"></div>
       <a class="promotion-action" id="promotion-action" href="#" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i><span></span></a>
     </div>
+    <div class="promotion-progress" id="promotion-progress" aria-hidden="true"></div>
   </section>
 </div>
 
@@ -3607,7 +3609,7 @@ async function exportCatalogPreview() {
 const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
 const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.txt`;
 const PROMOTION_CONTEXT = 'riffy';
-let PORADY = [], PROMOTIONS = [], poradyIdx = 0, promotionsIdx = 0, popupTimeout;
+let PORADY = [], PROMOTIONS = [], poradyIdx = 0, promotionsIdx = 0, popupTimeout, promotionTimeout;
 let promotionMinTips = 3, promotionMaxTips = 5;
 let tipsUntilPromotion = randomPromotionInterval();
 let promotionPreviousOverflow = '';
@@ -3688,6 +3690,15 @@ function showPromotion(promotion) {
   document.body.style.overflow = 'hidden';
   overlay.classList.add('show');
   overlay.setAttribute('aria-hidden', 'false');
+  const progress = document.getElementById('promotion-progress');
+  progress.style.transition = 'none';
+  progress.style.transform = 'scaleX(1)';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    progress.style.transition = 'transform 20s linear';
+    progress.style.transform = 'scaleX(0)';
+  }));
+  clearTimeout(promotionTimeout);
+  promotionTimeout = setTimeout(closePromotion, 20000);
   requestAnimationFrame(() => overlay.querySelector('.promotion-close').focus());
 }
 
@@ -3699,6 +3710,7 @@ function closePromotion() {
   overlay.setAttribute('aria-hidden', 'true');
   popup?.classList.remove('swiping', 'swiping-out');
   popup?.style.setProperty('--promotion-swipe-x', '0px');
+  clearTimeout(promotionTimeout);
   document.body.style.overflow = promotionPreviousOverflow;
 }
 
