@@ -1545,12 +1545,46 @@ if (pwaRunningStandalone) localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
 
 function updatePwaInstallUi() {
   const buttons = document.querySelectorAll('[data-pwa-install-button]');
+  const state = pwaInstalled ? 'installed' : (deferredInstallPrompt ? 'ready' : 'save-help');
+  const label = state === 'installed' ? 'ZAINSTALOWANO ✓' : (state === 'ready' ? 'ZAINSTALUJ' : 'JAK ZAPISAĆ');
   buttons.forEach(button => {
-    button.classList.toggle('install-ready', Boolean(deferredInstallPrompt) && !pwaInstalled);
+    button.classList.toggle('install-ready', state === 'ready');
+    button.classList.toggle('install-complete', state === 'installed');
+    button.dataset.pwaState = state;
     button.disabled = false;
-    button.title = pwaInstalled ? 'Kliknij, aby sprawdzić możliwość ponownej instalacji' : '';
-    button.textContent = pwaInstalled ? 'ZAINSTALOWANO' : (deferredInstallPrompt ? 'ZAINSTALUJ' : 'JAK ZAINSTALOWAĆ');
+    button.title = state === 'installed'
+      ? 'Konspekt jest już zainstalowany. Kliknij, aby otworzyć informacje o zapisie i instalacji.'
+      : (state === 'save-help' ? 'Otwórz instrukcję zapisywania konspektu.' : 'Zainstaluj konspekt jako aplikację.');
+    if (button.classList.contains('guide-install-cta')) {
+      const iconClass = state === 'installed' ? 'ti ti-circle-check' : (state === 'ready' ? 'ti ti-device-desktop-down' : 'ti ti-bookmark');
+      button.innerHTML = `<i class="${iconClass}" aria-hidden="true"></i> ${label}`;
+    } else {
+      button.textContent = label;
+    }
   });
+}
+
+async function detectInstalledPwa() {
+  if (pwaRunningStandalone) {
+    pwaInstalled = true;
+    localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
+    updatePwaInstallUi();
+    return;
+  }
+  if (location.protocol !== 'https:' || typeof navigator.getInstalledRelatedApps !== 'function') {
+    updatePwaInstallUi();
+    return;
+  }
+  try {
+    const relatedApps = await navigator.getInstalledRelatedApps();
+    if (relatedApps.some(app => app.platform === 'webapp')) {
+      pwaInstalled = true;
+      localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
+    }
+  } catch (error) {
+    console.info('Nie udało się dodatkowo sprawdzić stanu instalacji PWA.', error);
+  }
+  updatePwaInstallUi();
 }
 
 window.addEventListener('beforeinstallprompt', event => {
@@ -1570,6 +1604,10 @@ window.addEventListener('appinstalled', () => {
 });
 
 async function requestPwaInstall() {
+  if (pwaInstalled) {
+    openPwaInstallInstructions();
+    return;
+  }
   if (!deferredInstallPrompt) {
     openPwaInstallInstructions();
     return;
@@ -1596,6 +1634,8 @@ function openPwaInstallInstructions() {
     setTimeout(() => document.getElementById('guide-install-help')?.scrollIntoView({behavior:'smooth', block:'center'}), 160);
   }, 100);
 }
+
+detectInstalledPwa();
 
 function openExportModal() {
   updatePwaInstallUi();
