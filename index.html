@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Najlepsze Polskie Riffy">
 <title>W Szponach Gitary — Najlepsze Polskie Riffy</title>
 <link rel="manifest" href="./manifest-riffy.webmanifest">
-<link rel="apple-touch-icon" href="./pwa-riffy-192.png">
+<link rel="apple-touch-icon" href="./materialy/ikony/pwa-riffy-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -587,6 +587,25 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .tip-progress{position:absolute;bottom:0;left:0;height:3px;width:100%;background:var(--accent);border-radius:0 0 var(--radius) var(--radius);transform-origin:left;}
 .tip-progress.running{transition:transform linear;transform:scaleX(0);}
 
+/* GRAFICZNE PROMOCJE — porady nadal korzystają ze starego, małego pop-upu */
+#promotion-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(0,0,0,.74);backdrop-filter:blur(4px);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease;}
+#promotion-overlay.show{opacity:1;visibility:visible;pointer-events:auto;}
+#promotion-popup{--promotion-swipe-x:0px;position:relative;width:min(520px,100%);max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;background:#191919;border:1px solid #434343;border-radius:18px;padding:16px;box-shadow:0 24px 70px rgba(0,0,0,.72),0 0 24px rgba(255,204,0,.1);transform:translate(var(--promotion-swipe-x),18px) scale(.97);transition:transform .25s ease,opacity .2s ease;touch-action:pan-y;}
+#promotion-overlay.show #promotion-popup{transform:translate(var(--promotion-swipe-x),0) scale(1);}
+#promotion-popup.swiping{transition:none;}
+#promotion-popup.swiping-out{opacity:0;}
+.promotion-image-wrap{overflow:hidden;border-radius:12px;background:#092f64;box-shadow:0 12px 30px rgba(0,0,0,.45);}
+.promotion-image{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
+.promotion-copy{padding:18px 6px 4px;text-align:center;}
+.promotion-heading{margin:0 0 14px;color:var(--accent);font:700 clamp(21px,4vw,28px) 'Oswald',sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+.promotion-description{margin:0;color:#d7d7d7;font-size:14px;line-height:1.55;}
+.promotion-divider{height:1px;margin:20px 0 14px;background:#3b3b3b;}
+.promotion-action{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 18px;border:1px solid #ffe25e;border-radius:10px;background:var(--accent);color:#101010;font:700 12px 'Open Sans',sans-serif;text-decoration:none;box-shadow:0 0 16px rgba(255,204,0,.42);transition:transform .15s ease,box-shadow .15s ease;}
+.promotion-action:hover,.promotion-action:focus-visible{transform:scale(1.015);box-shadow:0 0 22px rgba(255,204,0,.58);outline:none;}
+.promotion-close{position:absolute;top:4px;right:6px;z-index:3;display:flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;border:0;border-radius:50%;background:rgba(10,10,10,.72);color:#fff;font:400 42px/1 Arial,sans-serif;cursor:pointer;text-shadow:0 2px 8px #000;transition:background .15s ease,color .15s ease;}
+.promotion-close:hover,.promotion-close:focus-visible{background:#2b2b2b;color:var(--accent);outline:2px solid var(--accent);outline-offset:-3px;}
+@media(max-width:560px){#promotion-popup{width:min(360px,100%);padding:14px}.promotion-copy{padding:18px 4px 4px}.promotion-heading{font-size:22px}.promotion-description{font-size:13px}.promotion-close{width:50px;height:50px;font-size:40px}}
+
 
 /* HOVER ANIMATIONS */
 .card button {
@@ -598,7 +617,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 
 /* PRINT */
 @media print{
-  #login-screen,header,#toolbar-wrap,#tags-dropdown,#artists-dropdown,#tip-popup,#scroll-top-btn,#export-modal,#card-size-modal{display:none !important;}
+#login-screen,header,#toolbar-wrap,#tags-dropdown,#artists-dropdown,#tip-popup,#promotion-overlay,#scroll-top-btn,#export-modal,#card-size-modal{display:none !important;}
   body{background:white !important;color:black !important;}
   .card{border:1px solid #ccc !important;break-inside:avoid;background:#f9f9f9 !important;}
   .card-title{color:black !important;}
@@ -1239,6 +1258,21 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
   <div class="tip-progress" id="tip-progress"></div>
 </div>
 
+<div id="promotion-overlay" aria-hidden="true" onclick="handlePromotionBackdrop(event)">
+  <section id="promotion-popup" role="dialog" aria-modal="true" aria-labelledby="promotion-heading">
+    <button class="promotion-close" type="button" onclick="closePromotion()" aria-label="Zamknij reklamę">×</button>
+    <div class="promotion-image-wrap">
+      <img class="promotion-image" id="promotion-image" src="" alt="">
+    </div>
+    <div class="promotion-copy">
+      <h2 class="promotion-heading" id="promotion-heading"></h2>
+      <p class="promotion-description" id="promotion-description"></p>
+      <div class="promotion-divider"></div>
+      <a class="promotion-action" id="promotion-action" href="#" target="_blank" rel="noopener"><i class="ti ti-external-link" aria-hidden="true"></i><span></span></a>
+    </div>
+  </section>
+</div>
+
 <script>
 // ==============================
 // ZMIEŃ HASŁO: wygeneruj hash na https://emn178.github.io/online-tools/sha256.html
@@ -1434,6 +1468,7 @@ function schedulePopupNotifications() {
   const minutes = popupFrequencyMinutes();
   if (minutes === 0) {
     closePopup();
+    document.getElementById('promotion-overlay')?.classList.remove('show');
     return;
   }
   const delay = firstPopupPending ? 30 * 1000 : minutes * 60 * 1000;
@@ -3568,47 +3603,112 @@ async function exportCatalogPreview() {
 }
 // ===== TESTOWY EKSPORT KATALOGU PDF — koniec =====
 
-// POPUP
-let PORADY = [], REKLAMY = [], isAd = false, poradyIdx = 0, reklamyIdx = 0, popupTimeout;
+// POPUPY: porady zachowują stary wygląd, a promocje korzystają ze wspólnej bazy i panelu graficznego.
+const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
+const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.txt`;
+const PROMOTION_CONTEXT = 'riffy';
+let PORADY = [], PROMOTIONS = [], poradyIdx = 0, promotionsIdx = 0, popupTimeout;
+let promotionMinTips = 3, promotionMaxTips = 5;
+let tipsUntilPromotion = randomPromotionInterval();
+let promotionPreviousOverflow = '';
+
+function randomPromotionInterval() {
+  const min = Math.max(1, Number(promotionMinTips) || 3);
+  const max = Math.max(min, Number(promotionMaxTips) || 5);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 fetch(`${REPO_BASE}/data/tresci.txt`)
-  .then(r=>r.text()).then(text=>{
-    const ps = text.split('REKLAMY:')[0].replace('PORADY:','').trim();
-    const rs = text.split('REKLAMY:')[1]?.trim()||'';
-    PORADY = ps.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
-    REKLAMY = rs.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean).map(b=>{
-      const p=b.split('|').map(x=>x.trim());
-      return {text:p[0]||'',link:p[1]||'#',linkText:p[2]||'Sprawdź →'};
-    });
-  }).catch(()=>{});
+  .then(r => r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(text => {
+    const ps = text.split('REKLAMY:')[0].replace('PORADY:', '').trim();
+    PORADY = ps.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  }).catch(() => {});
+
+fetch(PROMOTIONS_URL)
+  .then(r => r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(text => {
+    const settings = text.split('PROMOTIONS:')[0] || '';
+    const minMatch = settings.match(/MIN_PORAD\s*=\s*(\d+)/i);
+    const maxMatch = settings.match(/MAX_PORAD\s*=\s*(\d+)/i);
+    if (minMatch) promotionMinTips = Number(minMatch[1]);
+    if (maxMatch) promotionMaxTips = Number(maxMatch[1]);
+    tipsUntilPromotion = randomPromotionInterval();
+    const entries = text.split('PROMOTIONS:')[1]?.trim() || '';
+    PROMOTIONS = entries.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).map(block => {
+      const p = block.split('|').map(value => value.trim());
+      const exclusions = (p[5] || '').toLowerCase().split(/[,;]/).map(value => value.trim()).filter(Boolean);
+      return {heading:p[0]||'',description:p[1]||'',image:p[2]||'',link:p[3]||'#',button:p[4]||'SPRAWDŹ',exclusions};
+    }).filter(item => item.heading && item.description && item.image && !item.exclusions.includes(PROMOTION_CONTEXT));
+  }).catch(() => {});
 
 function showPopup() {
   if (popupFrequencyMinutes() === 0) return;
-  if (!PORADY.length && !REKLAMY.length) return;
-  const popup=document.getElementById('tip-popup');
-  popup.style.setProperty('--swipe-x','0px');
-  popup.classList.remove('swiping','swiping-out');
-  applyPopupPosition();
-  const label=document.getElementById('tip-label');
-  const text=document.getElementById('tip-text');
-  const link=document.getElementById('tip-link');
-  if (!isAd && PORADY.length) {
-    label.textContent='PORADA GITAROWA'; label.className='tip-label';
-    text.textContent=PORADY[poradyIdx%PORADY.length]; link.style.display='none';
-    popup.classList.remove('ad'); poradyIdx++;
-  } else if (REKLAMY.length) {
-    const ad=REKLAMY[reklamyIdx%REKLAMY.length];
-    label.textContent='OD WUJKA SZPONA'; label.className='tip-label ad-label';
-    text.textContent=ad.text; link.href=ad.link; link.textContent=ad.linkText;
-    link.style.display='inline-block'; popup.classList.add('ad'); reklamyIdx++;
+  if (!PORADY.length && !PROMOTIONS.length) return;
+  closePopup();
+  closePromotion();
+  if (PROMOTIONS.length && (tipsUntilPromotion <= 0 || !PORADY.length)) {
+    const promotion = PROMOTIONS[promotionsIdx % PROMOTIONS.length];
+    promotionsIdx++;
+    tipsUntilPromotion = randomPromotionInterval();
+    showPromotion(promotion);
+    return;
   }
-  isAd=!isAd;
+  if (!PORADY.length) return;
+  const popup = document.getElementById('tip-popup');
+  popup.style.setProperty('--swipe-x', '0px');
+  popup.classList.remove('swiping', 'swiping-out', 'ad');
+  applyPopupPosition();
+  document.getElementById('tip-label').textContent = 'PORADA GITAROWA';
+  document.getElementById('tip-label').className = 'tip-label';
+  document.getElementById('tip-text').textContent = PORADY[poradyIdx % PORADY.length];
+  document.getElementById('tip-link').style.display = 'none';
+  poradyIdx++;
+  tipsUntilPromotion--;
   popup.classList.add('show');
-  const bar=document.getElementById('tip-progress');
-  bar.style.transition='none'; bar.style.transform='scaleX(1)';
-  setTimeout(()=>{ bar.style.transition='transform 12s linear'; bar.style.transform='scaleX(0)'; },50);
+  const bar = document.getElementById('tip-progress');
+  bar.style.transition = 'none';
+  bar.style.transform = 'scaleX(1)';
+  setTimeout(() => { bar.style.transition = 'transform 12s linear'; bar.style.transform = 'scaleX(0)'; }, 50);
   clearTimeout(popupTimeout);
-  popupTimeout=setTimeout(closePopup,12000);
+  popupTimeout = setTimeout(closePopup, 12000);
 }
+
+function showPromotion(promotion) {
+  const overlay = document.getElementById('promotion-overlay');
+  const image = document.getElementById('promotion-image');
+  image.src = `${SHARED_MATERIALS_BASE}/mockupy/${encodeURIComponent(promotion.image)}`;
+  image.alt = promotion.heading;
+  document.getElementById('promotion-heading').textContent = promotion.heading;
+  document.getElementById('promotion-description').textContent = promotion.description;
+  const action = document.getElementById('promotion-action');
+  action.href = promotion.link;
+  action.querySelector('span').textContent = promotion.button;
+  promotionPreviousOverflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+  requestAnimationFrame(() => overlay.querySelector('.promotion-close').focus());
+}
+
+function closePromotion() {
+  const overlay = document.getElementById('promotion-overlay');
+  if (!overlay) return;
+  const popup = document.getElementById('promotion-popup');
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden', 'true');
+  popup?.classList.remove('swiping', 'swiping-out');
+  popup?.style.setProperty('--promotion-swipe-x', '0px');
+  document.body.style.overflow = promotionPreviousOverflow;
+}
+
+function handlePromotionBackdrop(event) {
+  if (event.target === event.currentTarget) closePromotion();
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.getElementById('promotion-overlay')?.classList.contains('show')) closePromotion();
+});
 function closePopup() {
   const popup = document.getElementById('tip-popup');
   popup.classList.remove('show','swiping','swiping-out');
@@ -3665,7 +3765,48 @@ function enablePopupSwipeToClose() {
   }, {passive:true});
 }
 
+function enablePromotionSwipeToClose() {
+  const overlay = document.getElementById('promotion-overlay');
+  const popup = document.getElementById('promotion-popup');
+  if (!overlay || !popup) return;
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let dragging = false;
+  popup.addEventListener('touchstart', event => {
+    if (!overlay.classList.contains('show') || event.touches.length !== 1) return;
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+    currentX = 0;
+    dragging = false;
+  }, {passive:true});
+  popup.addEventListener('touchmove', event => {
+    if (event.touches.length !== 1) return;
+    const deltaX = event.touches[0].clientX - startX;
+    const deltaY = event.touches[0].clientY - startY;
+    if (!dragging && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY)) dragging = true;
+    if (!dragging) return;
+    event.preventDefault();
+    currentX = deltaX;
+    popup.classList.add('swiping');
+    popup.style.setProperty('--promotion-swipe-x', `${currentX}px`);
+  }, {passive:false});
+  popup.addEventListener('touchend', () => {
+    if (!dragging) return;
+    popup.classList.remove('swiping');
+    if (Math.abs(currentX) >= 90) {
+      popup.classList.add('swiping-out');
+      popup.style.setProperty('--promotion-swipe-x', `${Math.sign(currentX) * (window.innerWidth + 100)}px`);
+      setTimeout(closePromotion, 220);
+    } else {
+      popup.style.setProperty('--promotion-swipe-x', '0px');
+    }
+    dragging = false;
+  }, {passive:true});
+}
+
 enablePopupSwipeToClose();
+enablePromotionSwipeToClose();
 
 // SCROLL TO TOP
 window.addEventListener('scroll',()=>{
