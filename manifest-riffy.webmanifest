@@ -1,7 +1,7 @@
 {
   "id": "./",
   "name": "Najlepsze Polskie Riffy",
-  "short_name": "Polskie Riffy",
+  "short_name": "Najlepsze Polskie Riffy",
   "description": "Interaktywny konspekt Najlepsze Polskie Riffy.",
   "lang": "pl",
   "start_url": "./",
@@ -9,6 +9,13 @@
   "display": "standalone",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://wujekszpon.github.io/najlepsze-polskie-riffy/manifest-riffy.webmanifest",
+      "id": "https://wujekszpon.github.io/najlepsze-polskie-riffy/"
+    }
+  ],
   "icons": [
     {
       "src": "./pwa-riffy-192.png",
@@ -20,7 +27,7 @@
       "src": "./pwa-riffy-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
