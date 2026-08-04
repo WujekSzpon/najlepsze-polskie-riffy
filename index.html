@@ -180,6 +180,9 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .clear-favorites-confirm:hover,.clear-favorites-confirm:focus-visible{background:#c42929;box-shadow:0 0 12px rgba(255,70,70,.28);outline:none;}
 .option-action-review{border-color:#ed1160;color:#ff4b88;background:rgba(237,17,96,.09);box-shadow:0 0 7px rgba(237,17,96,.28),inset 0 0 6px rgba(237,17,96,.06);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
 .option-action-review:hover,.option-action-review:focus-visible{border-color:#ff4b88;color:#fff;background:rgba(237,17,96,.18);box-shadow:0 0 13px rgba(237,17,96,.52),inset 0 0 8px rgba(237,17,96,.1);transform:translateY(-1px);outline:none;}
+.option-action-accent{border-color:var(--accent);color:var(--accent);background:rgba(255,204,0,.07);box-shadow:0 0 8px rgba(255,204,0,.2),inset 0 0 6px rgba(255,204,0,.04);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
+.option-action-accent:hover,.option-action-accent:focus-visible{border-color:var(--accent);color:#111;background:var(--accent);box-shadow:0 0 14px rgba(255,204,0,.48);transform:translateY(-1px);outline:none;}
+.option-user-install::before{content:"📲";margin-right:5px;}
 #guide-modal{position:fixed;inset:0;z-index:245;display:none;}
 #guide-modal.open{display:block;}
 #guide-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(3px);}
@@ -826,16 +829,12 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
     </div>
 
     <div class="options-section">
-      <div class="options-section-title">Kontakt, opinia i produkty</div>
-      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" onclick="sendFeedback()">DODAJ OPINIĘ</button></div>
-      <div class="option-row"><span>Zobacz wszystkie produkty i usługi 🏪</span><button class="option-action" type="button" onclick="showAllPromotions()">PRODUKTY</button></div>
-      <div class="option-row"><span>Napisz do mnie</span><button class="option-action" onclick="openContactForm()">NAPISZ</button></div>
-    </div>
-
-    <div class="options-section">
-      <div class="options-section-title">Pomoc</div>
-      <div class="option-row"><span>Zainstaluj konspekt na komputerze/smartfonie</span><button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
-      <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">OTWÓRZ</button></div>
+      <div class="options-section-title">Centrum użytkownika</div>
+      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" onclick="sendFeedback()">💗 DODAJ OPINIĘ</button></div>
+      <div class="option-row"><span>Zobacz wszystkie produkty i usługi</span><button class="option-action option-action-accent" type="button" onclick="showAllPromotions()">🛍️ PRODUKTY</button></div>
+      <div class="option-row"><span>Zainstaluj na komputerze/smartfonie</span><button class="option-action option-action-accent option-user-install pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
+      <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">📋 INSTRUKCJA</button></div>
+      <div class="option-row"><span>Napisz do mnie wiadomość</span><button class="option-action" onclick="openContactForm()">📩 NAPISZ</button></div>
     </div>
 
     <div class="options-section">
