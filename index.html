@@ -398,6 +398,9 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .review-star.active{color:#eda52b;text-shadow:0 0 7px rgba(237,165,43,.42);}
 .review-consent{display:flex;gap:8px;align-items:flex-start;font-size:10.5px;color:#bbb;line-height:1.45;margin-top:8px;}
 .review-consent input{margin-top:3px;accent-color:var(--accent);flex:0 0 auto;}
+.review-consent-block{margin-top:11px;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:#151515;}
+.review-consent-title{color:var(--accent);font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.review-consent-block .review-consent{margin-top:7px;}
 .review-privacy{font-size:10px;color:#888;line-height:1.5;padding:10px;background:#121212;border-radius:7px;margin-top:8px;}
 .review-privacy a{color:var(--accent);}
 .review-send-instruction{margin-top:14px;padding:12px 13px;border:1px solid rgba(255,204,0,.35);border-radius:8px;background:rgba(255,204,0,.06);color:var(--accent);font-size:13px;line-height:1.5;}
@@ -410,7 +413,10 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .review-secondary{border:1px solid var(--border);background:transparent;color:#fff;}
 .review-output-grid{display:none;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.review-output-grid.open{display:grid}.review-output-image{display:block;width:100%;border-radius:8px;background:#000}@media(max-width:620px){.review-output-grid{grid-template-columns:1fr}}
 #review-status{min-height:18px;margin-top:9px;font-size:11px;color:#8bc34a;}
-#review-char-count{text-align:right;color:#777;font-size:10px;margin-top:3px;}
+.review-counter-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:5px;}
+.review-length-suggestion{color:#999;font-size:10px;line-height:1.35;}
+#review-char-count{flex:0 0 auto;color:#777;font-size:10px;white-space:nowrap;}
+@media(max-width:520px){.review-counter-row{align-items:flex-start}.review-length-suggestion{max-width:78%;}}
 @media(min-width:721px){#review-panel{bottom:auto;left:50%;right:auto;top:50%;transform:translate(-50%,-50%);width:700px;max-height:90vh;border-radius:12px;box-shadow:0 8px 50px rgba(0,0,0,.8);}.review-grid{grid-template-columns:1fr 1fr}.review-wide{grid-column:1/-1;}}
 
 /* CONTACT FORM */
@@ -1262,13 +1268,13 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       </div>
       <div class="review-field review-wide">
         <label for="review-text">Krótka opinia</label>
-        <div class="review-hint">Możesz wpisać maksymalnie 400 znaków, ale dla najlepszej czytelności sugerujemy nie więcej niż 200 znaków. Możesz polecić ten produkt innym gitarzystom lub powiedzieć mi, co warto w nim jeszcze poprawić.</div>
+        <div class="review-hint">Możesz polecić ten produkt innym gitarzystom lub powiedzieć mi, co warto w nim jeszcze poprawić.</div>
         <textarea id="review-text" maxlength="400" placeholder="Napisz swoją opinię…" oninput="updateReviewCharCount()"></textarea>
-        <div id="review-char-count">0 / 400</div>
+        <div class="review-counter-row"><span class="review-length-suggestion">Dla najlepszej czytelności sugerujemy nie więcej niż 200 znaków.</span><span id="review-char-count">0 / 400</span></div>
       </div>
     </div>
-    <label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label>
-    <label class="review-consent"><input id="review-publication-consent" type="checkbox"><span>Wyrażam zgodę na nieodpłatne opublikowanie przesłanej opinii, podpisu i zdjęcia w materiałach dotyczących produktu „Najlepsze Polskie Riffy”, w tym na stronie internetowej i w mediach społecznościowych. Wiem, że zgodę mogę wycofać.</span></label>
+    <div class="review-consent-block"><div class="review-consent-title">Zgoda na przyjęcie i obsługę opinii</div><label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label></div>
+    <div class="review-consent-block"><div class="review-consent-title">Zgoda na publikację opinii</div><label class="review-consent"><input id="review-publication-consent" type="checkbox"><span>Wyrażam zgodę na nieodpłatne opublikowanie przesłanej opinii, podpisu i zdjęcia w materiałach dotyczących produktu „Najlepsze Polskie Riffy”, w tym na stronie internetowej i w mediach społecznościowych. Wiem, że zgodę mogę wycofać.</span></label></div>
     <div class="review-privacy">Administratorem podanych danych jest Tomasz Czerniuk, kontakt: <a href="mailto:tomaszczerniuk@gmail.com">tomaszczerniuk@gmail.com</a>. Dane są wykorzystywane wyłącznie do obsługi i ewentualnej publikacji opinii na podstawie Twojej zgody. Grafika powstaje lokalnie na urządzeniu i zostaje przekazana dalej dopiero po wybraniu przez Ciebie aplikacji do udostępnienia. Dane będą przechowywane do wycofania zgody lub ustania celu publikacji. Masz prawo dostępu, poprawienia, usunięcia i ograniczenia danych, wycofania zgody oraz złożenia skargi do Prezesa UODO. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania.</div>
     <canvas id="review-canvas-light" width="1024" height="576" hidden></canvas>
     <canvas id="review-canvas-dark" width="1024" height="576" hidden></canvas>
