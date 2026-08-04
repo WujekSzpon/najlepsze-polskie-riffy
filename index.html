@@ -1262,9 +1262,9 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       </div>
       <div class="review-field review-wide">
         <label for="review-text">Krótka opinia</label>
-        <div class="review-hint">Napisz krótką opinię — maksymalnie 180 znaków. Możesz polecić ten produkt innym gitarzystom lub powiedzieć mi, co warto w nim jeszcze poprawić.</div>
-        <textarea id="review-text" maxlength="180" placeholder="Napisz swoją opinię…" oninput="updateReviewCharCount()"></textarea>
-        <div id="review-char-count">0 / 180</div>
+        <div class="review-hint">Możesz wpisać maksymalnie 400 znaków, ale dla najlepszej czytelności sugerujemy nie więcej niż 200 znaków. Możesz polecić ten produkt innym gitarzystom lub powiedzieć mi, co warto w nim jeszcze poprawić.</div>
+        <textarea id="review-text" maxlength="400" placeholder="Napisz swoją opinię…" oninput="updateReviewCharCount()"></textarea>
+        <div id="review-char-count">0 / 400</div>
       </div>
     </div>
     <label class="review-consent"><input id="review-data-consent" type="checkbox"><span>Zgadzam się na przetwarzanie podanych danych i zdjęcia w celu przyjęcia oraz obsługi mojej opinii.</span></label>
@@ -2409,7 +2409,7 @@ function setReviewRating(rating) {
 
 function updateReviewCharCount() {
   const text = document.getElementById('review-text').value;
-  document.getElementById('review-char-count').textContent = `${text.length} / 180`;
+  document.getElementById('review-char-count').textContent = `${text.length} / 400`;
   previewReviewPng(false);
 }
 
@@ -2611,7 +2611,7 @@ function validateReview(requireConsent = false) {
   if (name.length < 2) return 'Podaj imię lub podpis.';
   if (!reviewRating) return 'Wybierz ocenę od 1 do 5 gwiazdek.';
   if (text.length < 10) return 'Opinia powinna zawierać co najmniej 10 znaków.';
-  if (text.length > 180) return 'Opinia może zawierać maksymalnie 180 znaków.';
+  if (text.length > 400) return 'Opinia może zawierać maksymalnie 400 znaków.';
   if (requireConsent && !document.getElementById('review-data-consent').checked) return 'Zaznacz zgodę na przetwarzanie danych.';
   return '';
 }
@@ -2654,8 +2654,11 @@ function previewReviewPng(announce = true) {
 }
 
 function reviewFileName(variant = 'jasna') {
-  const name = document.getElementById('review-name').value.trim().replace(/[^a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ_-]+/g, '-');
-  return `opinia-${name || 'klienta'}-${variant}.png`;
+  const cleanPart = (value, fallback) => String(value || '').replace(/[<>:"/\\|?*\u0000-\u001F]/g, '').replace(/\s+/g, ' ').trim().replace(/[. ]+$/g, '').slice(0, 80) || fallback;
+  const product = cleanPart(REVIEW_PRODUCT, 'PRODUKT').toLocaleUpperCase('pl-PL');
+  const name = cleanPart(document.getElementById('review-name').value, 'Klient');
+  const color = variant === 'ciemna' ? 'Ciemna' : 'Jasna';
+  return `${product} - ${name} - ${color}.png`;
 }
 
 function downloadReviewPng() {
