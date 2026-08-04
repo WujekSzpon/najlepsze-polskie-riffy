@@ -1662,6 +1662,32 @@ function renderAllTips() {
   });
 }
 
+function isReviewPromotionLink(link) {
+  return String(link || '').trim().toLowerCase() === '#dodaj-opinie';
+}
+
+function openReviewFromPromotion(event) {
+  event?.preventDefault();
+  closePromotion();
+  const library = document.getElementById('content-library-modal');
+  if (library?.classList.contains('open')) closeContentLibrary();
+  sendFeedback();
+}
+
+function configurePromotionLink(anchor, promotion) {
+  anchor.onclick = null;
+  if (isReviewPromotionLink(promotion.link)) {
+    anchor.href = '#dodaj-opinie';
+    anchor.removeAttribute('target');
+    anchor.removeAttribute('rel');
+    anchor.onclick = openReviewFromPromotion;
+    return;
+  }
+  anchor.href = promotion.link;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+}
+
 function renderAllPromotions() {
   const list = document.getElementById('content-library-list');
   list.replaceChildren();
@@ -1687,9 +1713,7 @@ function renderAllPromotions() {
     description.textContent = promotion.description;
     const link = document.createElement('a');
     link.className = 'option-action';
-    link.href = promotion.link;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+    configurePromotionLink(link, promotion);
     link.textContent = promotion.button;
     copy.append(heading, description, link);
     item.append(image, copy);
@@ -3830,7 +3854,7 @@ function showPromotion(promotion) {
   document.getElementById('promotion-heading').textContent = promotion.heading;
   document.getElementById('promotion-description').textContent = promotion.description;
   const action = document.getElementById('promotion-action');
-  action.href = promotion.link;
+  configurePromotionLink(action, promotion);
   action.querySelector('span').textContent = promotion.button;
   promotionPreviousOverflow = document.body.style.overflow;
   document.body.style.overflow = 'hidden';
