@@ -1676,7 +1676,7 @@ function renderAllPromotions() {
     const item = document.createElement('article');
     item.className = 'content-library-promotion';
     const image = document.createElement('img');
-    image.src = `${SHARED_MATERIALS_BASE}/mockupy/${encodeURIComponent(promotion.image).replace(/%2F/gi, '/')}`;
+    image.src = `${SHARED_MATERIALS_BASE}/promotions/${encodeURIComponent(promotion.image).replace(/%2F/gi, '/')}`;
     image.alt = promotion.heading;
     image.loading = 'lazy';
     const copy = document.createElement('div');
@@ -3825,7 +3825,7 @@ function showPopup() {
 function showPromotion(promotion) {
   const overlay = document.getElementById('promotion-overlay');
   const image = document.getElementById('promotion-image');
-  image.src = `${SHARED_MATERIALS_BASE}/mockupy/${encodeURIComponent(promotion.image)}`;
+  image.src = `${SHARED_MATERIALS_BASE}/promotions/${encodeURIComponent(promotion.image)}`;
   image.alt = promotion.heading;
   document.getElementById('promotion-heading').textContent = promotion.heading;
   document.getElementById('promotion-description').textContent = promotion.description;
