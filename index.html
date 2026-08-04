@@ -832,9 +832,15 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
     </div>
 
     <div class="options-section">
+      <div class="options-section-title">Porady, produkty i usługi</div>
+      <div class="option-row"><span>Zobacz wszystkie porady</span><button class="option-action" type="button" onclick="showAllTips()">ZOBACZ</button></div>
+      <div class="option-row"><span>Zobacz produkty i usługi</span><button class="option-action" type="button" onclick="showAllPromotions()">ZOBACZ</button></div>
+    </div>
+
+    <div class="options-section">
       <div class="options-section-title">Pomoc</div>
+      <div class="option-row"><span>Zainstaluj konspekt na komputerze/smartfonie</span><button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
       <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">OTWÓRZ</button></div>
-      <div class="option-row"><span>Zainstaluj konspekt na komputerze</span><button class="option-action pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
     </div>
 
     <div class="options-section">
@@ -849,10 +855,6 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       <div class="option-row popup-frequency-row">
         <div class="popup-frequency-copy"><span>Powiadomienia pop-up</span><span class="popup-frequency-value" id="opt-popup-frequency-label">Co 2 minuty</span></div>
         <input id="opt-popup-frequency" type="range" min="0" max="5" step="1" value="4" aria-label="Częstotliwość powiadomień pop-up" oninput="updatePopupFrequencyPreview(this.value)" onchange="saveUiSettings()">
-      </div>
-      <div class="content-library-actions">
-        <button class="option-action" type="button" onclick="showAllTips()"><i class="ti ti-bulb" aria-hidden="true"></i> ZOBACZ WSZYSTKIE PORADY</button>
-        <button class="option-action" type="button" onclick="showAllPromotions()"><i class="ti ti-shopping-bag" aria-hidden="true"></i> ZOBACZ PRODUKTY I USŁUGI</button>
       </div>
       <div class="option-row popup-position-row">
         <span>Położenie powiadomień</span>
