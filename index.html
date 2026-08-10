@@ -1740,7 +1740,9 @@ async function showAllPromotions() {
   if (document.getElementById('content-library-modal').classList.contains('open')) renderAllPromotions();
 }
 
-const PWA_INSTALL_STORAGE_KEY = 'npr_pwa_installed_v1';
+const PWA_INSTALL_STORAGE_KEY = 'npr_pwa_installed_v2';
+const PWA_EXPECTED_ID = 'https://wujekszpon.github.io/najlepsze-polskie-riffy/';
+const PWA_EXPECTED_MANIFEST_URL = 'https://wujekszpon.github.io/najlepsze-polskie-riffy/manifest-riffy.webmanifest';
 let deferredInstallPrompt = null;
 const pwaRunningStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator?.standalone === true;
 let pwaInstalled = pwaRunningStandalone || localStorage.getItem(PWA_INSTALL_STORAGE_KEY) === '1';
@@ -1784,7 +1786,17 @@ async function detectInstalledPwa() {
   }
   try {
     const relatedApps = await navigator.getInstalledRelatedApps();
-    if (relatedApps.some(app => app.platform === 'webapp')) {
+    const currentPwaInstalled = relatedApps.some(app => {
+      if (app.platform !== 'webapp') return false;
+      try {
+        const appId = app.id ? new URL(app.id, location.origin).href : '';
+        const manifestUrl = app.url ? new URL(app.url, location.origin).href : '';
+        return appId === PWA_EXPECTED_ID || manifestUrl === PWA_EXPECTED_MANIFEST_URL;
+      } catch (_) {
+        return false;
+      }
+    });
+    if (currentPwaInstalled) {
       pwaInstalled = true;
       localStorage.setItem(PWA_INSTALL_STORAGE_KEY, '1');
     }
