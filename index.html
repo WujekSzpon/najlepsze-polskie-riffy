@@ -3969,7 +3969,7 @@ async function exportCatalogPreview() {
 const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
 const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.txt`;
 const PROMOTION_CONTEXT = 'riffy';
-let PORADY = [], PROMOTIONS = [], poradyIdx = 0, promotionsIdx = 0, popupTimeout, promotionTimeout;
+let PORADY = [], PROMOTIONS = [], tipRandomBag = [], promotionRandomBag = [], lastTipIndex = -1, lastPromotionIndex = -1, popupTimeout, promotionTimeout;
 let promotionMinTips = 3, promotionMaxTips = 5;
 let tipsUntilPromotion = randomPromotionInterval();
 let promotionPreviousOverflow = '';
@@ -3978,6 +3978,33 @@ function randomPromotionInterval() {
   const min = Math.max(1, Number(promotionMinTips) || 3);
   const max = Math.max(min, Number(promotionMaxTips) || 5);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function buildRandomPopupBag(length, previousIndex) {
+  const bag = Array.from({length}, (_, index) => index);
+  for (let index = bag.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [bag[index], bag[randomIndex]] = [bag[randomIndex], bag[index]];
+  }
+  if (bag.length > 1 && bag[0] === previousIndex) {
+    const swapIndex = 1 + Math.floor(Math.random() * (bag.length - 1));
+    [bag[0], bag[swapIndex]] = [bag[swapIndex], bag[0]];
+  }
+  return bag;
+}
+
+function nextRandomTip() {
+  if (!PORADY.length) return '';
+  if (!tipRandomBag.length || tipRandomBag.some(index => index >= PORADY.length)) tipRandomBag = buildRandomPopupBag(PORADY.length, lastTipIndex);
+  lastTipIndex = tipRandomBag.shift();
+  return PORADY[lastTipIndex];
+}
+
+function nextRandomPromotion() {
+  if (!PROMOTIONS.length) return null;
+  if (!promotionRandomBag.length || promotionRandomBag.some(index => index >= PROMOTIONS.length)) promotionRandomBag = buildRandomPopupBag(PROMOTIONS.length, lastPromotionIndex);
+  lastPromotionIndex = promotionRandomBag.shift();
+  return PROMOTIONS[lastPromotionIndex];
 }
 
 const tipsDataPromise = fetch(`${REPO_BASE}/data/tresci.txt`)
@@ -4010,8 +4037,7 @@ function showPopup() {
   closePopup();
   closePromotion();
   if (PROMOTIONS.length && (tipsUntilPromotion <= 0 || !PORADY.length)) {
-    const promotion = PROMOTIONS[promotionsIdx % PROMOTIONS.length];
-    promotionsIdx++;
+    const promotion = nextRandomPromotion();
     tipsUntilPromotion = randomPromotionInterval();
     showPromotion(promotion);
     return;
@@ -4023,9 +4049,8 @@ function showPopup() {
   applyPopupPosition();
   document.getElementById('tip-label').textContent = 'PORADA GITAROWA';
   document.getElementById('tip-label').className = 'tip-label';
-  document.getElementById('tip-text').textContent = PORADY[poradyIdx % PORADY.length];
+  document.getElementById('tip-text').textContent = nextRandomTip();
   document.getElementById('tip-link').style.display = 'none';
-  poradyIdx++;
   tipsUntilPromotion--;
   popup.classList.add('show');
   const bar = document.getElementById('tip-progress');
