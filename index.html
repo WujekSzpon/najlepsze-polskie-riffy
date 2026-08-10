@@ -3967,7 +3967,7 @@ async function exportCatalogPreview() {
 
 // POPUPY: porady zachowują stary wygląd, a promocje korzystają ze wspólnej bazy i panelu graficznego.
 const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
-const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.txt`;
+const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.xlsx`;
 const PROMOTION_CONTEXT = 'riffy';
 let PORADY = [], PROMOTIONS = [], tipRandomBag = [], promotionRandomBag = [], lastTipIndex = -1, lastPromotionIndex = -1, popupTimeout, promotionTimeout;
 let promotionMinTips = 3, promotionMaxTips = 5;
@@ -4014,22 +4014,62 @@ const tipsDataPromise = fetch(`${REPO_BASE}/data/tresci.txt`)
     PORADY = ps.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
   }).catch(() => {});
 
-const promotionsDataPromise = fetch(PROMOTIONS_URL)
-  .then(r => r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`)))
-  .then(text => {
-    const settings = text.split('PROMOTIONS:')[0] || '';
-    const minMatch = settings.match(/MIN_PORAD\s*=\s*(\d+)/i);
-    const maxMatch = settings.match(/MAX_PORAD\s*=\s*(\d+)/i);
-    if (minMatch) promotionMinTips = Number(minMatch[1]);
-    if (maxMatch) promotionMaxTips = Number(maxMatch[1]);
+function normalizePromotionKey(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+function normalizePromotionRow(row) {
+  return Object.fromEntries(Object.entries(row).map(([key, value]) => [normalizePromotionKey(key), value]));
+}
+
+function promotionSheet(workbook, requestedName) {
+  const normalizedName = normalizePromotionKey(requestedName);
+  const sheetName = workbook.SheetNames.find(name => normalizePromotionKey(name) === normalizedName);
+  return sheetName ? workbook.Sheets[sheetName] : null;
+}
+
+const promotionsDataPromise = fetch(PROMOTIONS_URL, {cache:'no-store'})
+  .then(r => r.ok ? r.arrayBuffer() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(buffer => {
+    const workbook = XLSX.read(buffer, {type:'array'});
+    const settingsSheet = promotionSheet(workbook, 'USTAWIENIA');
+    const promotionsSheet = promotionSheet(workbook, 'REKLAMY');
+    if (!promotionsSheet) throw new Error('Brak arkusza REKLAMY');
+
+    if (settingsSheet) {
+      const settingsRows = XLSX.utils.sheet_to_json(settingsSheet, {defval:''}).map(normalizePromotionRow);
+      const settings = Object.fromEntries(settingsRows.map(row => [normalizePromotionKey(row.KLUCZ), row.WARTOSC]));
+      const minTips = Number(settings.MINIMALNA_LICZBA_PORAD ?? settings.MIN_PORAD);
+      const maxTips = Number(settings.MAKSYMALNA_LICZBA_PORAD ?? settings.MAX_PORAD);
+      if (Number.isFinite(minTips)) promotionMinTips = Math.max(1, Math.round(minTips));
+      if (Number.isFinite(maxTips)) promotionMaxTips = Math.max(promotionMinTips, Math.round(maxTips));
+    }
+
+    const rows = XLSX.utils.sheet_to_json(promotionsSheet, {defval:''}).map(normalizePromotionRow);
+    PROMOTIONS = rows.map(row => {
+      const active = ['TAK', 'TRUE', '1', 'YES', 'ON'].includes(normalizePromotionKey(row.AKTYWNA));
+      const exclusions = String(row.NIE_WYSWIETLAJ_W || '').toLowerCase().split(/[,;]/).map(value => value.trim()).filter(Boolean);
+      return {
+        id:String(row.ID || '').trim(),
+        active,
+        heading:String(row.NAGLOWEK_POMOCNICZY || row.TYTUL || '').trim(),
+        title:String(row.TYTUL || '').trim(),
+        description:String(row.OPIS || '').trim(),
+        image:String(row.GRAFIKA || '').trim(),
+        link:String(row.LINK || '#').trim() || '#',
+        button:String(row.PRZYCISK || 'SPRAWDŹ').trim() || 'SPRAWDŹ',
+        exclusions
+      };
+    }).filter(item => item.active && item.heading && item.description && item.image && !item.exclusions.includes(PROMOTION_CONTEXT));
+    promotionRandomBag = [];
+    lastPromotionIndex = -1;
     tipsUntilPromotion = randomPromotionInterval();
-    const entries = text.split('PROMOTIONS:')[1]?.trim() || '';
-    PROMOTIONS = entries.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).map(block => {
-      const p = block.split('|').map(value => value.trim());
-      const exclusions = (p[5] || '').toLowerCase().split(/[,;]/).map(value => value.trim()).filter(Boolean);
-      return {heading:p[0]||'',description:p[1]||'',image:p[2]||'',link:p[3]||'#',button:p[4]||'SPRAWDŹ',exclusions};
-    }).filter(item => item.heading && item.description && item.image && !item.exclusions.includes(PROMOTION_CONTEXT));
-  }).catch(() => {});
+  }).catch(error => console.warn('Nie udało się wczytać arkusza reklam:', error));
 
 function showPopup() {
   if (popupFrequencySeconds() === 0) return;
