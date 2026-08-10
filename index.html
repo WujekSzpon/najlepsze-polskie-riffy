@@ -251,7 +251,7 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .guide-demo-body{padding:13px;text-align:center}.guide-demo-title{color:#fff;font-weight:800;font-size:15px}.guide-demo-desc{margin:6px 0;color:#bbb;font-size:11px;line-height:1.45}.guide-demo-tags{padding-top:8px;border-top:1px solid #303030;color:#aaa;font-size:9px;}
 .guide-keyboard{margin-top:16px;padding:15px;border:1px solid rgba(255,204,0,.38);border-radius:12px;background:#171717;}
 .guide-keyboard h4{margin:0 0 12px;color:var(--accent);font:700 16px 'Oswald',sans-serif;letter-spacing:.035em;}
-.guide-keys-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;}
+.guide-keys-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;}
 .guide-key-item{padding:11px 7px;border:1px solid #343434;border-radius:9px;text-align:center;color:#ddd;font-size:10.5px;font-weight:700;}
 .guide-keycaps{display:flex;justify-content:center;align-items:center;gap:5px;min-height:34px;margin-bottom:5px;}
 .guide-keycaps kbd{min-width:35px;padding:7px 9px;border:1px solid #777;border-bottom-width:3px;border-radius:7px;background:#111;color:#fff;font:800 10px 'Open Sans',sans-serif;box-shadow:inset 0 -2px 0 #282828;}
@@ -500,7 +500,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .section-label{font-family:'Oswald',sans-serif;font-size:calc(11px * var(--ui-font-scale));letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 .section-label::after{content:'';order:2;flex:1;height:1px;background:var(--border);}
 .section-label::before{content:attr(data-count);order:1;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;white-space:nowrap;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;touch-action:pan-y;}
 .state-message{text-align:center;padding:4rem 2rem;color:var(--muted);font-size:14px;line-height:1.55;}
 .state-message-title{color:#fff;font:600 18px 'Oswald',sans-serif;margin-bottom:5px;}
 .state-message-error .state-message-title{color:#ff8c8c;}
@@ -1009,9 +1009,10 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
             <div class="guide-key-item"><div class="guide-keycaps"><kbd class="cyan">SHIFT</kbd> + <kbd class="cyan">SPACJA</kbd></div>Wyszukiwarka</div>
             <div class="guide-key-item"><div class="guide-keycaps"><kbd class="yellow">+</kbd> / <kbd class="yellow">−</kbd></div>Wielkość kart</div>
             <div class="guide-key-item"><div class="guide-keycaps"><kbd>A–Z</kbd></div>Kolejny tytuł</div>
+            <div class="guide-key-item"><div class="guide-keycaps"><kbd>← ↑ ↓ →</kbd></div>Wybór karty</div>
             <div class="guide-key-item"><div class="guide-keycaps"><kbd class="pink">ENTER</kbd></div>Otwórz kartę</div>
           </div>
-          <p class="guide-visual-copy" style="margin:11px 0 0">Litera działa tylko wtedy, gdy naciskasz ją samodzielnie. Standardowe skróty przeglądarki, np. <b>Ctrl + S</b> i <b>Ctrl + D</b>, pozostają dostępne.</p>
+          <p class="guide-visual-copy" style="margin:11px 0 0">Litera działa tylko wtedy, gdy naciskasz ją samodzielnie. Strzałki przesuwają zaznaczenie między kartami, a <b>Enter</b> otwiera wybraną kartę. Na telefonie rozsuń albo zsuń dwa palce nad listą, aby zmienić wielkość kart. Standardowe skróty przeglądarki, np. <b>Ctrl + S</b> i <b>Ctrl + D</b>, pozostają dostępne.</p>
         </div>
       </section>
 
@@ -1877,8 +1878,13 @@ function closeCardSizeModal() {
 }
 
 let activePreviewEntryId = null;
+let suppressCardClickUntil = 0;
 
 function handleCardClick(event, id) {
+  if (Date.now() < suppressCardClickUntil) {
+    event.preventDefault();
+    return false;
+  }
   rememberCurrentPlace();
   if (!uiSettings.cardPreview || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0) return true;
   event.preventDefault();
@@ -3040,6 +3046,22 @@ function isKeyboardEditingTarget(target) {
   return Boolean(target && (target.matches('input, textarea, select') || target.isContentEditable));
 }
 
+function selectCardWithKeyboard(card, resetLetterCycle = false) {
+  if (!card) return;
+  document.querySelectorAll('#grid .card.keyboard-selected').forEach(item => {
+    item.classList.remove('keyboard-selected');
+    item.removeAttribute('aria-current');
+  });
+  if (resetLetterCycle) {
+    alphabetNavigationLetter = '';
+    alphabetNavigationIndex = -1;
+  }
+  card.classList.add('keyboard-selected');
+  card.setAttribute('aria-current', 'true');
+  card.focus({preventScroll:true});
+  card.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center',inline:'nearest'});
+}
+
 function navigateCardsByLetter(letter) {
   const matches = [...document.querySelectorAll(`#grid .card[data-nav-letter="${letter}"]`)]
     .sort((a, b) => decodeURIComponent(a.dataset.navName || '').localeCompare(decodeURIComponent(b.dataset.navName || ''), 'pl'));
@@ -3047,26 +3069,80 @@ function navigateCardsByLetter(letter) {
     resetAlphabetNavigation();
     return;
   }
-  document.querySelectorAll('#grid .card.keyboard-selected').forEach(card => {
-    card.classList.remove('keyboard-selected');
-    card.removeAttribute('aria-current');
-  });
   alphabetNavigationIndex = alphabetNavigationLetter === letter ? (alphabetNavigationIndex + 1) % matches.length : 0;
   alphabetNavigationLetter = letter;
-  const selectedCard = matches[alphabetNavigationIndex];
-  selectedCard.classList.add('keyboard-selected');
-  selectedCard.setAttribute('aria-current', 'true');
-  selectedCard.focus({preventScroll:true});
-  selectedCard.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center',inline:'nearest'});
+  selectCardWithKeyboard(matches[alphabetNavigationIndex]);
+}
+
+function navigateCardsByArrow(direction) {
+  const cards = [...document.querySelectorAll('#grid .card')].filter(card => card.offsetParent !== null);
+  if (!cards.length) return;
+  const rows = [];
+  cards
+    .map(card => ({card, rect:card.getBoundingClientRect()}))
+    .sort((a, b) => Math.abs(a.rect.top - b.rect.top) > 8 ? a.rect.top - b.rect.top : a.rect.left - b.rect.left)
+    .forEach(item => {
+      let row = rows.find(candidate => Math.abs(candidate.top - item.rect.top) <= 8);
+      if (!row) {
+        row = {top:item.rect.top, items:[]};
+        rows.push(row);
+      }
+      row.items.push(item.card);
+    });
+  rows.sort((a, b) => a.top - b.top).forEach(row => row.items.sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left));
+  const selected = document.querySelector('#grid .card.keyboard-selected');
+  let rowIndex = rows.findIndex(row => row.items.includes(selected));
+  let columnIndex = rowIndex >= 0 ? rows[rowIndex].items.indexOf(selected) : -1;
+  if (rowIndex < 0) {
+    const firstDirection = direction === 'ArrowLeft' || direction === 'ArrowUp';
+    const targetRow = firstDirection ? rows.length - 1 : 0;
+    const targetColumn = firstDirection ? rows[targetRow].items.length - 1 : 0;
+    selectCardWithKeyboard(rows[targetRow].items[targetColumn], true);
+    return;
+  }
+  if (direction === 'ArrowLeft') {
+    if (columnIndex > 0) columnIndex -= 1;
+    else {
+      rowIndex = (rowIndex - 1 + rows.length) % rows.length;
+      columnIndex = rows[rowIndex].items.length - 1;
+    }
+  } else if (direction === 'ArrowRight') {
+    if (columnIndex < rows[rowIndex].items.length - 1) columnIndex += 1;
+    else {
+      rowIndex = (rowIndex + 1) % rows.length;
+      columnIndex = 0;
+    }
+  } else if (direction === 'ArrowUp') {
+    rowIndex = (rowIndex - 1 + rows.length) % rows.length;
+    columnIndex = Math.min(columnIndex, rows[rowIndex].items.length - 1);
+  } else if (direction === 'ArrowDown') {
+    rowIndex = (rowIndex + 1) % rows.length;
+    columnIndex = Math.min(columnIndex, rows[rowIndex].items.length - 1);
+  }
+  selectCardWithKeyboard(rows[rowIndex].items[columnIndex], true);
 }
 
 document.addEventListener('keydown', event => {
   const hasSystemModifier = event.ctrlKey || event.altKey || event.metaKey;
   const isPlusShortcut = !hasSystemModifier && (event.key === '+' || event.code === 'NumpadAdd');
   const isMinusShortcut = !hasSystemModifier && !event.shiftKey && (event.key === '-' || event.code === 'NumpadSubtract');
+  const isArrowShortcut = !hasSystemModifier && !event.shiftKey && ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key);
+  const isEnterShortcut = !hasSystemModifier && !event.shiftKey && event.key === 'Enter';
   const isPlainLetter = !hasSystemModifier && !event.shiftKey && !event.repeat && event.key.length === 1 && /^\p{L}$/u.test(event.key);
-  if (!isPlusShortcut && !isMinusShortcut && !isPlainLetter) return;
+  if (!isPlusShortcut && !isMinusShortcut && !isArrowShortcut && !isEnterShortcut && !isPlainLetter) return;
   if (event.defaultPrevented || activeAccessibleDialog() || isKeyboardEditingTarget(event.target)) return;
+  if (isArrowShortcut) {
+    event.preventDefault();
+    navigateCardsByArrow(event.key);
+    return;
+  }
+  if (isEnterShortcut) {
+    const selectedCard = document.querySelector('#grid .card.keyboard-selected');
+    if (!selectedCard || (event.target !== selectedCard && event.target !== document.body)) return;
+    event.preventDefault();
+    selectedCard.click();
+    return;
+  }
   if (isPlusShortcut) {
     event.preventDefault();
     changeSize(25);
@@ -3660,6 +3736,57 @@ function changeSize(delta) {
   if (delta !== 0) localStorage.setItem('npr_cardsize', cardSize);
   updateCardSizeModeUI();
 }
+
+function enablePinchCardSizing() {
+  const grid = document.getElementById('grid');
+  if (!grid || grid.dataset.pinchSizing === '1') return;
+  grid.dataset.pinchSizing = '1';
+  let active = false;
+  let startDistance = 0;
+  let startSize = cardSize;
+  let pendingSize = cardSize;
+  let frame = 0;
+  const distance = touches => Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+  const applyPendingSize = () => {
+    frame = 0;
+    cardSize = pendingSize;
+    cardSizeAuto = false;
+    grid.style.gridTemplateColumns = `repeat(auto-fill,minmax(${cardSize}px,1fr))`;
+    document.body.classList.toggle('cards-mini', cardSize <= 150);
+    updateCardSizeModeUI();
+  };
+  grid.addEventListener('touchstart', event => {
+    if (event.touches.length !== 2) return;
+    startDistance = distance(event.touches);
+    if (!startDistance) return;
+    active = true;
+    startSize = cardSize;
+    pendingSize = cardSize;
+    suppressCardClickUntil = Date.now() + 700;
+  }, {passive:true});
+  grid.addEventListener('touchmove', event => {
+    if (!active || event.touches.length !== 2) return;
+    event.preventDefault();
+    const scale = distance(event.touches) / startDistance;
+    pendingSize = Math.round(Math.min(550, Math.max(140, startSize * scale)) / 5) * 5;
+    suppressCardClickUntil = Date.now() + 700;
+    if (!frame) frame = requestAnimationFrame(applyPendingSize);
+  }, {passive:false});
+  const finishPinch = event => {
+    if (!active || event.touches.length >= 2) return;
+    active = false;
+    if (frame) {
+      cancelAnimationFrame(frame);
+      applyPendingSize();
+    }
+    suppressCardClickUntil = Date.now() + 700;
+    localStorage.setItem('npr_cardsize', cardSize);
+  };
+  grid.addEventListener('touchend', finishPinch, {passive:true});
+  grid.addEventListener('touchcancel', finishPinch, {passive:true});
+}
+
+document.addEventListener('DOMContentLoaded', enablePinchCardSizing);
 
 function resetFilters() {
   document.getElementById('search').value = '';

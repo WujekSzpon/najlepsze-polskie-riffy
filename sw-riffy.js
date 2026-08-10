@@ -1,4 +1,4 @@
-const CACHE_NAME = 'najlepsze-polskie-riffy-v6';
+const CACHE_NAME = 'najlepsze-polskie-riffy-v7';
 const APP_SHELL = [
   './',
   './manifest-riffy.webmanifest',
