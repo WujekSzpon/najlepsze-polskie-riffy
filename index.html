@@ -529,6 +529,8 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 .card-preview-youtube[hidden]{display:block;visibility:hidden;pointer-events:none;}
 .card-preview-material{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 17px;border:2px solid var(--accent);border-radius:999px;background:rgba(255,204,0,.1);color:var(--accent);font:800 11px 'Open Sans',sans-serif;cursor:pointer;box-shadow:0 0 11px rgba(255,204,0,.3),inset 0 0 8px rgba(255,204,0,.05);}
 .card-preview-material i{font-size:21px;}
+.card-preview-actions button{transition:transform .16s ease,outline-color .16s ease,box-shadow .16s ease;}
+.card-preview-actions button.preview-keyboard-selected{outline:3px solid var(--accent);outline-offset:3px;transform:scale(1.055);box-shadow:0 0 0 1px rgba(255,204,0,.45),0 0 19px rgba(255,204,0,.62);}
 .card-preview-content{padding:16px 18px 20px;text-align:center;}
 .card-preview-title{color:#fff;font-size:calc(20px * var(--card-title-scale));font-weight:700;line-height:1.35;}
 .card-preview-description{margin-top:9px;color:#bbb;font-size:calc(13px * var(--card-desc-scale));line-height:1.5;}
@@ -799,7 +801,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
     </div>
     <div class="card-preview-actions">
       <button class="card-preview-round card-preview-favorite" id="card-preview-favorite" type="button" onclick="togglePreviewFavorite()" aria-label="Dodaj do ulubionych"><i class="ti ti-heart" aria-hidden="true"></i></button>
-      <button class="card-preview-material" type="button" onclick="openPreviewMaterial()"><i class="ti ti-folder-open" aria-hidden="true"></i><span>OTWÓRZ MATERIAŁY</span></button>
+      <button class="card-preview-material" id="card-preview-material" type="button" onclick="openPreviewMaterial()"><i class="ti ti-folder-open" aria-hidden="true"></i><span>OTWÓRZ MATERIAŁY</span></button>
       <button class="card-preview-round card-preview-youtube" id="card-preview-youtube" type="button" onclick="openPreviewYoutube()" aria-label="Otwórz film na YouTube"><i class="ti ti-player-play-filled" aria-hidden="true"></i></button>
     </div>
     <div class="card-preview-content">
@@ -1012,7 +1014,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
             <div class="guide-key-item"><div class="guide-keycaps"><kbd>← ↑ ↓ →</kbd></div>Wybór karty</div>
             <div class="guide-key-item"><div class="guide-keycaps"><kbd class="pink">ENTER</kbd></div>Otwórz kartę</div>
           </div>
-          <p class="guide-visual-copy" style="margin:11px 0 0">Litera działa tylko wtedy, gdy naciskasz ją samodzielnie. Strzałki przesuwają zaznaczenie między kartami, a <b>Enter</b> otwiera wybraną kartę. Na telefonie rozsuń albo zsuń dwa palce nad listą, aby zmienić wielkość kart. Standardowe skróty przeglądarki, np. <b>Ctrl + S</b> i <b>Ctrl + D</b>, pozostają dostępne.</p>
+          <p class="guide-visual-copy" style="margin:11px 0 0">Litera działa tylko wtedy, gdy naciskasz ją samodzielnie. Strzałki przesuwają zaznaczenie między kartami, a <b>Enter</b> otwiera wybraną kartę. W podglądzie strzałkami wybierzesz serce, materiały lub YouTube; ponowne naciśnięcie <b>Enter</b> uruchamia wybraną opcję. Domyślnie zaznaczony jest folder z materiałami. Na telefonie rozsuń albo zsuń dwa palce nad listą, aby zmienić wielkość kart. Standardowe skróty przeglądarki, np. <b>Ctrl + S</b> i <b>Ctrl + D</b>, pozostają dostępne.</p>
         </div>
       </section>
 
@@ -1078,7 +1080,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
         <div class="guide-card"><strong>TAGI</strong>Połącz kilka cech, np. technikę gry lub rodzaj akordów. Licznik przy przycisku pokazuje liczbę aktywnych tagów.</div>
         <div class="guide-card"><strong>Lupa i oko</strong>Lupa reguluje wielkość kart lub przywraca tryb automatyczny. Przekreślone oko chowa panel; po zwinięciu użyj paska „KLIKNIJ, ABY ROZWINĄĆ”.</div>
         <div class="guide-card"><strong>PDF, RESET i Opcje</strong>PDF otwiera sposoby eksportu. RESET czyści aktywne filtry i sortowanie. Koło zębate otwiera ustawienia wyglądu, powiadomień, kontaktu i kontroli danych.</div>
-        <div class="guide-card"><strong>⌨ Sterowanie klawiaturą</strong>Klawisze <b>+</b> i <b>−</b> powiększają lub pomniejszają karty. Naciśnij samą literę, bez łączenia jej z innym klawiszem, aby przejść do pierwszego widocznego tytułu zaczynającego się od niej. Kolejne naciśnięcia tej samej litery wybierają następne tytuły alfabetycznie. <b>Enter</b> otwiera zaznaczoną kartę.</div>
+        <div class="guide-card"><strong>⌨ Sterowanie klawiaturą</strong>Klawisze <b>+</b> i <b>−</b> powiększają lub pomniejszają karty. Naciśnij samą literę, bez łączenia jej z innym klawiszem, aby przejść do pierwszego widocznego tytułu zaczynającego się od niej. Kolejne naciśnięcia tej samej litery wybierają następne tytuły alfabetycznie. <b>Enter</b> otwiera zaznaczoną kartę. W podglądzie użyj strzałek, aby wybrać ulubione, materiały lub YouTube, i zatwierdź wybór klawiszem <b>Enter</b>.</div>
       </div>
     </section>
 
@@ -1943,12 +1945,54 @@ function openCardPreview(id) {
   youtube.hidden = !hasYoutube;
   youtube.dataset.url = hasYoutube ? entry.yt : '';
   openAccessibleDialog('card-preview-modal', 'card-preview-panel');
+  requestAnimationFrame(() => selectPreviewAction(document.getElementById('card-preview-material')));
 }
 
 function closeCardPreview() {
   activePreviewEntryId = null;
+  document.querySelectorAll('#card-preview-modal .preview-keyboard-selected').forEach(button => button.classList.remove('preview-keyboard-selected'));
   closeAccessibleDialog('card-preview-modal');
 }
+
+function previewActionButtons() {
+  return [...document.querySelectorAll('#card-preview-modal .card-preview-actions button')]
+    .filter(button => !button.hidden && !button.disabled && button.offsetParent !== null);
+}
+
+function markPreviewAction(button) {
+  document.querySelectorAll('#card-preview-modal .preview-keyboard-selected').forEach(item => item.classList.remove('preview-keyboard-selected'));
+  if (button) button.classList.add('preview-keyboard-selected');
+}
+
+function selectPreviewAction(button) {
+  if (!button || button.hidden || button.disabled) return;
+  markPreviewAction(button);
+  button.focus({preventScroll:true});
+}
+
+function navigatePreviewActions(direction) {
+  const buttons = previewActionButtons();
+  if (!buttons.length) return;
+  const marked = document.querySelector('#card-preview-modal .preview-keyboard-selected');
+  const current = buttons.includes(document.activeElement) ? document.activeElement : marked;
+  let index = Math.max(0, buttons.indexOf(current));
+  index = direction === 'ArrowLeft' || direction === 'ArrowUp'
+    ? (index - 1 + buttons.length) % buttons.length
+    : (index + 1) % buttons.length;
+  selectPreviewAction(buttons[index]);
+}
+
+document.addEventListener('focusin', event => {
+  if (event.target.matches('#card-preview-modal .card-preview-actions button')) markPreviewAction(event.target);
+});
+
+document.addEventListener('keydown', event => {
+  if (!document.getElementById('card-preview-modal')?.classList.contains('open')) return;
+  if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+  if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)) return;
+  event.preventDefault();
+  navigatePreviewActions(event.key);
+});
 
 function togglePreviewFavorite() {
   if (activePreviewEntryId == null) return;
