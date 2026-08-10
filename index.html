@@ -4016,6 +4016,7 @@ const tipsDataPromise = fetch(`${REPO_BASE}/data/tresci.txt`)
 
 function normalizePromotionKey(value) {
   return String(value ?? '')
+    .replace(/[Łł]/g, 'L')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toUpperCase()
