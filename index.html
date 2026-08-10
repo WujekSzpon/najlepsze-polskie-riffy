@@ -1758,7 +1758,11 @@ function updatePwaInstallUi() {
     button.title = state === 'installed'
       ? 'Konspekt jest już zainstalowany. Kliknij, aby otworzyć informacje o zapisie i instalacji.'
       : (state === 'save-help' ? 'Otwórz instrukcję zapisywania konspektu.' : 'Zainstaluj konspekt jako aplikację.');
-    if (button.classList.contains('guide-install-cta')) {
+    if (button.closest('.user-center-section')) {
+      const iconClass = state === 'installed' ? 'ti ti-circle-check' : (state === 'ready' ? 'ti ti-device-mobile-down' : 'ti ti-bookmark');
+      button.innerHTML = `<i class="${iconClass}" aria-hidden="true"></i>`;
+      button.setAttribute('aria-label', label);
+    } else if (button.classList.contains('guide-install-cta')) {
       const iconClass = state === 'installed' ? 'ti ti-circle-check' : (state === 'ready' ? 'ti ti-device-desktop-down' : 'ti ti-bookmark');
       button.innerHTML = `<i class="${iconClass}" aria-hidden="true"></i> ${label}`;
     } else {
