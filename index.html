@@ -180,9 +180,15 @@ header{border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align
 .clear-favorites-confirm:hover,.clear-favorites-confirm:focus-visible{background:#c42929;box-shadow:0 0 12px rgba(255,70,70,.28);outline:none;}
 .option-action-review{border-color:#ed1160;color:#ff4b88;background:rgba(237,17,96,.09);box-shadow:0 0 7px rgba(237,17,96,.28),inset 0 0 6px rgba(237,17,96,.06);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
 .option-action-review:hover,.option-action-review:focus-visible{border-color:#ff4b88;color:#fff;background:rgba(237,17,96,.18);box-shadow:0 0 13px rgba(237,17,96,.52),inset 0 0 8px rgba(237,17,96,.1);transform:translateY(-1px);outline:none;}
-.option-action-accent{border-color:var(--accent);color:var(--accent);background:rgba(255,204,0,.07);box-shadow:0 0 8px rgba(255,204,0,.2),inset 0 0 6px rgba(255,204,0,.04);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
-.option-action-accent:hover,.option-action-accent:focus-visible{border-color:var(--accent);color:#111;background:var(--accent);box-shadow:0 0 14px rgba(255,204,0,.48);transform:translateY(-1px);outline:none;}
-.option-user-install::before{content:"📲";margin-right:5px;}
+.user-center-section .option-row{gap:12px;}
+.user-center-section .option-row>span{min-width:0;}
+.user-center-section .option-action{width:42px;min-width:42px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:18px;}
+.user-center-section .option-action i{line-height:1;}
+.option-action-accent{border-color:var(--border);color:var(--accent);background:rgba(255,204,0,.07);box-shadow:0 0 8px rgba(255,204,0,.2),inset 0 0 6px rgba(255,204,0,.04);transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease;}
+.option-action-accent:hover,.option-action-accent:focus-visible{border-color:#555;color:#111;background:var(--accent);box-shadow:0 0 14px rgba(255,204,0,.48);transform:translateY(-1px);outline:none;}
+.user-center-section .option-action-accent.pwa-install-button.install-ready{border-color:var(--border);}
+.option-label-mobile{display:none;}
+@media(max-width:480px){.user-center-section .option-row{gap:8px;font-size:11px}.user-center-section .option-row>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.option-label-desktop{display:none}.option-label-mobile{display:inline}}
 #guide-modal{position:fixed;inset:0;z-index:245;display:none;}
 #guide-modal.open{display:block;}
 #guide-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(3px);}
@@ -828,13 +834,13 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
       <button class="options-close" onclick="closeOptions()" aria-label="Zamknij">✕</button>
     </div>
 
-    <div class="options-section">
+    <div class="options-section user-center-section">
       <div class="options-section-title">Centrum użytkownika</div>
-      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" onclick="sendFeedback()">💗 DODAJ OPINIĘ</button></div>
-      <div class="option-row"><span>Zobacz wszystkie produkty i usługi</span><button class="option-action option-action-accent" type="button" onclick="showAllPromotions()">🛍️ PRODUKTY</button></div>
-      <div class="option-row"><span>Zainstaluj na komputerze/smartfonie</span><button class="option-action option-action-accent option-user-install pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()">ZAINSTALUJ</button></div>
-      <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" onclick="toggleInstructions()">📋 INSTRUKCJA</button></div>
-      <div class="option-row"><span>Napisz do mnie wiadomość</span><button class="option-action" onclick="openContactForm()">📩 NAPISZ</button></div>
+      <div class="option-row"><span>Dodaj opinię o produkcie</span><button class="option-action option-action-review" type="button" onclick="sendFeedback()" aria-label="Dodaj opinię o produkcie" title="Dodaj opinię o produkcie"><i class="ti ti-heart"></i></button></div>
+      <div class="option-row"><span><span class="option-label-desktop">Zainstaluj na PC lub smartfonie</span><span class="option-label-mobile">Zainstaluj na PC lub tel.</span></span><button class="option-action option-action-accent pwa-install-button" data-pwa-install-button type="button" onclick="requestPwaInstall()" aria-label="Zainstaluj konspekt" title="Zainstaluj konspekt"><i class="ti ti-device-mobile-down"></i></button></div>
+      <div class="option-row"><span>Produkty i usługi</span><button class="option-action option-action-accent" type="button" onclick="showAllPromotions()" aria-label="Zobacz produkty i usługi" title="Zobacz produkty i usługi"><i class="ti ti-shopping-bag"></i></button></div>
+      <div class="option-row"><span>Instrukcja obsługi</span><button class="option-action" type="button" onclick="toggleInstructions()" aria-label="Otwórz instrukcję obsługi" title="Otwórz instrukcję obsługi"><i class="ti ti-clipboard-list"></i></button></div>
+      <div class="option-row"><span>Napisz do mnie</span><button class="option-action" type="button" onclick="openContactForm()" aria-label="Napisz do mnie wiadomość" title="Napisz do mnie wiadomość"><i class="ti ti-mail"></i></button></div>
     </div>
 
     <div class="options-section">
