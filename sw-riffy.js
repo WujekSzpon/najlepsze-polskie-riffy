@@ -1,9 +1,9 @@
-const CACHE_NAME = 'najlepsze-polskie-riffy-v11';
+const CACHE_NAME = 'najlepsze-polskie-riffy-v12';
 const APP_SHELL = [
   './',
   './manifest-riffy.webmanifest',
-  './pwa-riffy-192.png',
-  './pwa-riffy-512.png'
+  './pwa-riffy-192-v2.png',
+  './pwa-riffy-512-v2.png'
 ];
 
 self.addEventListener('install', event => {

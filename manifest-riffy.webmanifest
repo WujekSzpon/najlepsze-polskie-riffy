@@ -18,13 +18,13 @@
   ],
   "icons": [
     {
-      "src": "./pwa-riffy-192.png",
+      "src": "./pwa-riffy-192-v2.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./pwa-riffy-512.png",
+      "src": "./pwa-riffy-512-v2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
