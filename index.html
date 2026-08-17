@@ -692,7 +692,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 <body>
 
 <div id="login-screen">
-  <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary" style="height:100px;object-fit:contain;margin-bottom:8px;">
+  <img src="https://wujekszpon.github.io/najlepsze-polskie-riffy/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary" style="height:100px;object-fit:contain;margin-bottom:8px;">
   <div class="lock-logo">Najlepsze Polskie Riffy<br>od Wujka Szpona</div>
   <input type="password" id="pwd-input" placeholder="Wpisz hasło…" aria-label="Hasło dostępu" autocomplete="current-password" onkeydown="if(event.key==='Enter')checkPwd()">
   <button id="login-btn" type="button" onclick="checkPwd()">WEJDŹ</button>
@@ -705,7 +705,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 
 <header id="main-header">
   <a id="header-logo" href="https://wszponachgitary.short.gy/sklep" target="_blank" rel="noopener" aria-label="Otwórz sklep W Szponach Gitary">
-    <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary">
+    <img src="https://wujekszpon.github.io/najlepsze-polskie-riffy/branding/LOGO%20-%20W%20SZPONACH%20GITARY%20BLANK.png" alt="W Szponach Gitary">
     <span>NAJLEPSZE POLSKIE RIFFY <span style="color:#ffcc00;">od Wujka Szpona</span></span>
   </a>
 </header>
@@ -1295,7 +1295,7 @@ body.cards-mini .card-title{font-size:calc(12px * var(--card-title-scale));margi
 <button id="scroll-top-btn" onclick="scrollToTopAndShowToolbar()" aria-label="Wróć na górę i pokaż wyszukiwanie"><i class="ti ti-square-chevron-up" aria-hidden="true"></i></button>
 
 <div id="tip-popup">
-  <img src="https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/branding/LOGO%20-%20WUJEK%20SZPON%20ROUND.png" alt="Wujek Szpon" style="width:55px;height:55px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ffcc00;">
+  <img src="https://wujekszpon.github.io/najlepsze-polskie-riffy/branding/LOGO%20-%20WUJEK%20SZPON%20ROUND.png" alt="Wujek Szpon" style="width:55px;height:55px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #ffcc00;">
   <div class="tip-content">
     <div class="tip-label" id="tip-label">PORADA</div>
     <div class="tip-text" id="tip-text"></div>
@@ -1330,7 +1330,7 @@ const HASLO_HASH = '15141b8de4c4acc54d3bb6ff5269285837eed6dd8624773b235727700f51
 const APP_CONFIG = Object.freeze({
   version: '2026.07.24',
   excelUrl: 'https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main/KONSPEKT%20-%20NPR.xlsx',
-  repositoryBase: 'https://raw.githubusercontent.com/WujekSzpon/najlepsze-polskie-riffy/main',
+  repositoryBase: 'https://wujekszpon.github.io/najlepsze-polskie-riffy',
   productName: 'Najlepsze Polskie Riffy',
   contactEmail: 'tomaszczerniuk@gmail.com',
   reviewAppsScriptUrl: 'https://script.google.com/macros/s/AKfycbwvWlBF6u7UxVi5vCulYTtm_Z_gumekiDf_SJvlfJndHgIMjWGXsNYb0Vg6zGDa1XF_/exec',
@@ -2393,8 +2393,8 @@ let reviewPhotoDrag = null;
 let reviewFormOpenedAt = Date.now();
 let reviewAvatarStyle = 'male';
 const REVIEW_AVATAR_URLS = Object.freeze({
-  male: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female-male.jpg',
-  female: 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main/avatary/review-rock-avatar-female.png'
+  male: 'https://wujekszpon.github.io/wspolne-materialy/avatary/review-rock-avatar-female-male.jpg',
+  female: 'https://wujekszpon.github.io/wspolne-materialy/avatary/review-rock-avatar-female.png'
 });
 const reviewAvatarImages = { male: null, female: null };
 
@@ -3992,7 +3992,7 @@ async function exportCatalogPreview() {
 // ===== TESTOWY EKSPORT KATALOGU PDF — koniec =====
 
 // POPUPY: porady zachowują stary wygląd, a promocje korzystają ze wspólnej bazy i panelu graficznego.
-const SHARED_MATERIALS_BASE = 'https://raw.githubusercontent.com/WujekSzpon/wspolne-materialy/main';
+const SHARED_MATERIALS_BASE = 'https://wujekszpon.github.io/wspolne-materialy';
 const PROMOTIONS_URL = `${SHARED_MATERIALS_BASE}/promotions/promotions.xlsx`;
 const PROMOTION_CONTEXT = 'riffy';
 let PORADY = [], PROMOTIONS = [], tipRandomBag = [], promotionRandomBag = [], lastTipIndex = -1, lastPromotionIndex = -1, popupTimeout, promotionTimeout;
