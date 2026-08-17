@@ -728,6 +728,31 @@ async function fetchExcelBuffer() {
   throw new Error(`Nie udało się pobrać pliku Excel z dostępnych źródeł. ${failures.join(' · ')}`);
 }
 const REPO_BASE = APP_CONFIG.repositoryBase;
+function coverUrlCandidates(coverName) {
+  const rawName = String(coverName || '').trim();
+  if (/^https?:\/\//i.test(rawName)) return [rawName];
+  const stem = rawName.replace(/\.(?:png|jpe?g|webp)$/i, '');
+  const base = `${REPO_BASE}/okladki/${encodeURIComponent(stem)}`;
+  return [`${base}.webp`, `${base}.png`, `${base}.jpg`];
+}
+
+function handleCoverImageError(image) {
+  const candidates = JSON.parse(decodeURIComponent(image.dataset.coverCandidates || '%5B%5D'));
+  const nextIndex = Number(image.dataset.coverIndex || 0) + 1;
+  if (nextIndex < candidates.length) {
+    image.dataset.coverIndex = String(nextIndex);
+    image.src = candidates[nextIndex];
+    return;
+  }
+  image.style.display = 'none';
+  const fallback = image.nextElementSibling;
+  if (fallback) fallback.style.display = image.dataset.coverFallbackDisplay || 'block';
+}
+
+function coverImageAttributes(coverName, fallbackDisplay = 'block') {
+  const candidates = coverUrlCandidates(coverName);
+  return `src="${candidates[0]}" data-cover-candidates="${encodeURIComponent(JSON.stringify(candidates))}" data-cover-index="0" data-cover-fallback-display="${fallbackDisplay}" onerror="handleCoverImageError(this)"`;
+}
 const REVIEW_PRODUCT = APP_CONFIG.productName;
 const DEMO_STORE_URL = 'https://najlepszepolskieriffy.short.gy/NPR';
 const FREE_DEMO_TITLES = Object.freeze([
@@ -2028,8 +2053,7 @@ function render() {
 
   grid.innerHTML = filtered.map(e => {
     const plikOkladki = e.okladka || e.nazwa + ' - ' + e.wykonawca;
-    const baseUrl = `${REPO_BASE}/okladki/${encodeURIComponent(plikOkladki)}`;
-    const thumb = `<img src="${baseUrl}.png" alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;" onerror="if(this.src.endsWith('.png')){this.src=this.src.replace('.png','.jpg')}else{this.style.display='none';this.nextElementSibling.style.display='block';}"><span class="thumb-icon" style="display:none">🎸</span>`;
+    const thumb = `<img ${coverImageAttributes(plikOkladki)} alt="${e.nazwa}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"><span class="thumb-icon" style="display:none">🎸</span>`;
 
     const demoFree = isDemoFree(e);
     const isFav = favorites.has(e.id);
